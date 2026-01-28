@@ -102,7 +102,7 @@ const Header = () => {
                                 </button>
                                 <button className="relative p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 group">
                                     <ShoppingCart size={22} className="group-hover:scale-110 transition-transform" />
-                                    <span className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+                                    <span className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
                                 </button>
                             </div>
                         </div>
