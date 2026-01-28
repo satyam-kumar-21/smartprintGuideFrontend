@@ -76,13 +76,13 @@ const Header = () => {
                             {/* Desktop Navigation */}
                             <nav className="hidden lg:flex items-center justify-center flex-1 px-8 gap-6 text-slate-600 text-sm font-bold">
                                 <Link to="/" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Home</Link>
-                                <Link to="/all-in-one" className="hover:text-blue-600 transition-colors uppercase tracking-wide">All In One</Link>
-                                <Link to="/large-format" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Large Format</Link>
-                                <Link to="/printers/inkjet" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Inkjet</Link>
-                                <Link to="/printers/laser" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Laser</Link>
-                                <Link to="/printers/led" className="hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
-                                <Link to="/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
-                                <Link to="/support" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
+                                <Link to="/product-category/all-in-one-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">All In One</Link>
+                                <Link to="/product-category/large-format-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Large Format</Link>
+                                <Link to="/product-category/inkjet-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Inkjet</Link>
+                                <Link to="/product-category/laser-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Laser</Link>
+                                <Link to="/product-category/led-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
+                                <Link to="/product-category/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
+                                <Link to="/customer-service" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
                             </nav>
 
                             {/* Right: Actions */}
@@ -137,13 +137,13 @@ const Header = () => {
                                     <div className="flex flex-col space-y-1">
                                         {[
                                             { name: 'Home', path: '/' },
-                                            { name: 'All In One', path: '/all-in-one' },
-                                            { name: 'Large Format', path: '/large-format' },
-                                            { name: 'Inkjet', path: '/printers/inkjet' },
-                                            { name: 'Laser', path: '/printers/laser' },
-                                            { name: 'LED Printers', path: '/printers/led' },
-                                            { name: 'Ink & Toner', path: '/ink-toner' },
-                                            { name: 'Customer Support', path: '/support' },
+                                            { name: 'All In One', path: '/product-category/all-in-one-printers' },
+                                            { name: 'Large Format', path: '/product-category/large-format-printers' },
+                                            { name: 'Inkjet', path: '/product-category/inkjet-printers' },
+                                            { name: 'Laser', path: '/product-category/laser-printers' },
+                                            { name: 'LED Printers', path: '/product-category/led-printers' },
+                                            { name: 'Ink & Toner', path: '/product-category/ink-toner' },
+                                            { name: 'Customer Support', path: '/customer-service' },
                                         ].map((item) => (
                                             <Link
                                                 key={item.name}

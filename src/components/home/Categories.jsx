@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { Printer, Layout, Droplet, Zap, Cpu, Box, Menu } from 'lucide-react';
 
 const categories = [
-    { id: 1, name: 'All In One Printers', icon: <Printer size={20} />, link: '/categories/all-in-one-printers' },
-    { id: 2, name: 'Large Format Printers', icon: <Layout size={20} />, link: '/categories/large-format-printers' },
-    { id: 3, name: 'Inkjet Printers', icon: <Droplet size={20} />, link: '/categories/inkjet-printers' },
-    { id: 4, name: 'Laser Printers', icon: <Zap size={20} />, link: '/categories/laser-printers' },
-    { id: 5, name: 'LED Printers', icon: <Cpu size={20} />, link: '/categories/led-printers' },
-    { id: 6, name: 'Ink & Toner', icon: <Box size={20} />, link: '/categories/ink-toner' },
+    { id: 1, name: 'All In One Printers', icon: <Printer size={20} />, link: '/product-category/all-in-one-printers' },
+    { id: 2, name: 'Large Format Printers', icon: <Layout size={20} />, link: '/product-category/large-format-printers' },
+    { id: 3, name: 'Inkjet Printers', icon: <Droplet size={20} />, link: '/product-category/inkjet-printers' },
+    { id: 4, name: 'Laser Printers', icon: <Zap size={20} />, link: '/product-category/laser-printers' },
+    { id: 5, name: 'LED Printers', icon: <Cpu size={20} />, link: '/product-category/led-printers' },
+    { id: 6, name: 'Ink & Toner', icon: <Box size={20} />, link: '/product-category/ink-toner' },
 ];
 
 const Categories = () => {
