@@ -29,7 +29,7 @@ const WhyChooseSection = () => {
                 {/* Heading Section (centered) */}
                 <div className="text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                        Why Choose My Ink Shops
+                        Why Choose MyPlatform
                     </h2>
                     <p className="text-base md:text-lg text-slate-500 max-w-3xl mx-auto">
                         The efficiency and the convenience of the customers in our products and services are considered.
