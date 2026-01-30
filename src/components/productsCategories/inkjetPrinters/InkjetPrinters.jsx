@@ -1,7 +1,7 @@
 import React from 'react'
 import ProductRouteHeading from '../ProductRouteHeading'
 import CategoryScrollSection from '../CategoryScrollSection'
-import InjectPrintersProductList from './InjectPrintersProductList'
+import InkjetPrintersProductList from './InkjetPrintersProductList'
 import FeaturesSection from '../FeaturesSection'
 
 function InkjetPrinters() {
@@ -17,7 +17,7 @@ function InkjetPrinters() {
                 description="Ideal in quality color photographs and general printing of documents."
             />
             <CategoryScrollSection />
-            <InjectPrintersProductList />
+            <InkjetPrintersProductList />
             <FeaturesSection />
         </>
     )

@@ -1,62 +1,53 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import axios from 'axios';
 import printerImg from "../../assets/printer.png"; // fallback product image
 
 const TrackOrder = () => {
     const [orderId, setOrderId] = useState("");
     const [orderDetails, setOrderDetails] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    // Dummy data generator
-    const generateDummyOrder = (id) => {
-        const randomAmount = (Math.random() * 5000 + 500).toFixed(2);
-        const paidStatus = Math.random() > 0.5;
-        const locations = [
-            "Mumbai, India",
-            "Ahmedabad, India",
-            "Bangalore, India",
-            "Chennai, India",
-            "Delhi, India",
-            "Kolkata, India",
-        ];
-        const products = [
-            {
-                name: "HP OfficeJet Pro 9125e Wireless Printer",
-                image: printerImg,
-                quantity: 1,
-                price: parseFloat(randomAmount),
-            },
-        ];
-
-        const stepsCount = Math.floor(Math.random() * 4) + 2; // 2-5 steps
-        const history = [];
-
-        for (let i = 0; i < stepsCount; i++) {
-            history.push({
-                location: locations[Math.floor(Math.random() * locations.length)],
-                date: new Date(
-                    Date.now() - (stepsCount - i) * 24 * 60 * 60 * 1000
-                ).toLocaleDateString(),
-                status: i === stepsCount - 1 ? "Shipped" : "In Transit",
-            });
-        }
-
-        return {
-            customerName: "Customer " + id.slice(-4),
-            orderId: id,
-            paid: paidStatus,
-            status: history[history.length - 1].status,
-            currentLocation: history[history.length - 1].location,
-            products,
-            history,
-        };
-    };
-
-    const handleTrack = (e) => {
+    const handleTrack = async (e) => {
         e.preventDefault();
-        if (!orderId.trim()) {
+        const cleanId = orderId.replace('ORD-', '').trim();
+        if (!cleanId) {
             alert("Please enter an Order ID");
             return;
         }
-        setOrderDetails(generateDummyOrder(orderId.trim()));
+
+        try {
+            setLoading(true);
+            setError(null);
+            // We'll try to fetch without token first if they are on a public page
+            // If it fails with 401, we know it's protected
+            const { data } = await axios.get(`http://localhost:5000/api/orders/${cleanId}`);
+            
+            // Format order data for tracking display
+            const formattedOrder = {
+                customerName: data.user?.name || "Customer",
+                orderId: `ORD-${data._id.toUpperCase()}`,
+                paid: data.isPaid,
+                status: data.status,
+                currentLocation: data.tracking?.currentLocation || "Warehouse",
+                products: data.orderItems.map(item => ({
+                    name: item.name,
+                    image: item.image,
+                    quantity: item.qty,
+                    price: item.price
+                })),
+                history: [
+                    { status: 'Confirmed', location: 'Office', date: new Date(data.createdAt).toLocaleDateString() },
+                    { status: data.status, location: data.tracking?.currentLocation || 'In Transit', date: 'Real-time' }
+                ]
+            };
+            
+            setOrderDetails(formattedOrder);
+            setLoading(false);
+        } catch (err) {
+            setError(err.response?.data?.message || "Order not found. Please check the ID.");
+            setLoading(false);
+        }
     };
 
     return (

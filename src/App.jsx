@@ -3,7 +3,12 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeMain from './components/home/HomeMain';
+import ProfilePage from './components/profile/ProfilePage';
 import UnderConstruction from './components/common/UnderConstruction';
+import AboutMain from './components/about/AboutMain';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsAndConditions from './components/TermsAndConditions';
+import Careers from './components/Careers';
 
 // Admin Imports
 import AdminLogin from './components/admin/Auth/AdminLogin';
@@ -27,7 +32,9 @@ import CustomerService from './components/customerService/CustomerService';
 import LaserPrinters from './components/productsCategories/laserPrinters/LaserPrinters';
 import ScrollToTop from './components/ScrollToTop';
 import Cart from './components/Cart';
+import Checkout from './components/Checkout';
 import ProductDetails from './components/productsCategories/ProductDetails';
+import OrderDetails from './components/order/OrderDetails';
 import TrackOrder from './components/order/TrackOrder';
 import ReturnsAndExchanges from './components/order/ReturnsAndExchanges';
 import FAQ from './components/FAQ';
@@ -53,6 +60,9 @@ function App() {
                     <Route path="/product-category/ink-toner" element={<InkToner />} />
                     <Route path="/customer-service" element={<CustomerService />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/order/:id" element={<OrderDetails />} />
+                    <Route path="/profile" element={<ProfilePage />} />
 
                     <Route path="/product/:productSlug" element={<ProductDetails />} />
 
@@ -60,6 +70,14 @@ function App() {
                     <Route path="/track-order" element={<TrackOrder />} />
                     <Route path="/returns-exchanges" element={<ReturnsAndExchanges />} />
                     <Route path="/faq" element={<FAQ />} />
+
+
+                    {/* other static routes */}
+                    <Route path="/about" element={<AboutMain />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                    <Route path="/careers" element={<Careers />} />
+
 
                     {/* Admin Routes */}
                     <Route path="/admin/login" element={<AdminLogin />} />

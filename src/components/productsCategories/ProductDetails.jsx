@@ -1,482 +1,304 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { listProductDetails } from "../../redux/actions/productActions";
+import { addToCart } from "../../redux/actions/cartActions";
 import printerImg from "../../assets/printer.png"; // fallback image
 
 const ProductDetails = () => {
     const { productSlug } = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const generateSlug = (title) => {
-        return title
-            .toLowerCase()
-            .replace(/[^a-z0-9 ]/g, "") // remove special chars
-            .replace(/\s+/g, "-"); // replace spaces with -
+    const [qty, setQty] = useState(1);
+    const [activeImage, setActiveImage] = useState(0);
+    const [activeTab, setActiveTab] = useState("overview");
+
+    const productDetails = useSelector((state) => state.productDetails);
+    const { loading, error, product } = productDetails;
+
+    useEffect(() => {
+        if (productSlug) {
+            dispatch(listProductDetails(productSlug));
+        }
+    }, [dispatch, productSlug]);
+
+    const addToCartHandler = () => {
+        dispatch(addToCart(product.slug || product._id, qty));
+        navigate('/cart');
     };
 
-    const allProducts = [
-        // All-in-One Printers
-        {
-            category: "All-in-One Printers",
-            title: "HP OfficeJet Pro 9125e Wireless All-in-One Color Inkjet Printer",
-            description: "Print, scan, copy, fax, duplex, best for office, 3-mo free Instant Ink, AI-enabled",
-            price: "209.99",
-            originalPrice: "309.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP OfficeJet Pro 9125e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
-        {
-            category: "All-in-One Printers",
-            title: "HP Envy 6155e Wireless All-in-One Color Inkjet Printer",
-            description: "Prints, scans, copies, duplex, great for home, 3-mo free Instant Ink, AI-enabled",
-            price: "119.99",
-            originalPrice: "159.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Envy 6155e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
-        {
-            category: "All-in-One Printers",
-            title: "HP OfficeJet Pro 8139e Wireless All-in-One Color Inkjet Printer",
-            description: "Print, scan, copy, best for home, with 1 year of Instant Ink included, AI-enabled",
-            price: "179.99",
-            originalPrice: "279.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP OfficeJet Pro 8139e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
+    const buyNowHandler = () => {
+        dispatch(addToCart(product.slug || product._id, qty));
+        navigate('/cart?redirect=shipping');
+    };
 
-        // Inkjet Printers
-        {
-            category: "Inkjet Printers",
-            title: "HP Smart Tank 6001 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (2H0B9A)",
-            price: "269.99",
-            originalPrice: "369.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 6001 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP Smart Tank 7602 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (28B98A)",
-            price: "349.99",
-            originalPrice: "469.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 7602 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP Smart Tank 5101 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (1F3Y0A)",
-            price: "189.99",
-            originalPrice: "259.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 5101 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP OfficeJet 200 Portable Wireless Inkjet Color Printer",
-            description: "",
-            price: "349.99",
-            originalPrice: "419.99",
-            image: printerImg,
-            link: `/product/${generateSlug("HP OfficeJet 200 Portable Wireless Inkjet Color Printer")}`,
-        },
+    if (loading) return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-6">
+            <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin"></div>
+            <div className="text-center">
+                <p className="font-black uppercase text-[10px] tracking-[0.4em] text-slate-400 animate-pulse">Synchronizing Hardware Details</p>
+                <p className="text-slate-300 text-[9px] font-bold uppercase mt-2 tracking-widest">Bridging with Central Inventory...</p>
+            </div>
+        </div>
+    );
 
-        // Ink Toner
-        {
-            category: "Ink Toner",
-            title: "HP OfficeJet Pro 9125e Wireless All-in-One Color Inkjet Printer",
-            description: "Print, scan, copy, fax, duplex, best for office, 3-mo free Instant Ink, AI-enabled",
-            price: "209.99",
-            originalPrice: "309.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP OfficeJet Pro 9125e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
+    if (error || !product) return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center space-y-8">
+            <div className="w-24 h-24 bg-rose-50 rounded-[2rem] flex items-center justify-center">
+                <svg className="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <div className="space-y-4 max-w-sm">
+                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Inventory Mismatch</h2>
+                <p className="text-slate-400 font-medium text-sm leading-relaxed">
+                    The requested hardware identifier <span className="text-slate-900 font-bold">"{productSlug}"</span> could not be verified within our current database synchronization.
+                </p>
+            </div>
+            <button 
+                onClick={() => navigate('/')}
+                className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-200"
+            >
+                Return to Command Center
+            </button>
+        </div>
+    );
 
-        // Large Format Printers
-        {
-            category: "Large Format Printers",
-            title: "HP Envy 6155e Wireless All-in-One Color Inkjet Printer",
-            description: "Prints, scans, copies, duplex, great for home, 3-mo free Instant Ink, AI-enabled",
-            price: "119.99",
-            originalPrice: "159.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Envy 6155e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
-
-        // Laser Printers
-        {
-            category: "Laser Printers",
-            title: "HP OfficeJet Pro 8139e Wireless All-in-One Color Inkjet Printer",
-            description: "Print, scan, copy, best for home, with 1 year of Instant Ink included, AI-enabled",
-            price: "179.99",
-            originalPrice: "279.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP OfficeJet Pro 8139e Wireless All-in-One Color Inkjet Printer"
-            )}`,
-        },
-
-        // LED Printers
-        {
-            category: "Led Printers",
-            title: "HP Smart Tank 6001 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (2H0B9A)",
-            price: "269.99",
-            originalPrice: "369.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 6001 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-        {
-            category: "Led Printers",
-            title: "HP Smart Tank 7602 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (28B98A)",
-            price: "349.99",
-            originalPrice: "469.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 7602 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-        {
-            category: "Led Printers",
-            title: "HP Smart Tank 5101 Wireless All-in-One Ink Tank Printer",
-            description: "Up to 2 years of ink included, AI-enabled (1F3Y0A)",
-            price: "189.99",
-            originalPrice: "259.99",
-            image: printerImg,
-            link: `/product/${generateSlug(
-                "HP Smart Tank 5101 Wireless All-in-One Ink Tank Printer"
-            )}`,
-        },
-
-
-
-        //mega deals
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet M110w Wireless Printer",
-            description: "",
-            price: "549.00",
-            originalPrice: "699.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet M110w Wireless Printer")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro 4201dw Wireless Laser Color",
-            description: "",
-            price: "549.00",
-            originalPrice: "699.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro 4201dw Wireless Laser Color")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet M209dw Wireless Black & White",
-            description: "",
-            price: "199.00",
-            originalPrice: "299.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet M209dw Wireless Black & White")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro 4001n Laser Monochrome",
-            description: "",
-            price: "289.00",
-            originalPrice: "379.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro 4001n Laser Monochrome")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP Color LaserJet Pro 3201dw Wireless",
-            description: "",
-            price: "359.00",
-            originalPrice: "399.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP Color LaserJet Pro 3201dw Wireless")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet MFP M234sdw Wireless All-In-One",
-            description: "",
-            price: "279.00",
-            originalPrice: "388.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet MFP M234sdw Wireless All-In-One")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro MFP 3101fdw Wireless",
-            description: "",
-            price: "289.00",
-            originalPrice: "379.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 3101fdw Wireless")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro MFP 4301fdw All-In-One",
-            description: "",
-            price: "759.00",
-            originalPrice: "859.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 4301fdw All-In-One")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP Color LaserJet Pro MFP 3301fdw",
-            description: "",
-            price: "539.00",
-            originalPrice: "639.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP Color LaserJet Pro MFP 3301fdw")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro MFP 4101fdw All-in-One",
-            description: "",
-            price: "539.00",
-            originalPrice: "659.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 4101fdw All-in-One")}`,
-        },
-
-
-
-        // pics perfect 
-
-        {
-            category: "Inkjet Printers",
-            title: "HP Smart Tank 7602 Wireless All-in-One Ink Tank Printer with up to 2 years of ink included, AI-enabled (28B98A)",
-            description: "A reliable and efficient all-in-one printer with wireless connectivity and high-quality prints.",
-            price: "539.00",
-            originalPrice: "659.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 4101fdw All-in-One")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "Epson® WorkForce® Pro WF-4830 Wireless Inkjet All-In-One Color Printer",
-            description: "High-speed, all-in-one wireless printer with efficient features for home and office use.",
-            price: "599.00",
-            originalPrice: "699.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 4301fdw All-In-One")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "HP 61 Black Ink Cartridge, CH561WN",
-            description: "A compact and efficient printer that delivers high-quality prints at a low cost per page.",
-            price: "99.99",
-            originalPrice: "129.99",
-            image: printerImg,
-            link: `/product/${generateSlug("HP LaserJet Pro M15w Printer, Compact and Fast")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "Brother HL-L3220CDW Wireless Compact Digital Color Printer, Laser Quality Output, Refresh EZ Print Eligibility",
-            description: "Monochrome laser printer with fast printing and wireless capabilities for home or office use.",
-            price: "149.99",
-            originalPrice: "189.99",
-            image: printerImg,
-            link: `/product/${generateSlug("Brother HL-L2350DW Monochrome Laser Printer")}`,
-        },
-        {
-            category: "All-in-One Printers",
-            title: "Canon PIXMA TR4520 Wireless All-in-One Printer",
-            description: "An affordable all-in-one printer that delivers high-quality prints and versatile features for home or office.",
-            price: "199.99",
-            originalPrice: "259.99",
-            image: printerImg,
-            link: `/product/${generateSlug("Canon PIXMA TR4520 Wireless All-in-One Printer")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "HP LaserJet Pro M15w Printer, Compact and Fast",
-            description: "A high-performance, wireless inkjet printer that offers advanced features for businesses and professionals.",
-            price: "149.99",
-            originalPrice: "279.99",
-            image: printerImg,
-            link: `/product/${generateSlug("Epson® WorkForce® Pro WF-4830 Wireless Inkjet All-In-One Color Printer")}`,
-        },
-        {
-            category: "Supertank Printers",
-            title: "Epson EcoTank ET-2720 Wireless Color All-in-One Supertank Printer",
-            description: "Eco-friendly and efficient printer with ultra-low-cost ink and easy wireless connectivity.",
-            price: "249.99",
-            originalPrice: "319.99",
-            image: printerImg,
-            link: `/product/${generateSlug("Epson EcoTank ET-2720 Wireless Color All-in-One Supertank Printer")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "Epson EcoTank ET-2720 Wireless Color All-in-One Supertank Printer",
-            description: "Affordable all-in-one color printer for everyday home and office tasks, with wireless capabilities.",
-            price: "179.99",
-            originalPrice: "229.99",
-            image: printerImg,
-            link: `/product/${generateSlug("HP ENVY 6055e All-in-One Wireless Color Printer")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "HP ENVY 6055e All-in-One Wireless Color Printer",
-            description: "Compact color laser printer offering high-quality output and wireless printing capabilities.",
-            price: "284.99",
-            originalPrice: "334.99",
-            image: printerImg,
-            link: `/product/${generateSlug("Brother HL-L3220CDW Wireless Compact Digital Color Printer")}`,
-        },
-        {
-            category: "Inkjet Printers",
-            title: "Epson Expression Home XP-4100 Wireless Color Printer",
-            description: "Portable and efficient inkjet printer for business professionals on-the-go, with wireless connectivity.",
-            price: "349.99",
-            originalPrice: "419.99",
-            image: printerImg,
-            link: `/product/${generateSlug("HP OfficeJet 200 Portable Wireless Inkjet Color Printer")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "Canon PIXMA MG3620 Wireless All-in-One Printer",
-            description: "Color laser printer with fast printing speeds, offering high-quality prints and versatile features.",
-            price: "539.00",
-            originalPrice: "639.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP Color LaserJet Pro MFP 3301fdw")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "Brother HL-L2350DW Monochrome Laser Printer",
-            description: "Color laser printer with fast printing speeds, offering high-quality prints and versatile features.",
-            price: "539.00",
-            originalPrice: "639.00",
-            image: printerImg,
-            link: `/product/${generateSlug("HP Color LaserJet Pro MFP 3301fdw")}`,
-        },
-
-
-        // top pics 
-        {
-            category: "Laser Printers",
-            title: "Brother® MFC-L3780CDW Wireless Digital Laser Color All-In-One Printer With Refresh EZ Print Eligibility",
-            description: "Color laser printer with fast printing speeds, offering high-quality prints and versatile features.",
-            price: "539.00",
-            originalPrice: "639.00",
-            image: printerImg,  // Replace with the actual image source
-            link: `/product/${generateSlug("HP Color LaserJet Pro MFP 3301fdw")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "HP 58A Black Toner Cartridge, CF258A",
-            description: "All-in-one monochrome laser printer with wireless connectivity, fast printing, and high yield.",
-            price: "539.00",
-            originalPrice: "659.00",
-            image: printerImg,  // Replace with the actual image source
-            link: `/product/${generateSlug("HP LaserJet Pro MFP 4101fdw All-in-One")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "HP DesignJet Z9+ PostScript Color Inkjet Large-Format Printer, W3Z72A#B1K",
-            description: "Compact monochrome laser printer with duplex printing and wireless connectivity.",
-            price: "149.99",
-            originalPrice: "199.99",
-            image: printerImg,  // Replace with the actual image source
-            link: `/product/${generateSlug("Brother HL-L2350DW Monochrome Laser Printer")}`,
-        },
-        {
-            category: "Laser Printers",
-            title: "Epson® WorkForce® Pro WF-7840 Wide-Format Wireless Inkjet All-In-One Color Printer",
-            description: "All-in-one monochrome laser printer with fast printing, duplex scanning, and high-yield toner cartridges.",
-            price: "379.99",
-            originalPrice: "429.99",
-            image: printerImg,  // Replace with the actual image source
-            link: `/product/${generateSlug("Canon imageCLASS MF445dw Wireless Laser All-in-One Printer")}`,
-        },
-
-    ];
-
-    // Find product by slug
-    const product = allProducts.find((p) => {
-        const slug = p.title
-            .toLowerCase()
-            .replace(/[^a-z0-9 ]/g, "")
-            .replace(/\s+/g, "-");
-        return slug === productSlug;
-    });
-
-    if (!product) return <div className="max-w-5xl mx-auto p-6 text-center text-red-500">Product not found!</div>;
+    const productImages = product.images && product.images.length > 0 
+        ? product.images.map(img => img.startsWith('http') ? img : `http://localhost:5000${img}`)
+        : [printerImg];
 
     return (
-        <div className="max-w-5xl mx-auto p-6">
-            <div className="flex flex-col md:flex-row gap-8">
-                {/* Product Image */}
-                <div className="md:w-1/2">
-                    <img
-                        src={product.image || printerImg}
-                        alt={product.title}
-                        className="w-full h-auto object-contain rounded-lg border"
-                    />
+        <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 bg-white overflow-hidden">
+            <div className="flex flex-col lg:flex-row gap-12">
+                {/* Image Gallery Section */}
+                <div className="lg:w-[45%] flex flex-col md:flex-row gap-4 h-fit lg:sticky lg:top-24">
+                    {/* Thumbnails */}
+                    <div className="flex flex-row md:flex-col gap-3 w-full md:w-20 order-2 md:order-1 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0">
+                        {productImages.map((img, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setActiveImage(index)}
+                                className={`aspect-square min-w-[70px] md:min-w-0 rounded-xl border-2 transition-all overflow-hidden bg-slate-50 p-2
+                                    ${activeImage === index ? 'border-slate-900 shadow-lg' : 'border-slate-100 hover:border-slate-300'}`}
+                            >
+                                <img src={img} alt={`${product.title} ${index}`} className="w-full h-full object-contain" />
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Main Image */}
+                    <div className="flex-1 aspect-[4/5] bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 flex items-center justify-center p-8 overflow-hidden group order-1 md:order-2">
+                        <img
+                            src={productImages[activeImage]}
+                            alt={product.title}
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                        />
+                    </div>
                 </div>
 
-                {/* Product Info */}
-                <div className="md:w-1/2 space-y-4">
-                    <h1 className="text-2xl font-bold">{product.title}</h1>
-                    <p className="text-gray-600">{product.description}</p>
+                {/* Info Section */}
+                <div className="flex-1 space-y-8">
+                    {/* Header */}
+                    <div className="space-y-4">
+                        <div className="flex items-center flex-wrap gap-3">
+                            <span className="px-4 py-1.5 bg-slate-50 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-100">
+                                {product.brand || 'Premium Hardware'}
+                            </span>
+                            {product.countInStock > 0 ? (
+                                <span className="text-emerald-500 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                    {product.countInStock} Units Available
+                                </span>
+                            ) : (
+                                <span className="text-rose-500 text-[9px] font-black uppercase tracking-widest">Sold Out</span>
+                            )}
+                        </div>
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 leading-tight tracking-tight uppercase">
+                            {product.title}
+                        </h1>
+                    </div>
 
-                    {/* Price Section */}
-                    <div className="flex items-center gap-4 text-lg">
-                        <span className="font-semibold text-indigo-600">${product.price}</span>
-                        {product.originalPrice && (
-                            <span className="line-through text-gray-400">${product.originalPrice}</span>
+                    {/* Short Details */}
+                    {product.shortDetails && (
+                        <div className="space-y-3">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Highlights</h3>
+                            <div 
+                                dangerouslySetInnerHTML={{ __html: product.shortDetails }} 
+                                className="text-slate-600 text-sm font-medium leading-relaxed space-y-2 prose-sm prose-slate"
+                            />
+                        </div>
+                    )}
+
+                    {/* Price & Actions */}
+                    <div className="p-6 md:p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 space-y-6">
+                        <div className="flex items-baseline gap-4">
+                            <span className="text-4xl font-black text-slate-900 tracking-tighter">
+                                ${product.price?.toFixed(2)}
+                            </span>
+                            {product.oldPrice > 0 && (
+                                <span className="text-xl text-slate-300 line-through font-bold">
+                                    ${product.oldPrice?.toFixed(2)}
+                                </span>
+                            )}
+                        </div>
+
+                        {product.countInStock > 0 && (
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
+                                <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white">
+                                    <button 
+                                        onClick={() => setQty(Math.max(1, qty - 1))}
+                                        className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
+                                    > - </button>
+                                    <span className="px-4 text-xs font-black text-slate-900">{qty}</span>
+                                    <button 
+                                        onClick={() => setQty(Math.min(product.countInStock, qty + 1))}
+                                        className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
+                                    > + </button>
+                                </div>
+                            </div>
                         )}
+
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button 
+                                onClick={addToCartHandler}
+                                disabled={product.countInStock === 0}
+                                className={`flex-1 py-5 rounded-2xl transition-all font-black uppercase text-[10px] tracking-widest shadow-xl active:scale-95
+                                    ${product.countInStock > 0 
+                                        ? 'bg-slate-900 text-white hover:bg-black shadow-slate-200' 
+                                        : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'}`}
+                            >
+                                {product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                            </button>
+                            {product.countInStock > 0 && (
+                                <button 
+                                    onClick={buyNowHandler}
+                                    className="flex-1 py-5 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-all font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 active:scale-95"
+                                >
+                                    Buy Now
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Placeholder / Info */}
-                    <h1 className="text-2xl text-red-500 font-bold text-center">
-                        Incomplete Product Details Page!
-                    </h1>
+                    {/* Short Specs */}
+                    {product.shortSpecification && (
+                        <div className="space-y-3">
+                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Key Specifications</h3>
+                            <div 
+                                dangerouslySetInnerHTML={{ __html: product.shortSpecification }} 
+                                className="text-slate-500 text-xs font-semibold grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4"
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                        {/* Add to Cart */}
+            {/* Tabbed Content */}
+            <div className="mt-20 border-t border-slate-100">
+                <div className="flex gap-8 md:gap-12 overflow-x-auto pb-px scrollbar-hide">
+                    {["overview", "reviews", "specifications"].map((tab) => (
                         <button
-                            onClick={() => navigate("/cart")}
-                            className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold"
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`py-8 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative whitespace-nowrap
+                                ${activeTab === tab ? 'text-slate-900' : 'text-slate-300 hover:text-slate-500'}`}
                         >
-                            Add to Cart
+                            {tab}
+                            {activeTab === tab && (
+                                <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-900 rounded-full" />
+                            )}
                         </button>
+                    ))}
+                </div>
 
-                        {/* Buy Now */}
-                        <button
-                            onClick={() => navigate(`/checkout/${product.id}`)} // Example: navigate to checkout
-                            className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
-                        >
-                            Buy Now
-                        </button>
-                    </div>
+                <div className="py-12">
+                    {activeTab === "overview" && (
+                        <div className="max-w-4xl animate-fadeIn">
+                            <p className="text-slate-600 font-medium leading-relaxed text-base md:text-lg mb-8">
+                                {product.description}
+                            </p>
+                            {product.overview && (
+                                <div dangerouslySetInnerHTML={{ __html: product.overview }} className="prose prose-slate max-w-none text-slate-600 prose-sm md:prose-base" />
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === "reviews" && (
+                        <div className="space-y-8 animate-fadeIn">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Verified Feedback</h2>
+                                    <div className="flex items-center gap-4 mt-2">
+                                        <div className="flex text-yellow-400">
+                                            {[1, 2, 3, 4, 5].map(star => (
+                                                <svg key={star} className={`w-4 h-4 ${product.rating >= star ? 'fill-current' : 'text-slate-200 fill-current'}`} viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            ))}
+                                        </div>
+                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{product.rating ? product.rating.toFixed(1) : '0.0'} / 5.0</span>
+                                    </div>
+                                </div>
+                                <button className="w-full md:w-auto px-6 py-3 border-2 border-slate-900 text-slate-900 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all">
+                                    Write a Review
+                                </button>
+                            </div>
+
+                            {product.reviews && product.reviews.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {product.reviews.map((review, index) => (
+                                        <div key={index} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-black text-[10px] uppercase tracking-widest text-slate-900">{review.name}</span>
+                                                <div className="flex text-yellow-400">
+                                                    {[1, 2, 3, 4, 5].map(s => (
+                                                        <svg key={s} className={`w-3 h-3 ${review.rating >= s ? 'fill-current' : 'text-slate-200 fill-current'}`} viewBox="0 0 20 20">
+                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                        </svg>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-slate-600 text-xs font-medium leading-relaxed italic">"{review.comment}"</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest py-10 text-center border-2 border-dashed border-slate-100 rounded-[2rem]">Be the first to share your experience</p>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === "specifications" && (
+                        <div className="animate-fadeIn">
+                            {product.technicalSpecification ? (
+                                <div dangerouslySetInnerHTML={{ __html: product.technicalSpecification }} className="prose prose-slate max-w-none text-slate-600 prose-sm md:prose-base" />
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                                    {[
+                                        { label: 'Brand', value: product.brand },
+                                        { label: 'Color', value: product.color },
+                                        { label: 'Width', value: product.width ? `${product.width}"` : null },
+                                        { label: 'Height', value: product.height ? `${product.height}"` : null },
+                                        { label: 'Depth', value: product.depth ? `${product.depth}"` : null },
+                                        { label: 'Screen Size', value: product.screenSize },
+                                    ].map(item => (
+                                        item.value && (
+                                            <div key={item.label} className="flex justify-between py-4 border-b border-slate-100">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.label}</span>
+                                                <span className="font-bold text-slate-900 uppercase text-xs">{item.value}</span>
+                                            </div>
+                                        )
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
-
     );
 };
 

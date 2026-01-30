@@ -1,82 +1,87 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShoppingCart, Heart, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import PrinterImage from '../../assets/printer.png';
-
-const deals = [
-    { id: 1, name: 'HP LaserJet M110w Wireless Printer', price: 549, oldPrice: 699, image: PrinterImage },
-    { id: 2, name: 'HP LaserJet Pro 4201dw Wireless Laser Color', price: 549, oldPrice: 699, image: PrinterImage },
-    { id: 3, name: 'HP LaserJet M209dw Wireless Black & White', price: 199, oldPrice: 299, image: PrinterImage },
-    { id: 4, name: 'HP LaserJet Pro 4001n Laser Monochrome', price: 289, oldPrice: 379, image: PrinterImage },
-    { id: 5, name: 'HP Color LaserJet Pro 3201dw Wireless', price: 359, oldPrice: 399, image: PrinterImage },
-    { id: 6, name: 'HP LaserJet MFP M234sdw Wireless All-In-One', price: 279, oldPrice: 388, image: PrinterImage },
-    { id: 7, name: 'HP LaserJet Pro MFP 3101fdw Wireless', price: 289, oldPrice: 379, image: PrinterImage },
-    { id: 8, name: 'HP LaserJet Pro MFP 4301fdw All-In-One', price: 759, oldPrice: 859, image: PrinterImage },
-    { id: 9, name: 'HP Color LaserJet Pro MFP 3301fdw', price: 539, oldPrice: 639, image: PrinterImage },
-    { id: 10, name: 'HP LaserJet Pro MFP 4101fdw All-in-One', price: 539, oldPrice: 659, image: PrinterImage },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { listProducts } from '../../redux/actions/productActions';
+import printerImg from '../../assets/printer.png';
 
 const MegaDeals = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    // Function to generate slug from product title
-    const generateSlug = (title) => {
-        return title
-            .toLowerCase()
-            .replace(/[^a-z0-9 ]/g, '')
-            .replace(/\s+/g, '-');
+    const productList = useSelector((state) => state.productList);
+    const { loading, products } = productList;
+
+    useEffect(() => {
+        dispatch(listProducts());
+    }, [dispatch]);
+
+    // Filter products that have a discount (oldPrice > price) and take top 8
+    const deals = products 
+        ? products
+            .filter(p => p.oldPrice > p.price)
+            .sort((a, b) => (b.oldPrice - b.price) - (a.oldPrice - a.price))
+            .slice(0, 8)
+        : [];
+
+    const handleCardClick = (slug, id) => {
+        navigate(`/product/${slug || id}`);
     };
 
-    const handleCardClick = (title) => {
-        const slug = generateSlug(title);
-        navigate(`/product/${slug}`);
-    };
+    if (loading && (!products || products.length === 0)) return null;
+    if (!loading && deals.length === 0) return null; // Don't show section if no deals
 
     return (
         <section className="py-12 bg-white">
             <div className="mb-8">
-                <h2 className="text-3xl md:text-left text-center font-bold text-slate-900 mb-2">Print Power with Mega Deals</h2>
-                <p className="text-slate-500 md:text-left text-center">Shop smart and print best with our special printer deals.</p>
+                <h2 className="text-3xl md:text-left text-center font-black text-slate-900 mb-2 uppercase tracking-tight">Print Power with Mega Deals</h2>
+                <p className="text-slate-400 md:text-left text-center font-bold text-xs uppercase tracking-widest">Shop smart and print best with our special printer deals.</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {deals.map((deal) => (
                     <div
-                        key={deal.id}
-                        onClick={() => handleCardClick(deal.name)}
-                        className="group border border-slate-100 rounded-2xl p-4 hover:shadow-xl transition-all duration-300 bg-white relative cursor-pointer"
+                        key={deal._id}
+                        onClick={() => handleCardClick(deal.slug, deal._id)}
+                        className="group border border-slate-100 rounded-3xl p-6 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 bg-white relative cursor-pointer overflow-hidden"
                     >
                         {/* Image */}
-                        <div className="h-40 flex items-center justify-center mb-4 relative overflow-hidden">
+                        <div className="h-44 flex items-center justify-center mb-6 relative overflow-hidden bg-slate-50/50 rounded-2xl">
                             <img
-                                src={deal.image}
-                                alt={deal.name}
-                                className="h-32 object-contain transition-transform duration-500 group-hover:scale-110"
+                                src={deal.image ? (deal.image.startsWith('http') ? deal.image : `http://localhost:5000${deal.image}`) : printerImg}
+                                alt={deal.title}
+                                className="h-32 object-contain transition-transform duration-700 group-hover:scale-110"
+                                onError={(e) => e.target.src = printerImg}
                             />
 
                             {/* Action Icons */}
-                            <div className="absolute inset-0 flex items-end justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mb-2">
-                                <button className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md">
+                            <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[2px] bg-white/10">
+                                <button className="p-3 bg-slate-900 hover:bg-black text-white rounded-xl shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                                     <ShoppingCart size={18} />
                                 </button>
-                                <button className="p-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full shadow-md">
+                                <button className="p-3 bg-pink-500 hover:bg-pink-600 text-white rounded-xl shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
                                     <Heart size={18} />
                                 </button>
-                                <button className="p-2 bg-slate-800 hover:bg-slate-900 text-white rounded-full shadow-md">
+                                <button className="p-3 bg-white hover:bg-slate-50 text-slate-900 rounded-xl shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-150">
                                     <Eye size={18} />
                                 </button>
                             </div>
                         </div>
 
                         {/* Product Info */}
-                        <div className="space-y-2">
-                            <h3 className="text-sm font-medium text-slate-800 line-clamp-2 min-h-[40px] leading-snug">
-                                {deal.name}
-                            </h3>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-start">
+                                <h3 className="text-[13px] font-black text-slate-900 line-clamp-2 min-h-[40px] leading-tight uppercase tracking-tight">
+                                    {deal.title}
+                                </h3>
+                                <div className="bg-emerald-100 text-emerald-600 text-[10px] font-black px-2 py-1 rounded-lg">
+                                    -{Math.round(((deal.oldPrice - deal.price) / deal.oldPrice) * 100)}%
+                                </div>
+                            </div>
 
-                            <div className="flex items-center gap-2">
-                                <span className="text-lg font-bold text-slate-900">${deal.price}</span>
-                                <span className="text-sm text-slate-400 line-through">${deal.oldPrice}</span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-xl font-black text-slate-900 tracking-tighter">${deal.price.toFixed(2)}</span>
+                                <span className="text-sm text-slate-300 line-through font-bold">${deal.oldPrice.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>

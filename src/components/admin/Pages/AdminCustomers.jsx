@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import {
     Users,
     Search,
@@ -7,57 +9,74 @@ import {
     ShieldOff,
     Mail,
     Phone,
-    ShoppingBag
+    ShoppingBag,
+    Trash2
 } from 'lucide-react';
 
 const AdminCustomers = () => {
-    // Dummy Customers Data
-    const [customers, setCustomers] = useState([
-        {
-            id: 'U-1001',
-            name: 'Sarah Connor',
-            email: 'sarah@skynet.com',
-            phone: '+1 555-0123',
-            totalOrders: 14,
-            totalSpent: 4529.99,
-            totalItems: 32,
-            status: 'Active',
-            joinDate: 'Jan 12, 2024'
-        },
-        {
-            id: 'U-2045',
-            name: 'John Wick',
-            email: 'john@continental.com',
-            phone: '+1 555-0999',
-            totalOrders: 42,
-            totalSpent: 12500.00,
-            totalItems: 85,
-            status: 'Active',
-            joinDate: 'Dec 05, 2023'
-        },
-        {
-            id: 'U-3321',
-            name: 'Ellen Ripley',
-            email: 'ripley@weyland.com',
-            phone: '+1 555-4242',
-            totalOrders: 3,
-            totalSpent: 289.99,
-            totalItems: 5,
-            status: 'Blocked',
-            joinDate: 'Mar 22, 2024'
-        }
-    ]);
-
+    const [customers, setCustomers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Toggle Block/Unblock
-    const toggleStatus = (id) => {
-        setCustomers(customers.map(c => {
-            if (c.id === id) {
-                return { ...c, status: c.status === 'Active' ? 'Blocked' : 'Active' };
-            }
-            return c;
-        }));
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    useEffect(() => {
+        fetchCustomers();
+    }, []);
+
+    const fetchCustomers = async () => {
+        try {
+            setLoading(true);
+            const { data: users } = await axios.get('http://localhost:5000/api/auth/users', {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+
+            // Fetch orders to calculate customer stats
+            const { data: orders } = await axios.get('http://localhost:5000/api/orders', {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+
+            // Calculate stats for each customer
+            const customersWithStats = users.filter(user => !user.isAdmin).map(user => {
+                const userOrders = orders.filter(order => order.user._id === user._id);
+                const totalSpent = userOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+                const totalItems = userOrders.reduce((acc, order) => 
+                    acc + order.orderItems.reduce((sum, item) => sum + item.qty, 0), 0
+                );
+
+                return {
+                    ...user,
+                    totalOrders: userOrders.length,
+                    totalSpent,
+                    totalItems,
+                    status: 'Active',
+                    joinDate: new Date(user.createdAt).toLocaleDateString('en-US', { 
+                        month: 'short', day: 'numeric', year: 'numeric' 
+                    })
+                };
+            });
+
+            setCustomers(customersWithStats);
+            setLoading(false);
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteUser = async (userId) => {
+        if (!window.confirm('Are you sure you want to delete this user?')) return;
+
+        try {
+            await axios.delete(`http://localhost:5000/api/auth/users/${userId}`, {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+            fetchCustomers(); // Refresh the list
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to delete user');
+        }
     };
 
     const filteredCustomers = customers.filter(c =>
@@ -112,8 +131,12 @@ const AdminCustomers = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {filteredCustomers.map((customer) => (
-                                <tr key={customer.id} className="hover:bg-slate-50/50 transition-colors">
+                            {loading ? (
+                                <tr><td colSpan="7" className="py-10 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">Loading Customers...</td></tr>
+                            ) : error ? (
+                                <tr><td colSpan="7" className="py-10 text-center text-red-500 font-bold uppercase tracking-widest text-xs">{error}</td></tr>
+                            ) : filteredCustomers.map((customer) => (
+                                <tr key={customer._id} className="hover:bg-slate-50/50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
@@ -121,7 +144,7 @@ const AdminCustomers = () => {
                                             </div>
                                             <div>
                                                 <div className="font-bold text-slate-800">{customer.name}</div>
-                                                <div className="text-xs text-slate-500">ID: {customer.id}</div>
+                                                <div className="text-xs text-slate-500">ID: U-{customer._id.substring(customer._id.length - 4).toUpperCase()}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -129,15 +152,12 @@ const AdminCustomers = () => {
                                         <div className="flex items-center gap-2 text-xs">
                                             <Mail size={12} /> {customer.email}
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs mt-1">
-                                            <Phone size={12} /> {customer.phone}
-                                        </div>
                                     </td>
                                     <td className="px-6 py-4 font-medium text-slate-700">
                                         {customer.totalOrders} Orders
                                     </td>
                                     <td className="px-6 py-4 font-bold text-slate-800">
-                                        ${customer.totalSpent.toLocaleString()}
+                                        ${customer.totalSpent.toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
@@ -148,28 +168,16 @@ const AdminCustomers = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${customer.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                            }`}>
+                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
                                             {customer.status}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button
-                                            onClick={() => toggleStatus(customer.id)}
-                                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border flex items-center gap-2 ml-auto ${customer.status === 'Active'
-                                                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' // Block Button
-                                                : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100' // Unblock Button
-                                                }`}
+                                            onClick={() => handleDeleteUser(customer._id)}
+                                            className="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border bg-red-50 text-red-600 border-red-200 hover:bg-red-100 flex items-center gap-2 ml-auto"
                                         >
-                                            {customer.status === 'Active' ? (
-                                                <>
-                                                    <ShieldOff size={14} /> Block
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Shield size={14} /> Unblock
-                                                </>
-                                            )}
+                                            <Trash2 size={14} /> Delete
                                         </button>
                                     </td>
                                 </tr>

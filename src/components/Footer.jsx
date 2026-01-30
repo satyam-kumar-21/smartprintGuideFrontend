@@ -45,8 +45,8 @@ const Footer = () => {
                     <h3 className="text-gray-900 font-semibold mb-4">Company</h3>
                     <ul className="space-y-2 text-gray-600 text-sm">
                         <li><Link to="/about" className="hover:text-gray-900">About Us</Link></li>
-                        <li><Link to="/privacy" className="hover:text-gray-900">Privacy Policy</Link></li>
-                        <li><Link to="/terms" className="hover:text-gray-900">Terms & Conditions</Link></li>
+                        <li><Link to="/privacy-policy" className="hover:text-gray-900">Privacy Policy</Link></li>
+                        <li><Link to="/terms-and-conditions" className="hover:text-gray-900">Terms & Conditions</Link></li>
                         <li><Link to="/careers" className="hover:text-gray-900">Careers</Link></li>
                     </ul>
                 </div>
@@ -66,7 +66,7 @@ const Footer = () => {
 
             {/* Footer Bottom */}
             <div className="mt-12 border-t border-gray-200 pt-6 text-center text-gray-500 text-sm">
-                &copy; {new Date().getFullYear()} MyInkShops. All rights reserved.
+                &copy; {new Date().getFullYear()} MyPrinterShop. All rights reserved.
             </div>
         </footer>
     );

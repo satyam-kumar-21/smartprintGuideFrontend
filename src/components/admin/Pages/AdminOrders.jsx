@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import {
     Search,
     ShoppingBag,
@@ -16,52 +18,32 @@ import {
 } from 'lucide-react';
 
 const AdminOrders = () => {
-    // Dummy Orders Data
-    const [orders, setOrders] = useState([
-        {
-            id: 'ORD-7782',
-            userId: 'U-1001',
-            customer: 'Sarah Connor',
-            location: '123 Tech Blvd, Los Angeles, CA',
-            amount: 429.99,
-            status: 'Processing',
-            date: 'Oct 24, 2024',
-            tracking: { currentLocation: 'Warehouse', estTime: '3-5 Days' },
-            payment: { method: 'Visa', last4: '4242', txnId: 'txn_123456789', date: 'Oct 24, 2024, 10:30 AM', status: 'Paid' },
-            items: [
-                { name: 'Brother HL-L3295CDW Printer', qty: 1, price: 429.99, image: null }
-            ]
-        },
-        {
-            id: 'ORD-7783',
-            userId: 'U-2045',
-            customer: 'John Wick',
-            location: '89 Continental Ave, New York, NY',
-            amount: 1250.00,
-            status: 'Shipped',
-            date: 'Oct 23, 2024',
-            tracking: { currentLocation: 'Distribution Center, NY', estTime: '2 Days' },
-            payment: { method: 'MasterCard', last4: '8899', txnId: 'txn_987654321', date: 'Oct 23, 2024, 02:15 PM', status: 'Paid' },
-            items: [
-                { name: 'HP LaserJet Pro M4001dn', qty: 3, price: 289.00, image: null },
-                { name: 'HP 58A Black Toner', qty: 2, price: 191.50, image: null }
-            ]
-        },
-        {
-            id: 'ORD-7784',
-            userId: 'U-3321',
-            customer: 'Ellen Ripley',
-            location: '426 Hadley Hope, LV',
-            amount: 89.99,
-            status: 'Delivered',
-            date: 'Oct 20, 2024',
-            tracking: { currentLocation: 'Delivered', estTime: '-' },
-            payment: { method: 'PayPal', email: 'ripley@weyland.com', txnId: 'txn_456123789', date: 'Oct 20, 2024, 09:45 AM', status: 'Paid' },
-            items: [
-                { name: 'Logitech MX Master 3S', qty: 1, price: 89.99, image: null }
-            ]
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    const fetchOrders = async () => {
+        try {
+            setLoading(true);
+            const { data } = await axios.get('http://localhost:5000/api/orders', {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+            setOrders(data);
+            setLoading(false);
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
+            setLoading(false);
         }
-    ]);
+    };
+
+    React.useEffect(() => {
+        if (userInfo) {
+            fetchOrders();
+        }
+    }, [userInfo]);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -87,9 +69,9 @@ const AdminOrders = () => {
     const handleOpenUpdate = (order) => {
         setSelectedOrder(order);
         setUpdateForm({
-            status: order.status,
-            currentLocation: order.tracking.currentLocation,
-            estTime: order.tracking.estTime
+            status: order.status || 'Processing',
+            currentLocation: order.tracking?.currentLocation || 'Warehouse',
+            estTime: order.tracking?.estTime || '3-5 Days'
         });
         setIsUpdateModalOpen(true);
     };
@@ -104,28 +86,22 @@ const AdminOrders = () => {
         setIsItemsModalOpen(true);
     };
 
-    const handleUpdateSubmit = (e) => {
+    const handleUpdateSubmit = async (e) => {
         e.preventDefault();
-        setOrders(orders.map(o => {
-            if (o.id === selectedOrder.id) {
-                return {
-                    ...o,
-                    status: updateForm.status,
-                    tracking: {
-                        currentLocation: updateForm.currentLocation,
-                        estTime: updateForm.estTime
-                    }
-                };
-            }
-            return o;
-        }));
-        setIsUpdateModalOpen(false);
+        try {
+            await axios.put(`http://localhost:5000/api/orders/${selectedOrder._id}/status`, updateForm, {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+            fetchOrders();
+            setIsUpdateModalOpen(false);
+        } catch (err) {
+            alert(err.response?.data?.message || "Update failed");
+        }
     };
 
     const filteredOrders = orders.filter(order =>
-        order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.userId.toLowerCase().includes(searchTerm.toLowerCase())
+        order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (order.user && order.user.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
@@ -172,34 +148,40 @@ const AdminOrders = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {filteredOrders.map((order) => (
-                                <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                            {loading ? (
+                                <tr><td colSpan="6" className="py-10 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">Synchronizing Inventory Data...</td></tr>
+                            ) : error ? (
+                                <tr><td colSpan="6" className="py-10 text-center text-red-500 font-bold uppercase tracking-widest text-xs">{error}</td></tr>
+                            ) : filteredOrders.map((order) => (
+                                <tr key={order._id} className="hover:bg-slate-50/50 transition-colors">
                                     <td className="px-6 py-4 font-bold text-slate-700">
-                                        {order.id}
-                                        <div className="text-xs font-normal text-slate-400">{order.date}</div>
+                                        <div className="flex flex-col">
+                                            <span className="text-blue-600">ORD-{order._id.toUpperCase()}</span>
+                                            <div className="text-xs font-normal text-slate-400">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                                                <User size={14} />
+                                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-black text-[10px]">
+                                                {order.user?.name?.charAt(0) || 'U'}
                                             </div>
                                             <div>
-                                                <div className="font-medium text-slate-800">{order.customer}</div>
-                                                <div className="text-xs text-slate-500">ID: {order.userId}</div>
+                                                <div className="font-medium text-slate-800">{order.user?.name || 'Anonymous User'}</div>
+                                                <div className="text-xs text-slate-500">ID: U-{order.user?._id?.substring(order.user?._id?.length - 4).toUpperCase() || '1001'}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 font-bold text-slate-800">
-                                        ${order.amount.toFixed(2)}
+                                        ${(order.totalPrice || 0).toFixed(2)}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="space-y-2">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-slate-100'}`}>
-                                                {order.status}
+                                                {order.status || 'Processing'}
                                             </span>
                                             <div className="text-xs text-slate-500 flex items-center gap-1">
                                                 <Truck size={12} />
-                                                <span className="font-medium truncate max-w-[120px]">{order.tracking.currentLocation}</span>
+                                                <span className="font-medium truncate max-w-[120px]">{order.tracking?.currentLocation || 'Warehouse'}</span>
                                             </div>
                                         </div>
                                     </td>
@@ -210,7 +192,7 @@ const AdminOrders = () => {
                                         >
                                             <Package size={16} />
                                         </button>
-                                        <div className="text-[10px] text-slate-400 mt-1">{order.items.reduce((acc, item) => acc + item.qty, 0)} Items</div>
+                                        <div className="text-[10px] text-slate-400 mt-1">{order.orderItems.reduce((acc, item) => acc + item.qty, 0)} Items</div>
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex flex-col gap-2 items-end">
@@ -243,7 +225,7 @@ const AdminOrders = () => {
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                             <div>
                                 <h3 className="font-bold text-slate-800">Update Tracking</h3>
-                                <p className="text-xs text-slate-500">Order #{selectedOrder.id}</p>
+                                <p className="text-xs text-slate-500">Order #ORD-{selectedOrder._id.substring(selectedOrder._id.length - 4).toUpperCase()}</p>
                             </div>
                             <button onClick={() => setIsUpdateModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                                 <X size={20} />
@@ -298,7 +280,7 @@ const AdminOrders = () => {
                         <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
                             <div>
                                 <h3 className="font-bold text-slate-800">Order Items</h3>
-                                <p className="text-xs text-slate-500">Order #{selectedOrder.id}</p>
+                                <p className="text-xs text-slate-500">Order #ORD-{selectedOrder._id.substring(selectedOrder._id.length - 4).toUpperCase()}</p>
                             </div>
                             <button onClick={() => setIsItemsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                                 <X size={20} />
@@ -306,24 +288,24 @@ const AdminOrders = () => {
                         </div>
                         <div className="p-6">
                             <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                                {selectedOrder.items.map((item, index) => (
+                                {selectedOrder.orderItems.map((item, index) => (
                                     <div key={index} className="flex gap-4 items-center p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
-                                        <div className="w-16 h-16 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
-                                            <Package size={24} />
+                                        <div className="w-16 h-16 bg-white border rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                            <img src={item.image.startsWith('http') ? item.image : `http://localhost:5000${item.image}`} className="w-full h-full object-contain" alt="" />
                                         </div>
                                         <div className="flex-1">
                                             <h4 className="font-bold text-slate-800 text-sm line-clamp-2">{item.name}</h4>
                                             <div className="flex justify-between items-center mt-1">
                                                 <span className="text-xs text-slate-500">Qty: {item.qty}</span>
-                                                <span className="font-bold text-slate-900">${item.price.toFixed(2)}</span>
+                                                <span className="font-bold text-slate-900">${(item.price || 0).toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                             <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
-                                <span className="font-semibold text-slate-600">Total Items: {selectedOrder.items.reduce((acc, item) => acc + item.qty, 0)}</span>
-                                <span className="text-xl font-bold text-slate-900">Total: ${selectedOrder.amount.toFixed(2)}</span>
+                                <span className="font-semibold text-slate-600">Total Items: {selectedOrder.orderItems.reduce((acc, item) => acc + item.qty, 0)}</span>
+                                <span className="text-xl font-bold text-slate-900">Total: ${(selectedOrder.totalPrice || 0).toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
@@ -334,34 +316,35 @@ const AdminOrders = () => {
             {isPaymentModalOpen && selectedOrder && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 m-4">
-                        <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-6 text-white text-center">
+                        <div className={`px-6 py-6 text-white text-center ${selectedOrder.isPaid ? 'bg-gradient-to-r from-emerald-500 to-emerald-600' : 'bg-gradient-to-r from-slate-500 to-slate-600'}`}>
                             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
-                                <CheckCircle size={24} className="text-white" />
+                                {selectedOrder.isPaid ? <CheckCircle size={24} className="text-white" /> : <Clock size={24} className="text-white" />}
                             </div>
-                            <h3 className="font-bold text-lg">Payment Successful</h3>
-                            <p className="text-emerald-100 text-sm">Order #{selectedOrder.id}</p>
+                            <h3 className="font-bold text-lg">{selectedOrder.isPaid ? 'Payment Successful' : 'Payment Pending'}</h3>
+                            <p className="text-white/80 text-sm">Order #ORD-{selectedOrder._id.substring(selectedOrder._id.length-4).toUpperCase()}</p>
                         </div>
                         <div className="p-6 space-y-4">
                             <div className="text-center mb-6">
-                                <span className="text-slate-500 text-sm">Total Amount Paid</span>
-                                <h2 className="text-3xl font-bold text-slate-900">${selectedOrder.amount.toFixed(2)}</h2>
+                                <span className="text-slate-500 text-sm">Amount {selectedOrder.isPaid ? 'Paid' : 'Due'}</span>
+                                <h2 className="text-3xl font-bold text-slate-900">${(selectedOrder.totalPrice || 0).toFixed(2)}</h2>
                             </div>
                             <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-slate-500">Payment Method</span>
-                                    <span className="font-medium text-slate-800 flex items-center gap-2">
-                                        {selectedOrder.payment.method}
-                                        {selectedOrder.payment.last4 && <span className="text-slate-400">•••• {selectedOrder.payment.last4}</span>}
-                                    </span>
+                                    <span className="font-medium text-slate-800">{selectedOrder.paymentMethod}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500">Transaction ID</span>
-                                    <span className="font-medium text-slate-800 font-mono text-xs">{selectedOrder.payment.txnId}</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500">Date</span>
-                                    <span className="font-medium text-slate-800">{selectedOrder.payment.date}</span>
-                                </div>
+                                {selectedOrder.isPaid && (
+                                    <>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Transaction ID</span>
+                                            <span className="font-medium text-slate-800 font-mono text-xs">{selectedOrder.paymentResult?.id || 'N/A'}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Date</span>
+                                            <span className="font-medium text-slate-800">{new Date(selectedOrder.paidAt).toLocaleString()}</span>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                             <button onClick={() => setIsPaymentModalOpen(false)} className="w-full py-3 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors">Close Receipt</button>
                         </div>

@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ShoppingCart, Search, User, Check, Phone, Mail, ArrowRight, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../redux/actions/userActions';
 import AuthDrawer from './AuthDrawer';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isAuthOpen, setIsAuthOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+    const dispatch = useDispatch();
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    const logoutHandler = () => {
+        dispatch(logout());
+        setIsUserMenuOpen(false);
+    };
 
     // Lock body scroll when search or menu is open
     useEffect(() => {
@@ -83,6 +95,7 @@ const Header = () => {
                                 <Link to="/product-category/led-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
                                 <Link to="/product-category/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
                                 <Link to="/customer-service" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
+                               
                             </nav>
 
                             {/* Right: Actions */}
@@ -94,15 +107,72 @@ const Header = () => {
                                 >
                                     <Search size={22} className="group-hover:scale-110 transition-transform" />
                                 </button>
-                                <button
-                                    onClick={() => setIsAuthOpen(true)}
-                                    className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 hidden sm:block group"
-                                >
-                                    <User size={22} className="group-hover:scale-110 transition-transform" />
-                                </button>
+                                {userInfo ? (
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                            className="hidden lg:flex items-center gap-2 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 group"
+                                        >
+                                            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm uppercase">
+                                                {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
+                                            </div>
+                                            <span className="hidden md:block text-sm font-medium text-slate-700">{userInfo.firstName || userInfo.name}</span>
+                                        </button>
+
+                                        {isUserMenuOpen && (
+                                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                                                <div className="px-4 py-2 border-b border-slate-50 mb-1">
+                                                    <p className="text-xs text-slate-400">Signed in as</p>
+                                                    <p className="text-sm font-semibold text-slate-700 truncate">{userInfo.email}</p>
+                                                </div>
+                                                {userInfo.isAdmin ? (
+                                                    <Link
+                                                        to="/admin/dashboard"
+                                                        className="block px-4 py-2 text-sm text-blue-600 font-bold hover:bg-slate-50 transition-colors"
+                                                        onClick={() => setIsUserMenuOpen(false)}
+                                                    >
+                                                        Admin Dashboard
+                                                    </Link>
+                                                ) : (
+                                                    <>
+                                                        <Link
+                                                            to="/profile"
+                                                            className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                                                            onClick={() => setIsUserMenuOpen(false)}
+                                                        >
+                                                            My Profile
+                                                        </Link>
+                                                        {/* <Link
+                                                            to="/my-orders"
+                                                            className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                                                            onClick={() => setIsUserMenuOpen(false)}
+                                                        >
+                                                            My Orders
+                                                        </Link> */}
+                                                    </>
+                                                )}
+                                                <button
+                                                    onClick={logoutHandler}
+                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-slate-50 mt-1"
+                                                >
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => setIsAuthOpen(true)}
+                                        className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 hidden sm:block group"
+                                    >
+                                        <User size={22} className="group-hover:scale-110 transition-transform" />
+                                    </button>
+                                )}
                                 <button className="relative p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 group">
                                     <Link to="/cart"><ShoppingCart size={22} className="group-hover:scale-110 transition-transform" /></Link>
-                                    <span className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+                                    <span className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                                        {useSelector(state => state.cart.cartItems).reduce((acc, item) => acc + item.qty, 0)}
+                                    </span>
                                 </button>
                             </div>
                         </div>
@@ -118,7 +188,6 @@ const Header = () => {
                             />
 
                             {/* Sidebar Panel */}
-                            {/* Sidebar Panel */}
                             <div className="absolute left-0 top-0 h-full w-[300px] bg-white shadow-2xl animate-in slide-in-from-left duration-300 flex flex-col">
                                 <div className="p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10 shrink-0">
                                     <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -132,6 +201,7 @@ const Header = () => {
                                     </button>
                                 </div>
 
+
                                 {/* Links - Pushed to top */}
                                 <div className="flex-1 overflow-y-auto p-4">
                                     <div className="flex flex-col space-y-1">
@@ -144,6 +214,7 @@ const Header = () => {
                                             { name: 'LED Printers', path: '/product-category/led-printers' },
                                             { name: 'Ink & Toner', path: '/product-category/ink-toner' },
                                             { name: 'Customer Support', path: '/customer-service' },
+                                            { name: 'Track Your Order', path: '/track-order' },
                                         ].map((item) => (
                                             <Link
                                                 key={item.name}
@@ -160,21 +231,68 @@ const Header = () => {
 
                                 {/* Bottom Section: Auth & Contact */}
                                 <div className="p-4 border-t border-slate-100 bg-slate-50 shrink-0 space-y-6">
-                                    {/* Auth Buttons */}
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <button
-                                            onClick={() => { setIsMenuOpen(false); setIsAuthOpen(true); }}
-                                            className="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 font-semibold hover:bg-white transition-colors text-sm text-center"
-                                        >
-                                            Login
-                                        </button>
-                                        <button
-                                            onClick={() => { setIsMenuOpen(false); setIsAuthOpen(true); }}
-                                            className="px-4 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm text-center shadow-lg shadow-blue-200"
-                                        >
-                                            Create Account
-                                        </button>
-                                    </div>
+                                    {/* Auth Buttons for Guests */}
+                                    {/* User Profile Section - Pushed to Bottom */}
+                                    {userInfo && (
+                                        <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg uppercase shadow-lg shadow-blue-100">
+                                                    {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-bold text-slate-800 truncate">{userInfo.firstName || userInfo.name}</p>
+                                                    <p className="text-xs text-slate-500 truncate">{userInfo.email}</p>
+                                                    {userInfo.isAdmin && (
+                                                        <span className="inline-block mt-0.5 px-1.5 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase">Admin</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {userInfo.isAdmin ? (
+                                                    <Link
+                                                        to="/admin/dashboard"
+                                                        onClick={() => setIsMenuOpen(false)}
+                                                        className="flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-600 rounded-xl text-xs font-bold text-white hover:bg-blue-700 transition-all shadow-md shadow-blue-100"
+                                                    >
+                                                        Admin Dashboard
+                                                        <ArrowRight size={14} />
+                                                    </Link>
+                                                ) : (
+                                                    <Link
+                                                        to="/profile"
+                                                        onClick={() => setIsMenuOpen(false)}
+                                                        className="flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-900 rounded-xl text-xs font-bold text-white hover:bg-slate-800 transition-all shadow-md shadow-slate-200"
+                                                    >
+                                                        <User size={14} />
+                                                        Manage Profile
+                                                    </Link>
+                                                )}
+                                                <button
+                                                    onClick={logoutHandler}
+                                                    className="flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-all"
+                                                >
+                                                    Sign Out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {!userInfo && (
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                onClick={() => { setIsMenuOpen(false); setIsAuthOpen(true); }}
+                                                className="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 font-semibold hover:bg-white transition-colors text-sm text-center"
+                                            >
+                                                Login
+                                            </button>
+                                            <button
+                                                onClick={() => { setIsMenuOpen(false); setIsAuthOpen(true); }}
+                                                className="px-4 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 text-sm text-center shadow-lg shadow-blue-200"
+                                            >
+                                                Signup
+                                            </button>
+                                        </div>
+                                    )}
 
                                     {/* Contact Info */}
                                     <div className="space-y-3 pt-2">

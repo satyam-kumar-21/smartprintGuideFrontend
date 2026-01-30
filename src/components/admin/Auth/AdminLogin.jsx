@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, AlertCircle } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Lock, Mail, AlertCircle, Loader2 } from 'lucide-react';
+import { login } from '../../../redux/actions/userActions';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { loading, error, userInfo } = userLogin;
+
+    useEffect(() => {
+        if (userInfo) {
+            if (userInfo.isAdmin) {
+                navigate('/admin/dashboard');
+            } else {
+                // If not admin, logout or show error? Better to just show error.
+            }
+        }
+    }, [userInfo, navigate]);
 
     const handleLogin = (e) => {
         e.preventDefault();
-        setError('');
-
-        if (email === 'admin@gmail.com' && password === 'admin1234') {
-            // Simple mock authentication
-            localStorage.setItem('isAdminAuthenticated', 'true');
-            navigate('/admin/dashboard');
-        } else {
-            setError('Invalid credentials. Please try again.');
-        }
+        dispatch(login(email, password, true));
     };
 
     return (
@@ -35,10 +42,10 @@ const AdminLogin = () => {
 
                 {/* Form */}
                 <div className="p-8">
-                    {error && (
+                    {(error || (userInfo && !userInfo.isAdmin)) && (
                         <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg flex items-center gap-2">
                             <AlertCircle size={16} />
-                            {error}
+                            {error || 'Not authorized as an admin'}
                         </div>
                     )}
 
@@ -52,7 +59,7 @@ const AdminLogin = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
-                                    placeholder="admin@gmail.com"
+                                    placeholder="admin@example.com"
                                     required
                                 />
                             </div>
@@ -75,9 +82,10 @@ const AdminLogin = () => {
 
                         <button
                             type="submit"
-                            className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition-all transform hover:scale-[1.02] shadow-lg"
+                            disabled={loading}
+                            className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
                         >
-                            Sign In
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : 'Sign In'}
                         </button>
                     </form>
 

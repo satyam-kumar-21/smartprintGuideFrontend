@@ -1,178 +1,173 @@
 import React, { useState } from "react";
-import printer from "../assets/printer.png";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { removeFromCart, addToCart } from "../redux/actions/cartActions";
+import printerImg from "../assets/printer.png";
 
 const Cart = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const cart = useSelector((state) => state.cart);
+    const { cartItems } = cart;
+
     const [giftWrap, setGiftWrap] = useState(false);
 
-    const cartItems = [
-        {
-            id: 1,
-            title: "HP OfficeJet Pro 9125e Wireless All-in-One Printer",
-            price: 209.99,
-            quantity: 1,
-            image: printer,
-        },
-        {
-            id: 2,
-            title: "HP 58A Black Toner Cartridge, CF258A",
-            price: 146.89,
-            quantity: 2,
-            image: printer,
-        },
-    ];
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const totalWithGift = subtotal + (giftWrap ? 10 : 0);
 
-    const subtotal =
-        cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0) +
-        (giftWrap ? 10 : 0);
+    const removeFromCartHandler = (id) => {
+        dispatch(removeFromCart(id));
+    };
+
+    const checkoutHandler = () => {
+        navigate('/checkout');
+    };
 
     return (
         <div className="w-full bg-slate-50 min-h-screen py-10">
             <div className="max-w-7xl mx-auto px-4 lg:px-8">
 
                 {/* Header */}
-                <section className="w-full bg-gray-100/80">
-                    <div className="w-full px-4 py-10 md:py-12 text-center">
-                        <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">Shopping Cart</h1>
-                        <p className="mt-3 text-sm text-gray-600">
-                            Home <span className="mx-1">/</span>
-                            <span className="font-medium text-gray-900">Cart</span>
-                        </p>
-                        <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
-                            Ready to print? Complete your order.
+                <section className="w-full bg-white rounded-3xl border border-slate-100 p-8 md:p-12 mb-8 shadow-sm">
+                    <div className="text-center">
+                        <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Shopping Hub</h1>
+                        <p className="mt-4 text-xs font-black text-slate-400 uppercase tracking-[0.3em]">
+                            You have <span className="text-slate-900">{cartItems.reduce((acc, item) => acc + item.qty, 0)}</span> items in your inventory
                         </p>
                     </div>
-                    <div className="border-b border-gray-300"></div>
                 </section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+                {cartItems.length === 0 ? (
+                    <div className="bg-white border border-dashed border-slate-200 rounded-[3rem] p-20 text-center flex flex-col items-center justify-center space-y-6">
+                        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center">
+                            <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Your Cart is Empty</h2>
+                            <p className="text-slate-400 font-medium">Ready to start printing? Explore our premium hardware collection.</p>
+                        </div>
+                        <Link to="/" className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all">
+                            Browse Inventory
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* LEFT : Cart Items */}
+                        <div className="lg:col-span-2 space-y-6">
+                            <div className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-sm">
+                                <div className="hidden md:grid grid-cols-5 gap-4 p-6 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    <span className="col-span-2">Product Details</span>
+                                    <span className="text-center">Price</span>
+                                    <span className="text-center">Quantity</span>
+                                    <span className="text-right">Action</span>
+                                </div>
 
-                    {/* LEFT : Cart Items */}
-                    <div className="lg:col-span-2 space-y-4">
+                                <div className="divide-y divide-slate-50">
+                                    {cartItems.map((item) => (
+                                        <div key={item.product} className="p-6 grid grid-cols-1 md:grid-cols-5 gap-6 items-center hover:bg-slate-50/50 transition-colors">
+                                            {/* Product */}
+                                            <div className="col-span-1 md:col-span-2 flex gap-6 items-center">
+                                                <div className="w-20 h-20 bg-white border border-slate-100 rounded-2xl p-2 flex-shrink-0">
+                                                    <img
+                                                        src={item.image ? (item.image.startsWith('http') ? item.image : `http://localhost:5000${item.image}`) : printerImg}
+                                                        alt={item.title}
+                                                        className="w-full h-full object-contain"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <Link to={`/product/${item.slug}`} className="text-sm font-black text-slate-900 uppercase tracking-tight hover:text-indigo-600 transition-colors line-clamp-1">
+                                                        {item.title}
+                                                    </Link>
+                                                    <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">In Stock</p>
+                                                </div>
+                                            </div>
 
-                        {/* Table for Desktop */}
-                        <div className="hidden md:grid grid-cols-4 gap-4 text-sm font-semibold text-gray-500 border-b pb-3">
-                            <span>Product</span>
-                            <span>Price</span>
-                            <span>Quantity</span>
-                            <span>Total</span>
+                                            {/* Price */}
+                                            <div className="text-center">
+                                                <p className="text-slate-900 font-black tracking-tight">${item.price.toFixed(2)}</p>
+                                            </div>
+
+                                            {/* Quantity */}
+                                            <div className="flex justify-center">
+                                                <div className="flex items-center border border-slate-200 rounded-xl bg-white overflow-hidden h-10">
+                                                    <button 
+                                                        onClick={() => dispatch(addToCart(item.product, Math.max(1, item.qty - 1)))}
+                                                        className="px-3 hover:bg-slate-50 text-slate-400"
+                                                    >-</button>
+                                                    <span className="px-3 text-[10px] font-black text-slate-900">{item.qty}</span>
+                                                    <button 
+                                                        onClick={() => dispatch(addToCart(item.product, Math.min(item.countInStock, item.qty + 1)))}
+                                                        className="px-3 hover:bg-slate-50 text-slate-400"
+                                                    >+</button>
+                                                </div>
+                                            </div>
+
+                                            {/* Action */}
+                                            <div className="text-right">
+                                                <button 
+                                                    onClick={() => removeFromCartHandler(item.product)}
+                                                    className="p-3 text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Mobile & Desktop Items */}
-                        <div className="space-y-4">
-                            {cartItems.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="bg-white border rounded-xl p-4 flex flex-col md:grid md:grid-cols-4 md:items-center gap-4"
-                                >
-                                    {/* Product */}
-                                    <div className="flex gap-4 items-center">
-                                        <img
-                                            src={item.image}
-                                            alt={item.title}
-                                            className="w-20 h-20 object-contain bg-gray-100 rounded-lg"
-                                        />
-                                        <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                                            {item.title}
-                                        </p>
+                        {/* RIGHT : Summary */}
+                        <div className="space-y-6">
+                            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm space-y-8 h-fit lg:sticky lg:top-24">
+                                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Order Intelligence</h3>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between py-4 border-b border-slate-100">
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Subtotal</span>
+                                        <span className="text-slate-900 font-black tracking-tight">${subtotal.toFixed(2)}</span>
                                     </div>
 
-                                    {/* Price */}
-                                    <p className="text-gray-700 font-medium mt-2 md:mt-0">
-                                        ${item.price}
-                                    </p>
-
-                                    {/* Quantity */}
-                                    <p className="text-gray-700 mt-2 md:mt-0">{item.quantity}</p>
-
-                                    {/* Total */}
-                                    <p className="font-semibold text-gray-900 mt-2 md:mt-0">
-                                        ${(item.price * item.quantity).toFixed(2)}
-                                    </p>
+                                    <div className="flex items-center justify-between group cursor-pointer" onClick={() => setGiftWrap(!giftWrap)}>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${giftWrap ? 'bg-indigo-600 border-indigo-600' : 'border-slate-200'}`}>
+                                                {giftWrap && <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>}
+                                            </div>
+                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Premium Gift Packing</span>
+                                        </div>
+                                        <span className="text-[10px] font-black text-slate-900">$10.00</span>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
 
-                    {/* RIGHT : Summary */}
-                    <div className="bg-white border rounded-xl p-6 space-y-5">
+                                <div className="pt-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-black text-slate-900 uppercase tracking-tight">Invoice Total</span>
+                                        <span className="text-3xl font-black text-slate-900 tracking-tighter">${totalWithGift.toFixed(2)}</span>
+                                    </div>
+                                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] text-center">Taxes and Logistics calculated at next stage</p>
+                                </div>
 
-                        {/* Gift Wrap */}
-                        <div className="flex items-start gap-3">
-                            <input
-                                type="checkbox"
-                                checked={giftWrap}
-                                onChange={() => setGiftWrap(!giftWrap)}
-                                className="mt-1"
-                            />
-                            <p className="text-sm text-gray-700">
-                                Add gift wrap. <strong>$10.00</strong>
-                                <br />
-                                <span className="text-gray-500">(You can choose or not)</span>
-                            </p>
-                        </div>
-
-                        {/* Discount */}
-                        <div>
-                            <label className="text-sm font-medium text-gray-700">Discount code</label>
-                            <div className="flex gap-2 mt-2">
-                                <input
-                                    type="text"
-                                    placeholder="Enter code"
-                                    className="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                />
-                                <button className="px-4 py-2 bg-gray-900 text-white rounded-md text-sm hover:bg-gray-800">
-                                    Apply
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Instructions */}
-                        <div>
-                            <label className="text-sm font-medium text-gray-700">
-                                Special instructions for seller
-                            </label>
-                            <textarea
-                                rows="3"
-                                className="w-full mt-2 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="Write here..."
-                            />
-                        </div>
-
-                        {/* Benefits */}
-                        <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
-                            <div>🚚 Free Shipping</div>
-                            <div>🎁 Gift Package</div>
-                            <div>↩️ Easy Returns</div>
-                            <div>🛡️ One Year Warranty</div>
-                        </div>
-
-                        {/* Total */}
-                        <div className="border-t pt-4">
-                            <div className="flex justify-between text-lg font-semibold">
-                                <span>Total</span>
-                                <span>${subtotal.toFixed(2)} USD</span>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Taxes and shipping calculated at checkout
-                            </p>
-                        </div>
-
-                        {/* Checkout */}
-                        <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-                            Checkout
-                        </button>
-
-                        {/* Payments */}
-                        <div className="text-sm text-gray-500 text-center">
-                            We accept
-                            <div className="flex justify-center gap-3 mt-2">
-                                <span>💳</span>
-                                <span>💰</span>
-                                <span>🏦</span>
+                                <div className="space-y-4 pt-4">
+                                    <button 
+                                        onClick={checkoutHandler}
+                                        className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-200 active:scale-95"
+                                    >
+                                        Proceed to Secure Checkout
+                                    </button>
+                                    <div className="flex items-center justify-center gap-6 py-4 px-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                        <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" className="h-4 opacity-50" />
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Verified Secure Terminal</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

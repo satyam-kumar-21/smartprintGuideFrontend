@@ -12,12 +12,15 @@ import {
     X
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../redux/actions/userActions';
 
 const AdminSidebar = ({ isOpen, setIsOpen }) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('isAdminAuthenticated');
+        dispatch(logout());
         navigate('/admin/login');
     };
 

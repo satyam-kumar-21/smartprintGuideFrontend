@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserProfile, logout } from '../../../redux/actions/userActions';
 import AdminSidebar from './AdminSidebar';
 import {
     Bell,
@@ -19,14 +21,17 @@ import {
 const AdminLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
 
     // Auth Check
     useEffect(() => {
-        const isAdmin = localStorage.getItem('isAdminAuthenticated');
-        if (!isAdmin) {
+        if (!userInfo || !userInfo.isAdmin) {
             navigate('/admin/login');
         }
-    }, [navigate]);
+    }, [userInfo, navigate]);
 
     // Time State
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -44,12 +49,47 @@ const AdminLayout = () => {
 
     // Profile Form State
     const [profileMode, setProfileMode] = useState('details'); // details, edit, password
-    const [adminProfile, setAdminProfile] = useState({
-        name: 'Admin User',
-        email: 'admin@gmail.com',
-        role: 'Super Administrator',
-        avatar: null
-    });
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState(null);
+
+    const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+    const { success: updateSuccess, loading: updateLoading } = userUpdateProfile;
+
+    useEffect(() => {
+        if (userInfo) {
+            setFirstName(userInfo.firstName || userInfo.name.split(' ')[0] || '');
+            setLastName(userInfo.lastName || userInfo.name.split(' ').slice(1).join(' ') || '');
+            setEmail(userInfo.email || '');
+        }
+    }, [userInfo]);
+
+    useEffect(() => {
+        if (updateSuccess) {
+            setProfileMode('details');
+            setMessage(null);
+            setPassword('');
+            setConfirmPassword('');
+        }
+    }, [updateSuccess]);
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+        setMessage(null);
+
+        if (profileMode === 'password') {
+            if (password !== confirmPassword) {
+                setMessage('Passwords do not match');
+                return;
+            }
+            dispatch(updateUserProfile({ id: userInfo._id, password }));
+        } else {
+            dispatch(updateUserProfile({ id: userInfo._id, firstName, lastName, email }));
+        }
+    };
 
     // Dummy Notifications
     const [notifications, setNotifications] = useState([
@@ -66,7 +106,7 @@ const AdminLayout = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('isAdminAuthenticated');
+        dispatch(logout());
         navigate('/admin/login');
     };
 
@@ -75,6 +115,8 @@ const AdminLayout = () => {
         setIsProfileModalOpen(true);
         setProfileMode('details');
     };
+
+    if (!userInfo || !userInfo.isAdmin) return null;
 
     return (
         <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
@@ -149,28 +191,25 @@ const AdminLayout = () => {
                                 onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); }}
                                 className="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-slate-100 transition-colors"
                             >
-                                <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                    AD
+                                <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-xs uppercase shadow-inner">
+                                    {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
                                 </div>
+                                <span className="hidden sm:block text-xs font-bold text-slate-700">{userInfo.firstName || userInfo.name}</span>
                             </button>
 
                             {/* Profile Dropdown */}
                             {isProfileOpen && (
                                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                                    <div className="p-4 border-b border-slate-100 bg-slate-50">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                                                AD
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-slate-900">{adminProfile.name}</h4>
-                                                <p className="text-xs text-slate-500">{adminProfile.role}</p>
-                                            </div>
+                                    <div className="p-4 border-b border-slate-100 bg-slate-50 text-center">
+                                        <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2 uppercase">
+                                            {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
                                         </div>
+                                        <h4 className="font-bold text-slate-900 truncate">{userInfo.name}</h4>
+                                        <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest mt-0.5">Administrator</p>
                                     </div>
                                     <div className="p-2 space-y-1">
                                         <button onClick={openProfileModal} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg">
-                                            <User size={16} /> My Profile
+                                            <User size={16} /> Manage Profile
                                         </button>
                                         <div className="h-px bg-slate-100 my-1"></div>
                                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
@@ -193,99 +232,160 @@ const AdminLayout = () => {
             {isProfileModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 m-4">
-                        <div className="bg-slate-900 px-6 py-6 text-white relative">
-                            <button onClick={() => setIsProfileModalOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white">
+                        <div className="bg-slate-900 px-6 py-8 text-white relative">
+                            <button onClick={() => setIsProfileModalOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                             <div className="flex flex-col items-center">
-                                <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-2xl font-bold mb-3 border-4 border-white/20">
-                                    AD
+                                <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-3xl font-bold mb-4 border-4 border-white/20 uppercase">
+                                    {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
                                 </div>
-                                <h2 className="text-xl font-bold">{adminProfile.name}</h2>
-                                <p className="text-slate-300 text-sm">{adminProfile.email}</p>
-                                <span className="mt-2 px-3 py-1 bg-blue-500/20 text-blue-200 text-xs font-bold rounded-full border border-blue-500/30">
-                                    {adminProfile.role}
+                                <h2 className="text-2xl font-bold">{userInfo.name}</h2>
+                                <p className="text-slate-400 text-sm mt-1">{userInfo.email}</p>
+                                <span className="mt-4 px-4 py-1.5 bg-blue-500/20 text-blue-200 text-xs font-bold rounded-full border border-blue-500/30 uppercase tracking-widest">
+                                    Super Administrator
                                 </span>
                             </div>
                         </div>
 
-                        <div className="p-6">
+                        <div className="p-8">
+                            {message && (
+                                <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg flex items-center gap-2">
+                                    <Shield size={14} />
+                                    {message}
+                                </div>
+                            )}
+
                             {profileMode === 'details' && (
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                            <span className="text-xs text-slate-400 uppercase font-bold block mb-1">Full Name</span>
-                                            <span className="font-medium text-slate-800">{adminProfile.name}</span>
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <span className="text-[10px] text-slate-400 uppercase font-black block mb-1 tracking-tighter">Full Name</span>
+                                            <span className="font-bold text-slate-900">{userInfo.firstName + ' ' + userInfo.lastName || userInfo.name}</span>
                                         </div>
-                                        <div className="p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                            <span className="text-xs text-slate-400 uppercase font-bold block mb-1">Join Date</span>
-                                            <span className="font-medium text-slate-800">Oct 2023</span>
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <span className="text-[10px] text-slate-400 uppercase font-black block mb-1 tracking-tighter">Account Status</span>
+                                            <span className="font-bold text-emerald-600 flex items-center gap-1"><Shield size={12} /> Active</span>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col gap-3 pt-2">
+                                    <div className="flex flex-col gap-3">
                                         <button
                                             onClick={() => setProfileMode('edit')}
-                                            className="w-full py-2.5 border border-slate-200 rounded-lg font-bold text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+                                            className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200"
                                         >
-                                            <Settings size={16} /> Edit Profile
+                                            <Settings size={18} /> Manage Profile
                                         </button>
                                         <button
                                             onClick={() => setProfileMode('password')}
-                                            className="w-full py-2.5 border border-slate-200 rounded-lg font-bold text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+                                            className="w-full py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
                                         >
-                                            <Lock size={16} /> Change Password
+                                            <Lock size={18} /> Change Password
+                                        </button>
+                                        <button
+                                            onClick={() => setIsProfileModalOpen(false)}
+                                            className="w-full py-3 text-slate-400 font-bold hover:text-slate-600 transition-all"
+                                        >
+                                            Close
                                         </button>
                                     </div>
                                 </div>
                             )}
 
                             {profileMode === 'edit' && (
-                                <div className="space-y-4">
-                                    <h3 className="font-bold text-slate-800 border-b pb-2 mb-4">Edit Profile Info</h3>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Display Name</label>
-                                        <input
-                                            type="text"
-                                            value={adminProfile.name}
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                                        />
+                                <form onSubmit={submitHandler} className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-slate-400 uppercase font-bold ml-1">First Name</label>
+                                            <input
+                                                type="text"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-700"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] text-slate-400 uppercase font-bold ml-1">Last Name</label>
+                                            <input
+                                                type="text"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-700"
+                                                required
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] text-slate-400 uppercase font-bold ml-1">Email Address</label>
                                         <input
                                             type="email"
-                                            value={adminProfile.email}
-                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-700"
+                                            required
                                         />
                                     </div>
-                                    <div className="flex gap-3 pt-2">
-                                        <button onClick={() => setProfileMode('details')} className="flex-1 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg">Cancel</button>
-                                        <button className="flex-1 py-2 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800">Save Changes</button>
+                                    <div className="flex gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setProfileMode('details')}
+                                            className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={updateLoading}
+                                            className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+                                        >
+                                            {updateLoading ? 'Updating...' : <><Save size={18} /> Update Profile</>}
+                                        </button>
                                     </div>
-                                </div>
+                                </form>
                             )}
 
                             {profileMode === 'password' && (
-                                <div className="space-y-4">
-                                    <h3 className="font-bold text-slate-800 border-b pb-2 mb-4">Change Password</h3>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Current Password</label>
-                                        <input type="password" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                <form onSubmit={submitHandler} className="space-y-4">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] text-slate-400 uppercase font-bold ml-1">New Password</label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-700"
+                                            placeholder="••••••••"
+                                            required
+                                        />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">New Password</label>
-                                        <input type="password" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] text-slate-400 uppercase font-bold ml-1">Confirm New Password</label>
+                                        <input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-700"
+                                            placeholder="••••••••"
+                                            required
+                                        />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Confirm New Password</label>
-                                        <input type="password" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                    <div className="flex gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setProfileMode('details')}
+                                            className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={updateLoading}
+                                            className="flex-1 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 shadow-lg shadow-slate-200 flex items-center justify-center gap-2"
+                                        >
+                                            {updateLoading ? 'Updating...' : <><Lock size={18} /> Update Password</>}
+                                        </button>
                                     </div>
-                                    <div className="flex gap-3 pt-2">
-                                        <button onClick={() => setProfileMode('details')} className="flex-1 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg">Cancel</button>
-                                        <button className="flex-1 py-2 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800">Update Password</button>
-                                    </div>
-                                </div>
+                                </form>
                             )}
                         </div>
                     </div>

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import {
     TrendingUp,
     Users,
@@ -13,21 +15,44 @@ import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
+    const [stats, setStats] = useState(null);
+    const [recentOrders, setRecentOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const stats = [
-        { label: 'Total Revenue', value: '$54,239', change: '+12.5%', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-        { label: 'Total Orders', value: '1,253', change: '+8.2%', icon: ShoppingBag, color: 'text-blue-600', bg: 'bg-blue-100' },
-        { label: 'Total Customers', value: '892', change: '+5.1%', icon: Users, color: 'text-purple-600', bg: 'bg-purple-100' },
-        { label: 'Growth', value: '+22%', change: '+2.4%', icon: TrendingUp, color: 'text-orange-600', bg: 'bg-orange-100' }
-    ];
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
 
-    const recentOrders = [
-        { id: '#ORD-7782', customer: 'Sarah Connor', product: 'Brother Printer...', amount: '$429.99', status: 'Processing', date: 'Oct 24, 2024' },
-        { id: '#ORD-7783', customer: 'John Wick', product: 'HP LaserJet Pro...', amount: '$1,250.00', status: 'Shipped', date: 'Oct 23, 2024' },
-        { id: '#ORD-7784', customer: 'Ellen Ripley', product: 'Logitech Mouse', amount: '$89.99', status: 'Delivered', date: 'Oct 20, 2024' },
-        { id: '#ORD-7785', customer: 'James Bond', product: 'Canon Scanner', amount: '$299.00', status: 'Processing', date: 'Oct 19, 2024' },
-        { id: '#ORD-7786', customer: 'Tony Stark', product: '3D Printer', amount: '$4,500.00', status: 'Delivered', date: 'Oct 18, 2024' },
-    ];
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            // Fetch dashboard stats
+            const { data: statsData } = await axios.get('http://localhost:5000/api/dashboard/stats', {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+
+            // Fetch recent orders
+            const { data: ordersData } = await axios.get('http://localhost:5000/api/orders', {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+
+            setStats(statsData);
+            setRecentOrders(ordersData.slice(0, 5)); // Get only 5 most recent
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
+        }
+    };
+
+    const statsDisplay = stats ? [
+        { label: 'Total Revenue', value: `$${stats.totalRevenue.toFixed(2)}`, change: `+${stats.revenueGrowth}%`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+        { label: 'Total Orders', value: stats.totalOrders.toString(), change: `+${stats.ordersGrowth}%`, icon: ShoppingBag, color: 'text-blue-600', bg: 'bg-blue-100' },
+        { label: 'Total Customers', value: stats.totalCustomers.toString(), change: `+${stats.customersGrowth}%`, icon: Users, color: 'text-purple-600', bg: 'bg-purple-100' },
+    ] : [];
 
     const statusStyles = {
         'Processing': 'bg-blue-50 text-blue-700 border-blue-100',
@@ -51,8 +76,10 @@ const AdminDashboard = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {loading ? (
+                    <div className="col-span-full text-center py-10 text-slate-400">Loading stats...</div>
+                ) : statsDisplay.map((stat, i) => (
                     <div key={i} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-4">
                             <div className={`p-3 rounded-lg ${stat.bg} ${stat.color}`}>
@@ -88,20 +115,22 @@ const AdminDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {recentOrders.map((order) => (
-                                    <tr key={order.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => navigate('/admin/orders')}>
-                                        <td className="px-6 py-4 font-bold text-slate-700">{order.id}</td>
+                                {loading ? (
+                                    <tr><td colSpan="5" className="py-10 text-center text-slate-400">Loading orders...</td></tr>
+                                ) : recentOrders.map((order) => (
+                                    <tr key={order._id} className="hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => navigate('/admin/orders')}>
+                                        <td className="px-6 py-4 font-bold text-slate-700">ORD-{order._id.substring(order._id.length - 4).toUpperCase()}</td>
                                         <td className="px-6 py-4">
-                                            <div className="font-medium text-slate-800">{order.customer}</div>
-                                            <div className="text-xs text-slate-400 truncate max-w-[150px]">{order.product}</div>
+                                            <div className="font-medium text-slate-800">{order.user?.name || 'Guest'}</div>
+                                            <div className="text-xs text-slate-400 truncate max-w-[150px]">{order.orderItems[0]?.name || 'N/A'}</div>
                                         </td>
-                                        <td className="px-6 py-4 font-bold text-slate-900">{order.amount}</td>
+                                        <td className="px-6 py-4 font-bold text-slate-900">${order.totalPrice.toFixed(2)}</td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[order.status]}`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[order.status] || 'bg-slate-50 text-slate-700 border-slate-100'}`}>
                                                 {order.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right text-slate-500">{order.date}</td>
+                                        <td className="px-6 py-4 text-right text-slate-500">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                                     </tr>
                                 ))}
                             </tbody>

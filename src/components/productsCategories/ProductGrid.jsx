@@ -45,7 +45,9 @@ const ProductGrid = ({ heading = "Products", products = [], dropdownOptions = []
                         {/* Info */}
                         <div className="p-4">
                             {product.category && (
-                                <p className="text-sm text-indigo-600 font-medium">{product.category}</p>
+                                <p className="text-sm text-indigo-600 font-medium">
+                                    {typeof product.category === 'object' ? product.category.name : product.category}
+                                </p>
                             )}
                             <h3 className="text-lg font-semibold text-gray-900 mt-1 line-clamp-2">
                                 {product.title}
