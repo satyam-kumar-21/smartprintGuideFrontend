@@ -10,10 +10,10 @@ const Hero = () => {
                     {/* Left Text Content */}
                     <div className="flex-1 text-center md:text-left">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-                            Your One-Stop Shop for Printers & Accessories
+                            Smart Printing Made Simple
                         </h1>
                         <p className="mt-4 text-gray-700 text-lg sm:text-xl md:text-2xl">
-                            Find high-quality printers, ink cartridges, and office supplies that make printing at home or office fast, easy, and reliable.
+                            Discover reliable printers, ink, toner, and essential printing supplies for home and office needs. At Smart ePrinting, we make it easy to find trusted products through clear descriptions, secure checkout, and a customer-focused shopping experience.
                         </p>
                         <button className="mt-8 bg-indigo-600 text-white font-semibold px-6 py-3 rounded-full shadow hover:bg-indigo-700 transition">
                             Shop Now

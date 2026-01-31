@@ -4,21 +4,33 @@ import WhyImage from '../../assets/about.jpg'; // Replace with your actual image
 const choosePoints = [
     {
         id: 1,
-        title: 'Fast & Reliable Delivery',
+        title: 'Clear & Accurate Product Information',
         description:
-            'We deliver your printers and accessories fast and safely to My Ink Shops. Our efficient shipping ensures your orders arrive on time.',
+            'Every product page includes detailed specifications and compatibility details. We aim to provide the clarity you need to choose confidently.',
     },
     {
         id: 2,
-        title: 'Diverse Product Range',
+        title: 'Customer-Centered Experience',
         description:
-            'My Ink Shops offers a wide product line, from home-office printers to high-volume office solutions, making it easy to find exactly what you need.',
+            'Our support team is available to help with product inquiries, order status questions, and general shopping assistance.',
     },
     {
         id: 3,
-        title: 'Customer-Centered Support',
+        title: 'Secure & Smooth Shopping Process',
         description:
-            'Your satisfaction is important to us. Our team assists with product selection, installation, troubleshooting, and ensures a hassle-free shopping experience.',
+            'We use trusted payment processors and safe checkout methods to help ensure a secure online experience.',
+    },
+    {
+        id: 4,
+        title: 'Reliable Delivery',
+        description:
+            'We partner with established carriers to support timely and safe delivery. Shipping times depend on location and product availability.',
+    },
+    {
+        id: 5,
+        title: 'Independent Retailer',
+        description:
+            'Smart ePrinting is not affiliated with any printer manufacturer. All product names, images, and trademarks belong to their respective owners and are used solely for identification.',
     },
 ];
 
@@ -29,11 +41,10 @@ const WhyChooseSection = () => {
                 {/* Heading Section (centered) */}
                 <div className="text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                        Why Choose MyPlatform
+                        Why Shop With Smart ePrinting?
                     </h2>
                     <p className="text-base md:text-lg text-slate-500 max-w-3xl mx-auto">
-                        The efficiency and the convenience of the customers in our products and services are considered.
-                        Our printing services are of high quality and are also reliable, making any order easy, quick, and free of hassles.
+                        Discover the benefits of shopping with Smart ePrinting for all your printing needs.
                     </p>
                 </div>
 
@@ -53,7 +64,7 @@ const WhyChooseSection = () => {
                     <div className="lg:w-1/2">
                         <img
                             src={WhyImage}
-                            alt="Why Choose My Ink Shops"
+                            alt="Why Shop With Smart ePrinting"
                             className="w-full h-full object-cover rounded-xl shadow-lg"
                         />
                     </div>

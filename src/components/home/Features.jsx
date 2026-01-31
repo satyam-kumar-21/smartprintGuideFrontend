@@ -5,26 +5,20 @@ const features = [
     {
         id: 1,
         icon: <Printer size={28} />,
-        title: 'All-In-One',
-        description: 'Print, scan, copy, fax.',
+        title: 'Printers for Home & Office',
+        description: 'Explore a variety of printers suitable for everyday tasks, schoolwork, home offices, small businesses, and remote work needs.',
     },
     {
         id: 2,
         icon: <Wifi size={28} />,
-        title: 'Wireless Ready',
-        description: 'Print from anywhere easily.',
+        title: 'Ink & Toner Cartridges',
+        description: 'Shop from a wide selection of genuine-quality ink and toner cartridges with clear compatibility information for easier selection.',
     },
     {
         id: 3,
         icon: <ShoppingCart size={28} />,
-        title: 'Easy Online Ordering',
-        description: 'Shop and checkout in minutes.',
-    },
-    {
-        id: 4,
-        icon: <Headphones size={28} />,
-        title: 'Customer Support',
-        description: 'Help whenever you need it.',
+        title: 'Printing Accessories',
+        description: 'From photo paper to multipurpose printing supplies, Smart ePrinting provides essentials that support your daily printing requirements.',
     },
 ];
 

@@ -6,7 +6,7 @@ import HomeMain from './components/home/HomeMain';
 import ProfilePage from './components/profile/ProfilePage';
 import UnderConstruction from './components/common/UnderConstruction';
 import AboutMain from './components/about/AboutMain';
-import PrivacyPolicy from './components/PrivacyPolicy';
+import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
 
 // Admin Imports
@@ -27,7 +27,7 @@ import LargeFormat from './components/productsCategories/largeFormat/LargeFormat
 import InkjetPrinters from './components/productsCategories/inkjetPrinters/InkjetPrinters';
 import LedPrinters from './components/productsCategories/ledPrinters/LedPrinters';
 import InkToner from './components/productsCategories/inkToner/InkToner';
-import CustomerService from './components/customerService/CustomerService';
+import CustomerService from './components/customerService/CustomerService1';
 import LaserPrinters from './components/productsCategories/laserPrinters/LaserPrinters';
 import ScrollToTop from './components/ScrollToTop';
 import Cart from './components/Cart';
@@ -36,7 +36,15 @@ import ProductDetails from './components/productsCategories/ProductDetails';
 import OrderDetails from './components/order/OrderDetails';
 import TrackOrder from './components/order/TrackOrder';
 import ReturnsAndExchanges from './components/order/ReturnsAndExchanges';
-import FAQ from './components/FAQ';
+import FAQMain from './components/faq/FAQMain';
+import CustomerMain from './components/customerService/CustomerMain';
+import RefundReturnPolicy from './components/privacyPolicy/RefundReturnPolicy';
+import ReturnExchangePolicy from './components/privacyPolicy/ReturnExchangePolicy';
+import ShippingPolicy from './components/privacyPolicy/ShippingPolicy';
+import CookiePolicy from './components/privacyPolicy/CookiePolicy';
+import CCPAPrivacyPolicy from './components/privacyPolicy/CCPAPrivacyPolicy';
+import AccessibilityStatement from './components/privacyPolicy/AccessibilityStatement';
+import Disclaimer from './components/privacyPolicy/Disclaimer';
 
 function App() {
     const location = useLocation();
@@ -57,7 +65,7 @@ function App() {
                     <Route path="/product-category/laser-printers" element={<LaserPrinters />} />
                     <Route path="/product-category/led-printers" element={<LedPrinters />} />
                     <Route path="/product-category/ink-toner" element={<InkToner />} />
-                    <Route path="/customer-service" element={<CustomerService />} />
+                    <Route path="/customer-service" element={<CustomerMain />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/order/:id" element={<OrderDetails />} />
@@ -68,14 +76,21 @@ function App() {
                     {/*order*/}
                     <Route path="/track-order" element={<TrackOrder />} />
                     <Route path="/returns-exchanges" element={<ReturnsAndExchanges />} />
-                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/faq" element={<FAQMain />} />
 
 
                     {/* other static routes */}
                     <Route path="/about" element={<AboutMain />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-                    
+                    <Route path="/refund-return-policy" element={<RefundReturnPolicy />} />
+                    <Route path="/return-exchange-policy" element={<ReturnExchangePolicy />} />
+                    <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                    <Route path="/cookie-policy" element={<CookiePolicy />} />
+                    <Route path="/customer-service" element={<CustomerService />} />
+                    <Route path="/ccpa-privacy-policy" element={<CCPAPrivacyPolicy />} />
+                    <Route path="/accessibility-statement" element={<AccessibilityStatement />} />
+                    <Route path="/disclaimer" element={<Disclaimer />} />
 
                     {/* Admin Routes */}
                     <Route path="/admin/login" element={<AdminLogin />} />

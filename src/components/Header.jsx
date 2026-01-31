@@ -23,18 +23,45 @@ const Header = () => {
         setIsUserMenuOpen(false);
     };
 
+    // const handleSearchChange = async (e) => {
+    //     const query = e.target.value;
+    //     setSearchQuery(query);
+
+    //     if (query.length >= 2) {
+    //         try {
+    //             const { data } = await axios.get(`https://printersbackend.onrender.com/api/products/search/suggestions?q=${query}`);
+    //             setSuggestions(data);
+    //             setShowSuggestions(true);
+    //         } catch (error) {
+    //             console.error('Error fetching suggestions:', error);
+    //             setSuggestions([]);
+    //         }
+    //     } else {
+    //         setSuggestions([]);
+    //         setShowSuggestions(false);
+    //     }
+    // };
+
+
     const handleSearchChange = async (e) => {
         const query = e.target.value;
         setSearchQuery(query);
 
         if (query.length >= 2) {
             try {
-                const { data } = await axios.get(`https://printersbackend.onrender.com/api/products/search/suggestions?q=${query}`);
+                const { data } = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/products/search/suggestions`,
+                    {
+                        params: { q: query },
+                    }
+                );
+
                 setSuggestions(data);
                 setShowSuggestions(true);
             } catch (error) {
-                console.error('Error fetching suggestions:', error);
+                console.error("Error fetching suggestions:", error);
                 setSuggestions([]);
+                setShowSuggestions(false);
             }
         } else {
             setSuggestions([]);
@@ -76,16 +103,16 @@ const Header = () => {
                     <div className="w-full flex flex-col md:flex-row justify-between items-center gap-2">
                         {/* Left: Contact */}
                         <div className="flex items-center gap-4">
-                            <a href="mailto:satyam@gmail.com" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                            <a href="mailto:support@smarteprinting.com" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
                                 <Mail size={14} />
-                                <span>satyam@gmail.com</span>
+                                <span>support@smarteprinting.com</span>
                             </a>
                         </div>
 
                         {/* Center: Privacy */}
                         <div>
                             <span className="text-slate-400">Your privacy matters to us. </span>
-                            <Link to="/privacy" className="underline hover:text-blue-600 transition-colors">Read our Privacy Policy.</Link>
+                            <Link to="/privacy-policy" className="underline hover:text-blue-600 transition-colors">Read our Privacy Policy.</Link>
                         </div>
 
                         {/* Right: USPs */}
@@ -120,7 +147,7 @@ const Header = () => {
                                 to="/"
                                 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent cursor-pointer shrink-0 absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
                             >
-                                LOGO
+                                Smart ePrinting
                             </Link>
 
                             {/* Desktop Navigation */}
@@ -133,7 +160,7 @@ const Header = () => {
                                 <Link to="/product-category/led-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
                                 <Link to="/product-category/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
                                 <Link to="/customer-service" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
-                               
+
                             </nav>
 
                             {/* Right: Actions */}
