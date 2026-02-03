@@ -95,6 +95,12 @@ const AuthDrawer = ({ isOpen, onClose }) => {
         }
     }, [successReset]);
 
+    // Error Messages (Red Box)
+    const activeError = error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset || (message && !message.includes('success'));
+    
+    // Success Messages (Green Box)
+    const activeSuccess = successSendOTP?.message || successForgot?.message || (message && message.includes('success'));
+
     if (!isOpen) return null;
 
     return (
@@ -125,16 +131,16 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Error Messages */}
-                {(error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset || message) && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
-                        {error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset || message}
+                {activeError && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2">
+                        {activeError}
                     </div>
                 )}
 
                 {/* Success Messages */}
-                {(successSendOTP || successForgot) && (
-                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 rounded-lg text-sm">
-                        {successSendOTP?.message || successForgot?.message}
+                {activeSuccess && (
+                    <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2">
+                        {activeSuccess}
                     </div>
                 )}
 
