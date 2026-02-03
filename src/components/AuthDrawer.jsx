@@ -15,38 +15,43 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [otp, setOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [message, setMessage] = useState(null);
+
+    // Messages
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const dispatch = useDispatch();
 
-    const userLogin = useSelector((state) => state.userLogin);
-    const { loading, error, userInfo } = userLogin;
+    const { loading, error, userInfo } = useSelector((state) => state.userLogin);
+    const { loading: loadingSendOTP, error: errorSendOTP, success: successSendOTP } =
+        useSelector((state) => state.userSendOTP);
+    const { loading: loadingVerifyOTP, error: errorVerifyOTP, success: successVerifyOTP } =
+        useSelector((state) => state.userVerifyOTP);
+    const { loading: loadingForgot, error: errorForgot, success: successForgot } =
+        useSelector((state) => state.userForgotPassword);
+    const { loading: loadingReset, error: errorReset, success: successReset } =
+        useSelector((state) => state.userResetPassword);
 
-    const userSendOTP = useSelector((state) => state.userSendOTP);
-    const { loading: loadingSendOTP, error: errorSendOTP, success: successSendOTP } = userSendOTP;
-
-    const userVerifyOTP = useSelector((state) => state.userVerifyOTP);
-    const { loading: loadingVerifyOTP, error: errorVerifyOTP, success: successVerifyOTP } = userVerifyOTP;
-
-    const userForgotPassword = useSelector((state) => state.userForgotPassword);
-    const { loading: loadingForgot, error: errorForgot, success: successForgot } = userForgotPassword;
-
-    const userResetPassword = useSelector((state) => state.userResetPassword);
-    const { loading: loadingReset, error: errorReset, success: successReset } = userResetPassword;
-
+    /* ---------------- LOGIN SUCCESS ---------------- */
     useEffect(() => {
         if (userInfo) {
-            onClose();
+            setSuccessMessage('Login Successful! Redirecting...');
+            const timer = setTimeout(() => {
+                onClose();
+            }, 1500);
+            return () => clearTimeout(timer);
         }
     }, [userInfo, onClose]);
 
+    /* ---------------- SUBMIT ---------------- */
     const submitHandler = (e) => {
         e.preventDefault();
-        setMessage(null);
+        setErrorMessage(null);
+        setSuccessMessage(null);
 
         if (mode === 'signup') {
             if (password !== confirmPassword) {
-                setMessage('Passwords do not match');
+                setErrorMessage('Passwords do not match');
             } else {
                 dispatch(sendRegistrationOTP(firstName, lastName, email.trim(), password));
             }
@@ -56,50 +61,59 @@ const AuthDrawer = ({ isOpen, onClose }) => {
             dispatch(forgotPassword(email.trim()));
         } else if (mode === 'reset-password') {
             if (newPassword !== confirmPassword) {
-                setMessage('Passwords do not match');
+                setErrorMessage('Passwords do not match');
             } else {
                 dispatch(resetPassword(email.trim(), otp, newPassword));
             }
         } else {
-            dispatch(login(email, password));
+            dispatch(login(email.trim(), password));
         }
     };
 
-    // Handle successful OTP verification (redirect to login)
-    useEffect(() => {
-        if (successVerifyOTP) {
-            setMode('login');
-            setMessage('Email verified successfully! Please log in.');
-        }
-    }, [successVerifyOTP]);
-
-    // Handle successful OTP send
+    /* ---------------- OTP SENT ---------------- */
     useEffect(() => {
         if (successSendOTP) {
             setMode('verify-otp');
+            setSuccessMessage('OTP sent to your email.');
         }
     }, [successSendOTP]);
 
-    // Handle successful forgot password
+    /* ---------------- OTP VERIFIED ---------------- */
+    useEffect(() => {
+        if (successVerifyOTP) {
+            setMode('login');
+            setSuccessMessage('OTP verified successfully! Please login.');
+            setOtp('');
+        }
+    }, [successVerifyOTP]);
+
+    /* ---------------- FORGOT PASSWORD ---------------- */
     useEffect(() => {
         if (successForgot) {
             setMode('reset-password');
+            setSuccessMessage('OTP sent to your email for password reset.');
         }
     }, [successForgot]);
 
-    // Handle successful password reset
+    /* ---------------- PASSWORD RESET ---------------- */
     useEffect(() => {
         if (successReset) {
             setMode('login');
-            setMessage('Password reset successfully! Please login with your new password.');
+            setSuccessMessage('Password reset successfully! Please login.');
+            setOtp('');
+            setNewPassword('');
+            setConfirmPassword('');
         }
     }, [successReset]);
 
-    // Error Messages (Red Box)
-    const activeError = error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset || (message && !message.includes('success'));
-    
-    // Success Messages (Green Box)
-    const activeSuccess = successSendOTP?.message || successForgot?.message || (message && message.includes('success'));
+    /* ---------------- ERRORS ---------------- */
+    useEffect(() => {
+        if (error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset) {
+            setErrorMessage(
+                error || errorSendOTP || errorVerifyOTP || errorForgot || errorReset
+            );
+        }
+    }, [error, errorSendOTP, errorVerifyOTP, errorForgot, errorReset]);
 
     if (!isOpen) return null;
 
@@ -130,17 +144,17 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                     </button>
                 </div>
 
-                {/* Error Messages */}
-                {activeError && (
+                {/* ERROR MESSAGE */}
+                {errorMessage && (
                     <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2">
-                        {activeError}
+                        {errorMessage}
                     </div>
                 )}
 
-                {/* Success Messages */}
-                {activeSuccess && (
+                {/* SUCCESS MESSAGE */}
+                {successMessage && (
                     <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl text-sm font-medium animate-in fade-in slide-in-from-top-2">
-                        {activeSuccess}
+                        {successMessage}
                     </div>
                 )}
 

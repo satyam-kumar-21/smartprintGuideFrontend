@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ShoppingCart, Search, User, Check, Phone, Mail, ArrowRight, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/actions/userActions';
 import AuthDrawer from './AuthDrawer';
+import axios from 'axios';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +16,7 @@ const Header = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
@@ -72,17 +74,21 @@ const Header = () => {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            // Navigate to search results page or filter products
-            window.location.href = `/?search=${encodeURIComponent(searchQuery)}`;
+            navigate(`/?search=${encodeURIComponent(searchQuery)}`);
             setIsSearchOpen(false);
+            setShowSuggestions(false);
         }
     };
 
     const handleSuggestionClick = (suggestion) => {
-        setSearchQuery(suggestion.title);
-        setShowSuggestions(false);
-        window.location.href = `/?search=${encodeURIComponent(suggestion.title)}`;
         setIsSearchOpen(false);
+        setShowSuggestions(false);
+        
+        if (suggestion.slug) {
+            navigate(`/product/${suggestion.slug}`);
+        } else {
+            navigate(`/?search=${encodeURIComponent(suggestion.title)}`);
+        }
     };
 
     // Lock body scroll when search or menu is open
@@ -414,15 +420,27 @@ const Header = () => {
                                     <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={28} />
                                 </form>
                                 {showSuggestions && suggestions.length > 0 && (
-                                    <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg mt-2 z-20 max-h-60 overflow-y-auto">
+                                    <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg mt-2 z-20 max-h-96 overflow-y-auto">
                                         {suggestions.map((suggestion, index) => (
                                             <div
                                                 key={index}
-                                                className="px-6 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0"
+                                                className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors"
                                                 onClick={() => handleSuggestionClick(suggestion)}
                                             >
-                                                <div className="font-medium text-slate-800">{suggestion.title}</div>
-                                                <div className="text-sm text-slate-500">{suggestion.brand}{suggestion.color ? ` - ${suggestion.color}` : ''}</div>
+                                                <div className="w-12 h-12 bg-white rounded-lg overflow-hidden shrink-0 border border-slate-200 p-1">
+                                                    <img 
+                                                        src={suggestion.images && suggestion.images[0] ? (suggestion.images[0].startsWith('http') ? suggestion.images[0] : `${import.meta.env.VITE_API_URL.replace('/api', '')}${suggestion.images[0]}`) : '/printer.png'} 
+                                                        alt={suggestion.title} 
+                                                        className="w-full h-full object-contain"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-slate-800 text-sm line-clamp-1">{suggestion.title}</div>
+                                                    <div className="text-xs text-slate-500 font-medium flex items-center gap-2">
+                                                        <span>{suggestion.brand}</span>
+                                                        {suggestion.price > 0 && <span className="text-blue-600 font-bold">${suggestion.price}</span>}
+                                                    </div>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>

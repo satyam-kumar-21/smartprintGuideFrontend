@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { X, LogIn } from "lucide-react";
+import AuthDrawer from "../AuthDrawer";  // Check if this path is correct based on your folder structure
 import { listProductDetails, createProductReview, updateProductReview, deleteProductReview } from "../../redux/actions/productActions";
 import { addToCart } from "../../redux/actions/cartActions";
 import printerImg from "../../assets/printer.png"; // fallback image
@@ -16,6 +18,10 @@ const ProductDetails = () => {
     const [activeTab, setActiveTab] = useState("overview");
     const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
     const [isZooming, setIsZooming] = useState(false);
+    
+    // Auth Prompt State
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
 
     // Review Form State
     const [rating, setRating] = useState(0);
@@ -95,6 +101,10 @@ const ProductDetails = () => {
     }, [product, userInfo]);
 
     const addToCartHandler = () => {
+        if (!userInfo) {
+            setShowLoginPrompt(true);
+            return;
+        }
         dispatch(addToCart(product.slug || product._id, qty));
         navigate('/cart');
     };
@@ -134,6 +144,10 @@ const ProductDetails = () => {
     };
 
     const buyNowHandler = () => {
+        if (!userInfo) {
+            setShowLoginPrompt(true);
+            return;
+        }
         dispatch(addToCart(product.slug || product._id, qty));
         navigate('/cart?redirect=shipping');
     };
@@ -600,6 +614,54 @@ const ProductDetails = () => {
                     )}
                 </div>
             </div>
+
+            {/* Custom Login Required Prompt */}
+            {showLoginPrompt && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div 
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300" 
+                        onClick={() => setShowLoginPrompt(false)} 
+                    />
+                    <div className="relative bg-white rounded-3xl p-8 max-w-xs md:max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
+                        <button 
+                            onClick={() => setShowLoginPrompt(false)} 
+                            className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+                        <div className="text-center space-y-4">
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 shadow-inner">
+                                <LogIn size={28} />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-bold text-slate-900">Please Log In</h3>
+                                <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                                    You must be logged in to add items to your cart.
+                                </p>
+                            </div>
+                            <div className="pt-4 flex gap-3">
+                                <button 
+                                    onClick={() => setShowLoginPrompt(false)}
+                                    className="flex-1 py-3 px-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl text-[10px] uppercase tracking-wider hover:bg-slate-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        setShowLoginPrompt(false);
+                                        setIsAuthDrawerOpen(true);
+                                    }}
+                                    className="flex-1 py-3 px-4 bg-blue-600 text-white font-bold rounded-xl text-[10px] uppercase tracking-wider hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all hover:scale-[1.02]"
+                                >
+                                    Log In Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <AuthDrawer isOpen={isAuthDrawerOpen} onClose={() => setIsAuthDrawerOpen(false)} />
         </div>
     );
 };
