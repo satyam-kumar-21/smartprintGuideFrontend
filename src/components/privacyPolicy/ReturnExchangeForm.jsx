@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 const ReturnExchangeForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -21,11 +27,38 @@ const ReturnExchangeForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you can handle form submission (e.g., send email or API call)
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/contact`, {
+        type: "return-exchange",
+        ...formData
+      });
+
+      setSuccess(true);
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        orderNumber: "",
+        orderDate: "",
+        deliveryDate: "",
+        productName: "",
+        reason: "",
+        itemCondition: "",
+        resolution: "",
+        additionalDetails: "",
+      });
+      alert("Return/Exchange request submitted successfully!");
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -167,12 +200,19 @@ const ReturnExchangeForm = () => {
         ></textarea>
       </div>
 
+      <div className="flex flex-col gap-2">
+      {error && <div className="text-red-500 text-sm ">{error}</div>}
+      {success && <div className="text-green-600 text-sm ">Request sent successfully!</div>}
+      
       <button
         type="submit"
-        className="bg-indigo-600 text-white font-semibold px-6 py-2 rounded hover:bg-indigo-700 transition"
+        disabled={loading}
+        className="bg-indigo-600 text-white font-semibold px-6 py-2 rounded hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:bg-indigo-400"
       >
+        {loading ? <Loader2 className="w-5 h-5 animate-spin"/> : null}
         Submit Return Request
       </button>
+      </div>
     </form>
   );
 };

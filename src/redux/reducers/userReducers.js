@@ -76,7 +76,7 @@ export const userVerifyOTPReducer = (state = {}, action) => {
         case USER_VERIFY_OTP_REQUEST:
             return { loading: true };
         case USER_VERIFY_OTP_SUCCESS:
-            return { loading: false, userInfo: action.payload };
+            return { loading: false, success: true, message: action.payload.message };
         case USER_VERIFY_OTP_FAIL:
             return { loading: false, error: action.payload };
         default:

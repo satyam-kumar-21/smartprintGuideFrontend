@@ -26,7 +26,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
     const { loading: loadingSendOTP, error: errorSendOTP, success: successSendOTP } = userSendOTP;
 
     const userVerifyOTP = useSelector((state) => state.userVerifyOTP);
-    const { loading: loadingVerifyOTP, error: errorVerifyOTP } = userVerifyOTP;
+    const { loading: loadingVerifyOTP, error: errorVerifyOTP, success: successVerifyOTP } = userVerifyOTP;
 
     const userForgotPassword = useSelector((state) => state.userForgotPassword);
     const { loading: loadingForgot, error: errorForgot, success: successForgot } = userForgotPassword;
@@ -64,6 +64,14 @@ const AuthDrawer = ({ isOpen, onClose }) => {
             dispatch(login(email, password));
         }
     };
+
+    // Handle successful OTP verification (redirect to login)
+    useEffect(() => {
+        if (successVerifyOTP) {
+            setMode('login');
+            setMessage('Email verified successfully! Please log in.');
+        }
+    }, [successVerifyOTP]);
 
     // Handle successful OTP send
     useEffect(() => {

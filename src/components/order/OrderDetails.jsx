@@ -121,7 +121,6 @@ const OrderDetails = () => {
                                 <div 
                                     className="absolute left-[19px] top-4 w-0.5 bg-indigo-600 transition-all duration-1000 md:left-4 md:top-[19px] md:h-0.5 md:w-0" 
                                     style={{ 
-                                        height: `calc(${(currentStepIndex / (statusSteps.length - 1)) * 100}% - 8px)`,
                                         width: window.innerWidth > 768 ? `calc(${(currentStepIndex / (statusSteps.length - 1)) * 100}% - 8px)` : '2px',
                                         height: window.innerWidth > 768 ? '2px' : `calc(${(currentStepIndex / (statusSteps.length - 1)) * 100}% - 8px)`
                                     }}
