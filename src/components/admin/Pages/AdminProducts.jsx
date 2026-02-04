@@ -157,6 +157,8 @@ const AdminProducts = () => {
 
     const handleEdit = (product) => {
         setEditingId(product._id);
+        const techSpec = product.technicalSpecification || '';
+
         setFormData({
             brand: product.brand || '',
             title: product.title || '',
@@ -167,10 +169,47 @@ const AdminProducts = () => {
             description: product.description || '',
             shortSpecification: product.shortSpecification || '',
             overview: product.overview || '',
-            technicalSpecification: product.technicalSpecification || '',
+            technicalSpecification: techSpec,
             images: product.images || [],
             reviews: product.reviews || []
         });
+
+        // Parse Technical Specifications if it matches table structure
+        if (techSpec.includes('<table') && techSpec.includes('<tr')) {
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(techSpec, 'text/html');
+                const rows = Array.from(doc.querySelectorAll('tr'));
+                
+                const parsedRows = rows.map((row, index) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 2) {
+                        return {
+                            id: Date.now() + index,
+                            key: cells[0].textContent,
+                            value: cells[1].textContent
+                        };
+                    }
+                    return null;
+                }).filter(row => row !== null);
+
+                if (parsedRows.length > 0) {
+                    setSpecRows(parsedRows);
+                    setSpecType('table');
+                } else {
+                    // Fallback to text if table parsing yields no data
+                    setSpecType('text');
+                    setSpecRows([{ id: Date.now(), key: '', value: '' }]);
+                }
+            } catch (e) {
+                console.error("Error parsing technical specification table:", e);
+                setSpecType('text');
+                setSpecRows([{ id: Date.now(), key: '', value: '' }]);
+            }
+        } else {
+            setSpecType('text');
+            setSpecRows([{ id: Date.now(), key: '', value: '' }]);
+        }
 
         // Set preview images for existing images
         setPreviewImages(product.images || []);
