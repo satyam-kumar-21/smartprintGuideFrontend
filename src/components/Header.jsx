@@ -142,7 +142,7 @@ const Header = () => {
 
                             {/* Mobile Menu Button - Left */}
                             <button
-                                className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-800"
+                                className="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-800"
                                 onClick={() => setIsMenuOpen(true)}
                             >
                                 <Menu size={24} />
@@ -151,19 +151,19 @@ const Header = () => {
                             {/* Branding / Logo - Centered on Mobile, Left on Desktop */}
                             <Link
                                 to="/"
-                                className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent cursor-pointer shrink-0 absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+                                className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent cursor-pointer shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
                             >
                                 Smart ePrinting
                             </Link>
 
                             {/* Desktop Navigation */}
-                            <nav className="hidden lg:flex items-center justify-center flex-1 px-8 gap-6 text-slate-600 text-sm font-bold">
+                            <nav className="hidden md:flex items-center justify-center flex-1 px-2 lg:px-8 gap-2 lg:gap-6 text-slate-600 text-[10px] lg:text-sm font-bold whitespace-nowrap">
                                 <Link to="/" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Home</Link>
                                 <Link to="/product-category/all-in-one-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">All In One</Link>
-                                <Link to="/product-category/large-format-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Large Format</Link>
-                                <Link to="/product-category/inkjet-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Inkjet</Link>
-                                <Link to="/product-category/laser-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Laser</Link>
-                                <Link to="/product-category/led-printers" className="hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
+                                <Link to="/product-category/large-format-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">Large Format</Link>
+                                <Link to="/product-category/inkjet-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">Inkjet</Link>
+                                <Link to="/product-category/laser-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">Laser</Link>
+                                <Link to="/product-category/led-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">LED Printers</Link>
                                 <Link to="/product-category/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
                                 <Link to="/customer-service" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
 
@@ -182,7 +182,7 @@ const Header = () => {
                                     <div className="relative">
                                         <button
                                             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                                            className="hidden lg:flex items-center gap-2 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 group"
+                                            className="hidden md:flex items-center gap-2 p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600 group"
                                         >
                                             <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm uppercase">
                                                 {userInfo.firstName?.charAt(0) || userInfo.name?.charAt(0)}
@@ -251,7 +251,7 @@ const Header = () => {
 
                     {/* Mobile Navigation Sidebar (Drawer) */}
                     {isMenuOpen && (
-                        <div className="fixed inset-0 z-50 lg:hidden">
+                        <div className="fixed inset-0 z-50 md:hidden">
                             {/* Backdrop */}
                             <div
                                 className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300"

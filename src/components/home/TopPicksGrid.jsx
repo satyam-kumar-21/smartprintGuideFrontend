@@ -17,7 +17,8 @@ const TopPicksGrid = () => {
     }, [dispatch]);
 
     // Take top 4 trending or latest products
-    const displayProducts = products ? products.slice(0, 4) : [];
+    const safeProducts = Array.isArray(products) ? products : [];
+    const displayProducts = safeProducts.slice(0, 4);
 
     const handleProductClick = (slug, id) => {
         navigate(`/product/${slug || id}`);

@@ -8,34 +8,69 @@ const CategoryProductList = ({ categoryName, heading }) => {
     const dispatch = useDispatch();
 
     const productList = useSelector((state) => state.productList);
-    const { loading, error, products } = productList;
+    const { loading, error, products, page, pages } = productList;
 
     useEffect(() => {
-        dispatch(listProducts('', categoryName));
+        dispatch(listProducts('', categoryName, 1));
     }, [dispatch, categoryName]);
 
-    // Format products for ProductGrid (ensure links are correct and images are handled)
-    const formattedProducts = products ? products.map(product => ({
+    const loadMoreHandler = () => {
+        if (page < pages) {
+            dispatch(listProducts('', categoryName, page + 1));
+        }
+    };
+
+    const safeProducts = Array.isArray(products) ? products : [];
+    const formattedProducts = safeProducts.map(product => ({
         ...product,
         image: product.image 
-            ? (product.image.startsWith('http') ? product.image : `http://localhost:5000${product.image}`)
+            ? (product.image.startsWith('http') ? product.image : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${product.image}`)
             : (product.images && product.images.length > 0 
-                ? (product.images[0].startsWith('http') ? product.images[0] : `http://localhost:5000${product.images[0]}`) 
+                ? (product.images[0].startsWith('http') ? product.images[0] : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${product.images[0]}`) 
                 : printerImg),
         link: `/product/${product.slug || product._id}`
-    })) : [];
+    }));
 
-    const dropdownOptions = ["Best Selling", "Top Rated", "New Arrivals"];
-
-    if (loading) return <div className="py-20 text-center font-black uppercase text-[10px] tracking-[0.3em] text-slate-400 animate-pulse">Synchronizing Inventory...</div>;
+    if (loading && safeProducts.length === 0) return <div className="py-20 text-center font-black uppercase text-[10px] tracking-[0.3em] text-slate-400 animate-pulse">Synchronizing Inventory...</div>;
     if (error) return <div className="py-20 text-center font-black uppercase text-[10px] tracking-[0.3em] text-red-500">{error}</div>;
 
+    if (!loading && safeProducts.length === 0) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+                <h2 className="text-3xl font-semibold text-gray-900 mb-6">{heading || categoryName}</h2>
+                <div className="py-20 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
+                    <p className="font-black uppercase text-[10px] tracking-[0.4em] text-slate-400">Products Coming Soon</p>
+                    <p className="mt-4 text-slate-500 text-sm font-medium">We are currently stocking this category. Please check back later.</p>
+                </div>
+            </div>
+        );
+    }
+    
     return (
-        <ProductGrid
-            heading={heading || categoryName}
-            products={formattedProducts}
-            dropdownOptions={dropdownOptions}
-        />
+         <div className="flex flex-col">
+            <ProductGrid
+                heading={heading || categoryName}
+                products={formattedProducts}
+                dropdownOptions={["Best Selling", "Top Rated", "New Arrivals"]}
+            />
+            
+            {loading && page >= 1 && (
+                <div className="py-8 text-center font-black uppercase text-[10px] tracking-[0.3em] text-slate-400 animate-pulse">
+                    Loading More Items...
+                </div>
+            )}
+
+            {!loading && page < pages && (
+                <div className="flex justify-center mb-16">
+                    <button 
+                        onClick={loadMoreHandler}
+                        className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-blue-600 transition-colors shadow-lg"
+                    >
+                        See More Products
+                    </button>
+                </div>
+            )}
+        </div>
     );
 };
 

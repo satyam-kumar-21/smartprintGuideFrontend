@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { listProductDetails } from "../../redux/actions/productActions";
+import { listProductDetails, listProducts } from "../../redux/actions/productActions";
 import { addToCart } from "../../redux/actions/cartActions";
 import printerImg from "../../assets/printer.png"; // fallback image
 
@@ -19,11 +19,22 @@ const ProductDetails = () => {
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
 
+    const productList = useSelector((state) => state.productList);
+    const { products: relatedProducts } = productList;
+
     useEffect(() => {
         if (productSlug) {
             dispatch(listProductDetails(productSlug));
         }
     }, [dispatch, productSlug]);
+
+    useEffect(() => {
+        if (product && product.category) {
+            const categoryName = product.category.name || product.category;
+            // Fetch related products (page 1)
+            dispatch(listProducts('', categoryName, 1));
+        }
+    }, [dispatch, product]);
 
     const addToCartHandler = () => {
         dispatch(addToCart(product.slug || product._id, qty));
@@ -73,7 +84,7 @@ const ProductDetails = () => {
                     The requested hardware identifier <span className="text-slate-900 font-bold">"{productSlug}"</span> could not be verified within our current database synchronization.
                 </p>
             </div>
-            <button 
+            <button
                 onClick={() => navigate('/')}
                 className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-200"
             >
@@ -82,7 +93,7 @@ const ProductDetails = () => {
         </div>
     );
 
-    const productImages = product.images && product.images.length > 0 
+    const productImages = product.images && product.images.length > 0
         ? product.images.map(img => img.startsWith('http') ? img : `${import.meta.env.VITE_API_URL.replace('/api', '')}${img}`)
         : [printerImg];
 
@@ -91,78 +102,78 @@ const ProductDetails = () => {
             <div className="flex flex-col lg:flex-row gap-12">
                 {/* Image Gallery Section */}
                 {/* Image Gallery Section */}
-{/* Image Gallery Section */}
-<div className="lg:w-[45%] flex flex-col md:flex-row gap-4 h-fit lg:sticky lg:top-24">
-    
-    {/* Thumbnails Container */}
-    <div className="flex flex-row md:flex-col gap-3 w-full md:w-20 order-2 md:order-1 
+                {/* Image Gallery Section */}
+                <div className="lg:w-[45%] flex flex-col md:flex-row gap-4 h-fit lg:sticky lg:top-24">
+
+                    {/* Thumbnails Container */}
+                    <div className="flex flex-row md:flex-col gap-3 w-full md:w-20 order-2 md:order-1 
                     /* Mobile: Horizontal scroll, no max-height */
                     overflow-x-auto overflow-y-hidden pb-2 
                     /* Desktop: Vertical scroll with specific height */
                     md:overflow-y-auto md:max-h-[500px] md:pb-0 
                     scrollbar-hide">
-        
-        {productImages.map((img, index) => (
-            <button
-                key={index}
-                onClick={() => setActiveImage(index)}
-                /* min-w-[70px] and max-w-[70px] fixes the mobile size to your original small square.
-                   md:max-w-none and md:w-full lets it expand to the sidebar width on desktop.
-                */
-                className={`aspect-square min-w-[70px] max-w-[70px] md:min-w-0 md:max-w-none md:w-full rounded-xl border-2 transition-all overflow-hidden bg-slate-50 p-2 flex-shrink-0
-                    ${activeImage === index ? 'border-slate-900 shadow-lg' : 'border-slate-100 hover:border-slate-300'}`}
-            >
-                <img src={img} alt={`${product.title} ${index}`} className="w-full h-full object-contain" />
-            </button>
-        ))}
-    </div>
 
-    {/* Main Image */}
-    <div className="flex-1 aspect-[4/5] bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 flex items-center justify-center p-8 overflow-hidden group order-1 md:order-2 relative">
-        <img
-            src={productImages[activeImage]}
-            alt={product.title}
-            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-        />
-        
-        {/* ... Zoom logic remains exactly as you had it ... */}
-        {isZooming && (
-            <div
-                className="hidden lg:block absolute w-32 h-32 border-3 border-blue-500 rounded-full pointer-events-none z-10 shadow-xl overflow-hidden"
-                style={{
-                    left: `${zoomPosition.x}%`,
-                    top: `${zoomPosition.y}%`,
-                    transform: 'translate(-50%, -50%)',
-                    backgroundImage: `url(${productImages[activeImage]})`,
-                    backgroundSize: '600% 600%',
-                    backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    backgroundRepeat: 'no-repeat'
-                }}
-            />
-        )}
-        
-        {isZooming && (
-            <div className="hidden lg:block absolute top-0 -right-96 w-[28rem] h-[28rem] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-20">
-                <div
-                    className="w-full h-full"
-                    style={{
-                        backgroundImage: `url(${productImages[activeImage]})`,
-                        backgroundSize: '600% 600%',
-                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                        backgroundRepeat: 'no-repeat'
-                    }}
-                />
-            </div>
-        )}
-        
-        <div 
-            className="absolute inset-0 cursor-crosshair"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onMouseMove={handleMouseMove}
-        />
-    </div>
-</div>
+                        {productImages.map((img, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setActiveImage(index)}
+                                /* min-w-[70px] and max-w-[70px] fixes the mobile size to your original small square.
+                                   md:max-w-none and md:w-full lets it expand to the sidebar width on desktop.
+                                */
+                                className={`aspect-square min-w-[70px] max-w-[70px] md:min-w-0 md:max-w-none md:w-full rounded-xl border-2 transition-all overflow-hidden bg-slate-50 p-2 flex-shrink-0
+                    ${activeImage === index ? 'border-slate-900 shadow-lg' : 'border-slate-100 hover:border-slate-300'}`}
+                            >
+                                <img src={img} alt={`${product.title} ${index}`} className="w-full h-full object-contain" />
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Main Image */}
+                    <div className="flex-1 aspect-[4/5] bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 flex items-center justify-center p-8 overflow-hidden group order-1 md:order-2 relative">
+                        <img
+                            src={productImages[activeImage]}
+                            alt={product.title}
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                        />
+
+                        {/* ... Zoom logic remains exactly as you had it ... */}
+                        {isZooming && (
+                            <div
+                                className="hidden lg:block absolute w-32 h-32 border-3 border-blue-500 rounded-full pointer-events-none z-10 shadow-xl overflow-hidden"
+                                style={{
+                                    left: `${zoomPosition.x}%`,
+                                    top: `${zoomPosition.y}%`,
+                                    transform: 'translate(-50%, -50%)',
+                                    backgroundImage: `url(${productImages[activeImage]})`,
+                                    backgroundSize: '600% 600%',
+                                    backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                                    backgroundRepeat: 'no-repeat'
+                                }}
+                            />
+                        )}
+
+                        {isZooming && (
+                            <div className="hidden lg:block absolute top-0 -right-96 w-[28rem] h-[28rem] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-20">
+                                <div
+                                    className="w-full h-full"
+                                    style={{
+                                        backgroundImage: `url(${productImages[activeImage]})`,
+                                        backgroundSize: '600% 600%',
+                                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                                        backgroundRepeat: 'no-repeat'
+                                    }}
+                                />
+                            </div>
+                        )}
+
+                        <div
+                            className="absolute inset-0 cursor-crosshair"
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                            onMouseMove={handleMouseMove}
+                        />
+                    </div>
+                </div>
 
                 {/* Info Section */}
                 <div className="flex-1 space-y-8">
@@ -190,8 +201,8 @@ const ProductDetails = () => {
                     {product.shortDetails && (
                         <div className="space-y-3">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Highlights</h3>
-                            <div 
-                                dangerouslySetInnerHTML={{ __html: product.shortDetails }} 
+                            <div
+                                dangerouslySetInnerHTML={{ __html: product.shortDetails }}
                                 className="text-slate-600 text-sm font-medium leading-relaxed space-y-2 prose-sm prose-slate"
                             />
                         </div>
@@ -214,12 +225,12 @@ const ProductDetails = () => {
                             <div className="flex items-center gap-4">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
                                 <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white">
-                                    <button 
+                                    <button
                                         onClick={() => setQty(Math.max(1, qty - 1))}
                                         className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
                                     > - </button>
                                     <span className="px-4 text-xs font-black text-slate-900">{qty}</span>
-                                    <button 
+                                    <button
                                         onClick={() => setQty(Math.min(product.countInStock, qty + 1))}
                                         className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
                                     > + </button>
@@ -228,18 +239,18 @@ const ProductDetails = () => {
                         )}
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <button 
+                            <button
                                 onClick={addToCartHandler}
                                 disabled={product.countInStock === 0}
                                 className={`flex-1 py-5 rounded-2xl transition-all font-black uppercase text-[10px] tracking-widest shadow-xl active:scale-95
-                                    ${product.countInStock > 0 
-                                        ? 'bg-slate-900 text-white hover:bg-black shadow-slate-200' 
+                                    ${product.countInStock > 0
+                                        ? 'bg-slate-900 text-white hover:bg-black shadow-slate-200'
                                         : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'}`}
                             >
                                 {product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
                             </button>
                             {product.countInStock > 0 && (
-                                <button 
+                                <button
                                     onClick={buyNowHandler}
                                     className="flex-1 py-5 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-all font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 active:scale-95"
                                 >
@@ -253,8 +264,8 @@ const ProductDetails = () => {
                     {product.shortSpecification && (
                         <div className="space-y-3">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Key Specifications</h3>
-                            <div 
-                                dangerouslySetInnerHTML={{ __html: product.shortSpecification }} 
+                            <div
+                                dangerouslySetInnerHTML={{ __html: product.shortSpecification }}
                                 className="text-slate-500 text-xs font-semibold grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4"
                             />
                         </div>
@@ -265,7 +276,7 @@ const ProductDetails = () => {
             {/* Tabbed Content */}
             <div className="mt-20 border-t border-slate-100">
                 <div className="flex gap-8 md:gap-12 overflow-x-auto pb-px scrollbar-hide">
-                    {["overview", "specifications","reviews"].map((tab) => (
+                    {["overview", "specifications", "reviews"].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -364,6 +375,34 @@ const ProductDetails = () => {
                     )}
                 </div>
             </div>
+            
+             {/* Related Products Section */}
+             {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
+                <div className="mt-24 pt-16 border-t border-slate-100">
+                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-8">Related Products</h3>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                        {relatedProducts.filter(p => p && p._id !== product._id && p.slug !== (product.slug || productSlug)).slice(0, 4).map((item) => (
+                            <Link 
+                                to={`/product/${item.slug || item._id}`} 
+                                key={item._id}
+                                className="group bg-white border border-slate-100 rounded-2xl p-4 hover:shadow-xl hover:shadow-slate-200/50 hover:border-slate-200 transition-all block"
+                                onClick={() => window.scrollTo(0, 0)}
+                            >
+                                <div className="aspect-square bg-slate-50 rounded-xl mb-4 overflow-hidden p-4">
+                                    <img 
+                                        src={item.image || (item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${item.images[0]}`) : printerImg)} 
+                                        alt={item.title} 
+                                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
+                                    />
+                                </div>
+                                <h4 className="font-bold text-slate-900 truncate mb-1 text-sm">{item.title}</h4>
+                                <p className="text-blue-600 font-bold text-sm">${item.price}</p>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

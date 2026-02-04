@@ -9,7 +9,6 @@ import Home from "./Home";
 import LatestTips from "./LatestTips";
 import Reviews from "./Reviews";
 import StatsCircles from "./StatsCircles";
-import TopPicksGrid from "./TopPicksGrid";
 import WhyChooseSection from "./WhyChooseSection";
 import OurPromiseSection from "./OurPromiseSection";
 import ImportantInfoSection from "./ImportantInfoSection";
@@ -52,7 +51,6 @@ const HomeMain = () => {
             <Home />
             <WhyChooseSection />
             <OurPromiseSection />
-            <TopPicksGrid />
             <Reviews />
             <LatestTips />
             <StatsCircles />
