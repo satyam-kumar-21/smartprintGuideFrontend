@@ -1,19 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import printer from "../../assets/printer.png";
+import { listCategories } from "../../redux/actions/categoryActions";
 
 const CategoryScrollSection = () => {
     const scrollRef = useRef(null);
+    const dispatch = useDispatch();
 
-    const categories = [
-        { title: "All In One", count: 15, image: printer, link: "/product-category/all-in-one-printers" },
-        { title: "Large Format", count: 7, image: printer, link: "/product-category/large-format-printers" },
-        { title: "Inkjet", count: 10, image: printer, link: "/product-category/inkjet-printers" },
-        { title: "Laser", count: 10, image: printer, link: "/product-category/laser-printers" },
-        { title: "LED Printers", count: 6, image: printer, link: "/product-category/led-printers" },
-        { title: "Ink & Toner", count: 6, image: printer, link: "/product-category/ink-toner" },
-    ];
+    const categoryList = useSelector((state) => state.categoryList);
+    const { loading, error, categories } = categoryList;
+
+    useEffect(() => {
+        dispatch(listCategories());
+    }, [dispatch]);
 
     const scroll = (direction) => {
         if (!scrollRef.current) return;
@@ -23,6 +24,18 @@ const CategoryScrollSection = () => {
             behavior: "smooth",
         });
     };
+
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+
+    if (error) {
+        return null; 
+    }
 
     return (
         <section className="relative max-w-7xl mx-auto px-4 py-12">
@@ -52,10 +65,10 @@ const CategoryScrollSection = () => {
                 ref={scrollRef}
                 className="flex gap-4 overflow-x-auto scroll-smooth px-2 sm:px-0 scrollbar-hide"
             >
-                {categories.map((item, index) => (
+                {categories && categories.map((item, index) => (
                     <Link
-                        key={index}
-                        to={item.link}
+                        key={item._id || index}
+                        to={`/product-category/${item.slug}`} // Assuming slug exists, otherwise use ID
                         className="
               flex-shrink-0
               w-[calc(50%-8px)] sm:w-[calc(33.333%-12px)] lg:w-[calc(25%-18px)]
@@ -63,12 +76,23 @@ const CategoryScrollSection = () => {
             "
                     >
                         {/* Image */}
-                        <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-                            <img src={item.image} alt={item.title} className="w-24 h-24 object-contain" />
+                        <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                             <img 
+                                src={
+                                    item.image
+                                        ? (item.image.startsWith('http') 
+                                            ? item.image 
+                                            : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${item.image}`)
+                                        : printer
+                                }
+                                alt={item.name} 
+                                className="w-full h-full object-contain p-2"
+                                onError={(e) => { e.target.src = printer; }}
+                            />
                         </div>
 
                         {/* Text */}
-                        <h3 className="text-lg font-medium text-gray-900">{item.title}</h3>
+                        <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
                         <p className="text-sm text-gray-500 mt-1">{item.count} items</p>
                     </Link>
                 ))}

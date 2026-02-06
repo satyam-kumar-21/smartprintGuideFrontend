@@ -19,19 +19,44 @@ import {
 
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
-    const fetchOrders = async () => {
+    // Debounce search
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
+
+    const fetchOrders = async (keyword = '', pageNumber = 1, append = false) => {
         try {
             setLoading(true);
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/orders`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/orders?search=${keyword}&page=${pageNumber}&limit=20`, {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             });
-            setOrders(data);
+            
+            // Handle both legacy (array) and new (paginated object) responses
+            const newOrders = data.orders || data; 
+            const newPage = data.page || 1;
+            const newPages = data.pages || 1;
+
+            if (append) {
+                setOrders(prev => [...prev, ...newOrders]);
+            } else {
+                setOrders(newOrders);
+            }
+            
+            setPage(newPage);
+            setPages(newPages);
             setLoading(false);
         } catch (err) {
             setError(err.response?.data?.message || err.message);
@@ -41,11 +66,18 @@ const AdminOrders = () => {
 
     React.useEffect(() => {
         if (userInfo) {
-            fetchOrders();
+            // Initial load or search change -> Page 1, replace list
+            fetchOrders(debouncedSearchTerm, 1, false);
         }
-    }, [userInfo]);
+    }, [userInfo, debouncedSearchTerm]);
 
-    const [searchTerm, setSearchTerm] = useState('');
+    const loadMoreHandler = () => {
+        if (page < pages) {
+            const nextPage = page + 1;
+            fetchOrders(debouncedSearchTerm, nextPage, true);
+        }
+    };
+
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -99,10 +131,7 @@ const AdminOrders = () => {
         }
     };
 
-    const filteredOrders = orders.filter(order =>
-        order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (order.user && order.user.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const filteredOrders = orders; // Server-side filtered now
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pb-20">
@@ -148,77 +177,103 @@ const AdminOrders = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {loading ? (
+                            {loading && (!filteredOrders || filteredOrders.length === 0) ? (
                                 <tr><td colSpan="6" className="py-10 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">Synchronizing Inventory Data...</td></tr>
                             ) : error ? (
                                 <tr><td colSpan="6" className="py-10 text-center text-red-500 font-bold uppercase tracking-widest text-xs">{error}</td></tr>
-                            ) : filteredOrders.map((order) => (
-                                <tr key={order._id} className={`hover:bg-slate-50/50 transition-colors ${!order.isPaid ? 'bg-red-50/30 border-l-4 border-l-red-500' : ''}`}>
-                                    <td className="px-6 py-4 font-bold text-slate-700">
-                                        <div className="flex flex-col">
-                                            <span className="text-blue-600">ORD-{order._id.toUpperCase()}</span>
-                                            <div className="text-xs font-normal text-slate-400">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                                            {!order.isPaid && (
-                                                <div className="text-xs font-bold text-red-600 uppercase tracking-wider mt-1">Payment Failed</div>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-black text-[10px]">
-                                                {order.user?.name?.charAt(0) || 'U'}
-                                            </div>
-                                            <div>
-                                                <div className="font-medium text-slate-800">{order.user?.name || 'Anonymous User'}</div>
-                                                <div className="text-xs text-slate-500">ID: U-{order.user?._id?.substring(order.user?._id?.length - 4).toUpperCase() || '1001'}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 font-bold text-slate-800">
-                                        ${(order.totalPrice || 0).toFixed(2)}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="space-y-2">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-slate-100'}`}>
-                                                {order.status || 'Processing'}
-                                            </span>
-                                            <div className="text-xs text-slate-500 flex items-center gap-1">
-                                                <Truck size={12} />
-                                                <span className="font-medium truncate max-w-[120px]">{order.tracking?.currentLocation || 'Warehouse'}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <button
-                                            onClick={() => handleOpenItems(order)}
-                                            className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
-                                        >
-                                            <Package size={16} />
-                                        </button>
-                                        <div className="text-[10px] text-slate-400 mt-1">{order.orderItems.reduce((acc, item) => acc + item.qty, 0)} Items</div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex flex-col gap-2 items-end">
-                                            <button
-                                                onClick={() => handleOpenUpdate(order)}
-                                                className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors border border-blue-200 w-28 text-center"
-                                            >
-                                                Update Status
-                                            </button>
-                                            <button
-                                                onClick={() => handleOpenPayment(order)}
-                                                className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-xs font-bold transition-colors border border-green-200 w-28 flex items-center justify-center gap-1"
-                                            >
-                                                <CreditCard size={12} />
-                                                Paid Info
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {filteredOrders.map((order) => (
+                                        <tr key={order._id} className={`hover:bg-slate-50/50 transition-colors ${!order.isPaid ? 'bg-red-50/30 border-l-4 border-l-red-500' : ''}`}>
+                                            <td className="px-6 py-4 font-bold text-slate-700">
+                                                <div className="flex flex-col">
+                                                    <span className="text-blue-600">ORD-{order._id.toUpperCase()}</span>
+                                                    <div className="text-xs font-normal text-slate-400">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                                                    {!order.isPaid && (
+                                                        <div className="text-xs font-bold text-red-600 uppercase tracking-wider mt-1">Payment Failed</div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-black text-[10px]">
+                                                        {order.user?.name?.charAt(0) || 'U'}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-medium text-slate-800">{order.user?.name || 'Anonymous User'}</div>
+                                                        <div className="text-xs text-slate-500">ID: U-{order.user?._id?.substring(order.user?._id?.length - 4).toUpperCase() || '1001'}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 font-bold text-slate-800">
+                                                ${(order.totalPrice || 0).toFixed(2)}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="space-y-2">
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-slate-100'}`}>
+                                                        {order.status || 'Processing'}
+                                                    </span>
+                                                    <div className="text-xs text-slate-500 flex items-center gap-1">
+                                                        <Truck size={12} />
+                                                        <span className="font-medium truncate max-w-[120px]">{order.tracking?.currentLocation || 'Warehouse'}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button
+                                                    onClick={() => handleOpenItems(order)}
+                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                                                >
+                                                    <Package size={16} />
+                                                </button>
+                                                <div className="text-[10px] text-slate-400 mt-1">{order.orderItems.reduce((acc, item) => acc + item.qty, 0)} Items</div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex flex-col gap-2 items-end">
+                                                    <button
+                                                        onClick={() => handleOpenUpdate(order)}
+                                                        className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors border border-blue-200 w-28 text-center"
+                                                    >
+                                                        Update Status
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleOpenPayment(order)}
+                                                        className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-xs font-bold transition-colors border border-green-200 w-28 flex items-center justify-center gap-1"
+                                                    >
+                                                        <CreditCard size={12} />
+                                                        Paid Info
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {loading && (
+                                        <tr>
+                                            <td colSpan="6" className="p-6 text-center">
+                                                <div className="inline-flex items-center gap-3 px-4 py-2 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest">
+                                                    <div className="w-4 h-4 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin"></div>
+                                                    Loading more orders...
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>
+                
+                {/* Load More Button */}
+                {!loading && page < pages && (
+                    <div className="flex justify-center p-6 border-t border-slate-50">
+                        <button 
+                            onClick={loadMoreHandler}
+                            className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-blue-600 transition-colors shadow-lg"
+                        >
+                            See More Orders
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Update Status Modal */}

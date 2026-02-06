@@ -17,38 +17,59 @@ import {
 
 const AdminCustomers = () => {
     const [customers, setCustomers] = useState([]);
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const [confirmModal, setConfirmModal] = useState({ show: false, type: '', userId: null, userName: '' });
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
+    // Debounce search
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
+
+    // Initial Load & Search
     useEffect(() => {
         if (userInfo) {
-            fetchCustomers();
+            fetchCustomers(debouncedSearchTerm, 1, false);
         }
-    }, [userInfo]);
+    }, [userInfo, debouncedSearchTerm]);
 
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (keyword = '', pageNumber = 1, append = false) => {
         if (!userInfo) return;
 
         try {
             setLoading(true);
             setError(null);
-            const { data: users } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users`, {
+            
+            // Get Users with pagination
+            const { data: userData } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/users?search=${keyword}&page=${pageNumber}&limit=20`, {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             });
 
-            // Fetch orders to calculate customer stats
-            const { data: orders } = await axios.get(`${import.meta.env.VITE_API_URL}/orders`, {
+            // Handle potential differing response structure if something failed, but expected { users, page, pages, total }
+            const users = userData.users || [];
+            const newPage = userData.page || 1;
+            const newPages = userData.pages || 1;
+
+            // Fetch ALL orders to calculate customer stats accurately (with high limit)
+            // Or fetch limited orders and accept inaccuracies. Using high limit for now.
+            const { data: orderData } = await axios.get(`${import.meta.env.VITE_API_URL}/orders?limit=5000`, {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             });
+            const orders = orderData.orders || orderData; // Handle paginated or non-paginated return
 
             // Calculate stats for each customer
             const customersWithStats = users.filter(user => !user.isAdmin).map(user => {
-                const userOrders = orders.filter(order => order.user && order.user._id === user._id);
+                const userOrders = Array.isArray(orders) ? orders.filter(order => order.user && (order.user._id === user._id || order.user === user._id)) : [];
                 const totalSpent = userOrders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
                 const totalItems = userOrders.reduce((acc, order) =>
                     acc + (order.orderItems ? order.orderItems.reduce((sum, item) => sum + (item.qty || 0), 0) : 0), 0
@@ -59,18 +80,31 @@ const AdminCustomers = () => {
                     totalOrders: userOrders.length,
                     totalSpent: totalSpent,
                     totalItems: totalItems,
-                    status: 'Active',
+                    status: user.isBlocked ? 'Blocked' : 'Active', // Use actual status if available
                     joinDate: new Date(user.createdAt).toLocaleDateString('en-US', {
                         month: 'short', day: 'numeric', year: 'numeric'
                     })
                 };
             });
 
-            setCustomers(customersWithStats);
+            if (append) {
+                setCustomers(prev => [...prev, ...customersWithStats]);
+            } else {
+                setCustomers(customersWithStats);
+            }
+            
+            setPage(newPage);
+            setPages(newPages);
             setLoading(false);
         } catch (err) {
             setError(err.response?.data?.message || err.message);
             setLoading(false);
+        }
+    };
+
+    const loadMoreHandler = () => {
+        if (page < pages) {
+            fetchCustomers(debouncedSearchTerm, page + 1, true);
         }
     };
 
@@ -94,11 +128,6 @@ const AdminCustomers = () => {
         }
     };
 
-    const handleBlockUser = async (userId) => {
-        const user = customers.find(c => c._id === userId);
-        setConfirmModal({ show: true, type: 'block', userId, userName: user?.name || 'this user' });
-    };
-
     const confirmBlock = async () => {
         if (!userInfo) {
             console.error('No userInfo available');
@@ -117,9 +146,23 @@ const AdminCustomers = () => {
         }
     };
 
-    const handleUnblockUser = async (userId) => {
+
+    const handleBlockUser = async (userId) => {
         const user = customers.find(c => c._id === userId);
-        setConfirmModal({ show: true, type: 'unblock', userId, userName: user?.name || 'this user' });
+        setConfirmModal({ show: true, type: 'block', userId, userName: user?.name || 'this user' });
+    };
+
+    const handleUnblockUser = async (userId) => {
+        if (!userInfo) return;
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL}/auth/users/${userId}/unblock`, {}, {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            });
+            fetchCustomers(searchTerm, 1, false); // Refresh list
+        } catch (err) {
+            console.error('Unblock user error:', err);
+            alert(err.response?.data?.message || 'Failed to unblock user');
+        }
     };
 
     const confirmUnblock = async () => {
@@ -143,10 +186,7 @@ const AdminCustomers = () => {
         else if (confirmModal.type === 'unblock') await confirmUnblock();
     };
 
-    const filteredCustomers = customers.filter(c =>
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCustomers = customers; // Server-side filtered now
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pb-20">
@@ -275,6 +315,18 @@ const AdminCustomers = () => {
             </div>
 
             {/* Confirmation Modal */}
+
+                {/* Load More Button */}
+                {!loading && page < pages && (
+                    <div className="flex justify-center p-6 border-t border-slate-50">
+                        <button 
+                            onClick={loadMoreHandler}
+                            className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-blue-600 transition-colors shadow-lg"
+                        >
+                            See More Customers
+                        </button>
+                    </div>
+                )}
             {confirmModal.show && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 m-4">

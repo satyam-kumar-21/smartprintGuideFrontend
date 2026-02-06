@@ -151,9 +151,13 @@ const Header = () => {
                             {/* Branding / Logo - Centered on Mobile, Left on Desktop */}
                             <Link
                                 to="/"
-                                className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent cursor-pointer shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
+                                className="cursor-pointer shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0"
                             >
-                                Smart ePrinting
+                                <img
+                                    src="/smartEprintingLogo.png"
+                                    alt="Smart ePrinting"
+                                    className="h-12 md:h-16 w-auto object-contain"
+                                />
                             </Link>
 
                             {/* Desktop Navigation */}

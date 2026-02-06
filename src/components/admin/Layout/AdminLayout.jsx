@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfile, logout } from '../../../redux/actions/userActions';
@@ -91,14 +92,78 @@ const AdminLayout = () => {
         }
     };
 
-    // Dummy Notifications
-    const [notifications, setNotifications] = useState([
-        { id: 1, type: 'order', message: 'New order #ORD-7785 placed', time: '2 min ago', path: '/admin/orders', read: false },
-        { id: 2, type: 'chat', message: 'Sarah sent a new message', time: '15 min ago', path: '/admin/chat', read: false },
-        { id: 3, type: 'stock', message: 'Low stock warning: Printer X', time: '1 hr ago', path: '/admin/products', read: true },
-    ]);
+    // Notifications Logic
+    const [notifications, setNotifications] = useState([]);
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const fetchNotifications = async () => {
+        try {
+            const config = {
+                headers: { Authorization: `Bearer ${userInfo.token}` }
+            };
+
+            // Fetch Chats (Admin sees all chats)
+            const { data: chats } = await axios.get(`${import.meta.env.VITE_API_URL}/chats`, config);
+            const unreadChats = chats.filter(c => c.unreadCount > 0);
+
+            // Fetch Orders (Recent & Processing)
+            const { data: ordersData } = await axios.get(`${import.meta.env.VITE_API_URL}/orders?limit=10&page=1`, config);
+            const recentOrders = ordersData.orders || [];
+
+            // Filter for 'Processing' or simply new orders (e.g. created in last 24h)
+            // Here we prioritize Processing status as "Action Needed"
+            const newOrders = recentOrders.filter(o => o.status === 'Processing' || o.status === 'Pending');
+
+            const chatNotifs = unreadChats.map(c => ({
+                id: `chat-${c._id}`,
+                type: 'chat',
+                message: `New message from ${c.user?.name || 'User'}`,
+                dateObject: new Date(c.updatedAt),
+                path: '/admin/chat',
+                read: false
+            }));
+
+            const orderNotifs = newOrders.map(o => ({
+                id: `order-${o._id}`,
+                type: 'order',
+                message: `New Order #${o._id.substring(0, 6)}...`,
+                dateObject: new Date(o.createdAt),
+                path: '/admin/orders',
+                read: false
+            }));
+
+            const combined = [...chatNotifs, ...orderNotifs].sort((a, b) => b.dateObject - a.dateObject);
+            setNotifications(combined);
+
+        } catch (error) {
+            console.error("Failed to fetch notifications", error);
+        }
+    };
+
+    useEffect(() => {
+        if (userInfo && userInfo.isAdmin) {
+            fetchNotifications();
+            // Poll every 30 seconds
+            const interval = setInterval(fetchNotifications, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [userInfo]);
+
+    const formatTimeAgo = (date) => {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + "y ago";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + "mo ago";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + "d ago";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + "h ago";
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + "m ago";
+        return Math.floor(seconds) + "s ago";
+    };
+
+    const unreadCount = notifications.length;
 
     const handleNotifClick = (path) => {
         navigate(path);

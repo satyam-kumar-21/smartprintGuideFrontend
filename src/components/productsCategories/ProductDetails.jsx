@@ -15,9 +15,14 @@ const ProductDetails = () => {
     const [activeTab, setActiveTab] = useState("overview");
     const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
     const [isZooming, setIsZooming] = useState(false);
+    const [showLoginMessage, setShowLoginMessage] = useState(false);
+    const [showReviewLoginMessage, setShowReviewLoginMessage] = useState(false);
 
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
 
     const productList = useSelector((state) => state.productList);
     const { products: relatedProducts } = productList;
@@ -37,11 +42,21 @@ const ProductDetails = () => {
     }, [dispatch, product]);
 
     const addToCartHandler = () => {
+        if (!userInfo) {
+            setShowLoginMessage(true);
+            setTimeout(() => setShowLoginMessage(false), 3000);
+            return;
+        }
         dispatch(addToCart(product.slug || product._id, qty));
         navigate('/cart');
     };
 
     const buyNowHandler = () => {
+        if (!userInfo) {
+            setShowLoginMessage(true);
+            setTimeout(() => setShowLoginMessage(false), 3000);
+            return;
+        }
         dispatch(addToCart(product.slug || product._id, qty));
         navigate('/cart?redirect=shipping');
     };
@@ -60,7 +75,14 @@ const ProductDetails = () => {
         const y = ((e.clientY - rect.top) / rect.height) * 100;
         setZoomPosition({ x, y });
     };
+const handleWriteReview = () => {
+        if (!userInfo) {
+            setShowReviewLoginMessage(true);
+            setTimeout(() => setShowReviewLoginMessage(false), 3000);
+        }
+    };
 
+    
     if (loading) return (
         <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-6">
             <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin"></div>
@@ -222,18 +244,25 @@ const ProductDetails = () => {
                         </div>
 
                         {product.countInStock > 0 && (
-                            <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
-                                <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white">
-                                    <button
-                                        onClick={() => setQty(Math.max(1, qty - 1))}
-                                        className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
-                                    > - </button>
-                                    <span className="px-4 text-xs font-black text-slate-900">{qty}</span>
-                                    <button
-                                        onClick={() => setQty(Math.min(product.countInStock, qty + 1))}
-                                        className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
-                                    > + </button>
+                            <div className="flex flex-col gap-4">
+                                {showLoginMessage && (
+                                    <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-bold text-center border border-red-100 animate-pulse">
+                                        Please login to add items to cart
+                                    </div>
+                                )}
+                                <div className="flex items-center gap-4">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
+                                    <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white">
+                                        <button
+                                            onClick={() => setQty(Math.max(1, qty - 1))}
+                                            className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
+                                        > - </button>
+                                        <span className="px-4 text-xs font-black text-slate-900">{qty}</span>
+                                        <button
+                                            onClick={() => setQty(Math.min(product.countInStock, qty + 1))}
+                                            className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
+                                        > + </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -319,9 +348,19 @@ const ProductDetails = () => {
                                         <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{product.rating ? product.rating.toFixed(1) : '0.0'} / 5.0</span>
                                     </div>
                                 </div>
-                                <button className="w-full md:w-auto px-6 py-3 border-2 border-slate-900 text-slate-900 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all">
-                                    Write a Review
-                                </button>
+                                <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                                    {showReviewLoginMessage && (
+                                        <div className="p-2 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold border border-red-100 animate-pulse text-center w-full">
+                                            Please login to write a review
+                                        </div>
+                                    )}
+                                    <button 
+                                        onClick={handleWriteReview}
+                                        className="w-full md:w-auto px-6 py-3 border-2 border-slate-900 text-slate-900 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all"
+                                    >
+                                        Write a Review
+                                    </button>
+                                </div>
                             </div>
 
                             {product.reviews && product.reviews.length > 0 ? (

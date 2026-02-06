@@ -22,7 +22,9 @@ const AdminProducts = () => {
     const dispatch = useDispatch();
 
     const productList = useSelector((state) => state.productList);
-    const { loading, error, products } = productList;
+    const { loading, error, products, page, pages } = productList;
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
     const categoryList = useSelector((state) => state.categoryList);
     const { categories } = categoryList;
@@ -40,7 +42,6 @@ const AdminProducts = () => {
     const [editingId, setEditingId] = useState(null);
     const [previewImages, setPreviewImages] = useState([]); // Array of URLs or File objects
     const [selectedFiles, setSelectedFiles] = useState([]); // Array of File objects
-    const [searchTerm, setSearchTerm] = useState('');
 
     // Bulk Upload State
     const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
@@ -71,24 +72,41 @@ const AdminProducts = () => {
     const [specType, setSpecType] = useState('text'); // 'text' | 'table'
     const [specRows, setSpecRows] = useState([{ key: '', value: '' }]);
 
+    // Debounce search term
     useEffect(() => {
-        dispatch(listProducts());
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
+
+    // Initial load and Search triggers
+    useEffect(() => {
+        // Always reset to page 1 when search changes or strictly initial load
+        dispatch(listProducts(debouncedSearchTerm, '', 1));
         dispatch(listCategories());
+    }, [dispatch, debouncedSearchTerm]);
 
-        if (successCreate) {
-            dispatch({ type: PRODUCT_CREATE_RESET });
-            closeForm();
+    // Refresh on actions
+    useEffect(() => {
+        if (successCreate || successUpdate || successDelete) {
+            dispatch(listProducts(debouncedSearchTerm, '', 1));
+            if (successCreate) {
+                 dispatch({ type: PRODUCT_CREATE_RESET });
+                 closeForm();
+            }
+            if (successUpdate) {
+                 dispatch({ type: PRODUCT_UPDATE_RESET });
+                 closeForm();
+            }
         }
+    }, [dispatch, successCreate, successUpdate, successDelete, debouncedSearchTerm]);
 
-        if (successUpdate) {
-            dispatch({ type: PRODUCT_UPDATE_RESET });
-            closeForm();
+    const loadMoreHandler = () => {
+        if (page < pages) {
+            dispatch(listProducts(debouncedSearchTerm, '', page + 1));
         }
-
-        if (successDelete) {
-            dispatch(listProducts());
-        }
-    }, [dispatch, successCreate, successUpdate, successDelete]);
+    };
 
     const closeForm = () => {
         setIsFormOpen(false);
@@ -321,10 +339,7 @@ const AdminProducts = () => {
         }
     };
 
-    const filteredProducts = products?.filter(p =>
-        p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.brand.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredProducts = products; // Used directly from Redux now (server filtered)
 
     const quillModules = {
         toolbar: [
@@ -854,53 +869,67 @@ const AdminProducts = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {loading ? (
+                            {loading && (!filteredProducts || filteredProducts.length === 0) ? (
                                 <tr><td colSpan="5" className="p-20 text-center text-slate-400 font-black uppercase text-xs tracking-widest">SYNCHRONIZING INVENTORY...</td></tr>
-                            ) : filteredProducts?.map((p) => (
-                                <tr key={p._id} className="hover:bg-blue-50/30 transition-all group">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-6">
-                                            <div className="w-20 h-20 bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0 flex items-center justify-center p-2 group-hover:scale-105 transition-transform rotate-1 group-hover:rotate-0">
-                                                <img
-                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${import.meta.env.VITE_API_URL.replace('/api', '')}${p.images[0]}`) : '/printer.png'}
-                                                    alt=""
-                                                    className="w-full h-full object-contain"
-                                                    onError={(e) => e.target.src = '/printer.png'}
-                                                />
-                                            </div>
-                                            <div>
-                                                <div className="font-black text-slate-900 text-lg leading-tight mb-1 group-hover:text-blue-600 transition-colors">{p.title}</div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">{p.brand || 'No Brand'}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <span className="px-4 py-2 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200">
-                                            {p.category?.name || 'Uncategorized'}
-                                        </span>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="font-black text-slate-900 text-xl tracking-tighter">${p.price.toFixed(2)}</div>
-                                        {p.oldPrice > 0 && <div className="text-xs text-slate-300 line-through font-bold">${p.oldPrice.toFixed(2)}</div>}
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className={`inline-flex items-center gap-2 font-black text-[10px] uppercase tracking-widest ${p.countInStock > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                                            <div className={`w-3 h-3 rounded-full border-2 border-white ${p.countInStock > 0 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`}></div>
-                                            {p.countInStock > 0 ? `${p.countInStock} In Stock` : 'Depleted'}
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-right">
-                                        <div className="flex items-center justify-end gap-3">
-                                            <button onClick={() => handleEdit(p)} className="p-4 bg-white hover:bg-slate-900 text-slate-400 hover:text-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 transition-all active:scale-95">
-                                                <Edit size={22} />
-                                            </button>
-                                            <button onClick={() => handleDelete(p._id)} className="p-4 bg-white hover:bg-red-600 text-slate-400 hover:text-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 transition-all active:scale-95">
-                                                <Trash2 size={22} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            ) : (
+                                <>
+                                    {filteredProducts?.map((p) => (
+                                        <tr key={p._id} className="hover:bg-blue-50/30 transition-all group">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="w-20 h-20 bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm flex-shrink-0 flex items-center justify-center p-2 group-hover:scale-105 transition-transform rotate-1 group-hover:rotate-0">
+                                                        <img
+                                                            src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${import.meta.env.VITE_API_URL.replace('/api', '')}${p.images[0]}`) : '/printer.png'}
+                                                            alt=""
+                                                            className="w-full h-full object-contain"
+                                                            onError={(e) => e.target.src = '/printer.png'}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-black text-slate-900 text-lg leading-tight mb-1 group-hover:text-blue-600 transition-colors">{p.title}</div>
+                                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">{p.brand || 'No Brand'}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <span className="px-4 py-2 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200">
+                                                    {p.category?.name || 'Uncategorized'}
+                                                </span>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="font-black text-slate-900 text-xl tracking-tighter">${p.price.toFixed(2)}</div>
+                                                {p.oldPrice > 0 && <div className="text-xs text-slate-300 line-through font-bold">${p.oldPrice.toFixed(2)}</div>}
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className={`inline-flex items-center gap-2 font-black text-[10px] uppercase tracking-widest ${p.countInStock > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                                                    <div className={`w-3 h-3 rounded-full border-2 border-white ${p.countInStock > 0 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`}></div>
+                                                    {p.countInStock > 0 ? `${p.countInStock} In Stock` : 'Depleted'}
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6 text-right">
+                                                <div className="flex items-center justify-end gap-3">
+                                                    <button onClick={() => handleEdit(p)} className="p-4 bg-white hover:bg-slate-900 text-slate-400 hover:text-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 transition-all active:scale-95">
+                                                        <Edit size={22} />
+                                                    </button>
+                                                    <button onClick={() => handleDelete(p._id)} className="p-4 bg-white hover:bg-red-600 text-slate-400 hover:text-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 transition-all active:scale-95">
+                                                        <Trash2 size={22} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {loading && (
+                                        <tr>
+                                            <td colSpan="5" className="p-6 text-center">
+                                                <div className="inline-flex items-center gap-3 px-4 py-2 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest">
+                                                    <div className="w-4 h-4 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin"></div>
+                                                    Loading more products...
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -909,6 +938,18 @@ const AdminProducts = () => {
                     <div className="p-32 text-center space-y-4">
                         <Tag size={80} className="mx-auto text-slate-100 animate-bounce duration-[3s]" />
                         <p className="font-black text-slate-300 uppercase tracking-widest text-sm">No Products Found In Inventory</p>
+                    </div>
+                )}
+
+                {/* Load More Button */}
+                {!loading && page < pages && (
+                    <div className="flex justify-center p-8 border-t border-slate-50">
+                        <button 
+                            onClick={loadMoreHandler}
+                            className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-blue-600 transition-colors shadow-lg"
+                        >
+                            See More Products
+                        </button>
                     </div>
                 )}
             </div>

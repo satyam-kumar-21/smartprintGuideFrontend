@@ -9,9 +9,13 @@ const Footer = () => {
 
         {/* 1. Brand + description + social */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Smart ePrinting
-          </h1>
+          <div className="mb-4">
+            <img 
+              src="/smartEprintingLogo.png" 
+              alt="Smart ePrinting" 
+              className="h-16 w-auto object-contain"
+            />
+          </div>
           <p className="text-gray-600 text-sm mb-4">
             Smart ePrinting is your trusted online destination for printers,
             ink, toner, and office printing supplies. We focus on quality

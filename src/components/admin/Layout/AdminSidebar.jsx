@@ -50,11 +50,12 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <div className="h-16 flex items-center gap-2 px-6 border-b border-slate-100 shrink-0">
-                    <div className="flex-1 flex items-center gap-2">
-                        <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                            A
-                        </div>
-                        <span className="text-xl font-bold text-slate-900 tracking-tight">AdminPanel</span>
+                    <div className="flex-1 flex items-center justify-start">
+                        <img 
+                            src="/smartEprintingLogo.png" 
+                            alt="SmartEprinting" 
+                            className="h-12 w-auto object-contain max-w-[180px]"
+                        />
                     </div>
                     {/* Mobile Close Button */}
                     <button
