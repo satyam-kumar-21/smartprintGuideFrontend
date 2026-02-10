@@ -19,9 +19,12 @@ const Checkout = () => {
     const [city, setCity] = useState(shippingAddress.city || '');
     const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '');
     const [country, setCountry] = useState(shippingAddress.country || '');
+    const [province, setProvince] = useState(shippingAddress.state || '');
     const [phone, setPhone] = useState(shippingAddress.phone || '');
 
     const [step, setStep] = useState(1);
+    const [shippingRates, setShippingRates] = useState([]);
+    const [selectedRate, setSelectedRate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [clover, setClover] = useState(null);
 
@@ -78,13 +81,36 @@ const Checkout = () => {
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
     const taxPrice = Number((0.15 * subtotal).toFixed(2));
-    const shippingPrice = 0;
-    const totalPrice = subtotal + taxPrice ;
+    const shippingPrice = selectedRate ? Number(selectedRate.rate) : 0;
+    const totalPrice = subtotal + taxPrice + shippingPrice;
 
-    const submitShippingHandler = (e) => {
+    const submitShippingHandler = async (e) => {
         e.preventDefault();
-        dispatch(saveShippingAddress({ address, city, postalCode, country, phone }));
-        setStep(2);
+        dispatch(saveShippingAddress({ address, city, postalCode, country, state: province, phone }));
+
+        if (shippingRates.length === 0) {
+            try {
+                setLoading(true);
+                const { data } = await axios.post(
+                    `${import.meta.env.VITE_API_URL}/shipping/rates`,
+                    { address, city, postalCode, country, state: province, phone, cartItems },
+                    { headers: { Authorization: `Bearer ${userInfo.token}` } }
+                );
+                const sortedRates = data.sort((a, b) => Number(a.rate) - Number(b.rate));
+                setShippingRates(sortedRates);
+                if (sortedRates.length > 0) setSelectedRate(sortedRates[0]);
+            } catch (error) {
+                alert(error.response?.data?.message || 'Error fetching shipping rates');
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            if (!selectedRate) {
+                alert('Please select a shipping method');
+                return;
+            }
+            setStep(2);
+        }
     };
 
     // ✅ CLOVER PAYMENT
@@ -108,7 +134,15 @@ const Checkout = () => {
             // 1. Create order
             const orderData = {
                 orderItems: cartItems,
-                shippingAddress: { address, city, postalCode, country, phone },
+                shippingAddress: { 
+                    address, 
+                    city, 
+                    postalCode, 
+                    country, 
+                    phone, 
+                    state: province,
+                    shippingMethod: selectedRate ? `${selectedRate.carrier} ${selectedRate.service}` : ''
+                },
                 paymentMethod: 'Clover',
                 itemsPrice: subtotal,
                 taxPrice,
@@ -185,7 +219,7 @@ const Checkout = () => {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">City</label>
                                             <input 
@@ -193,6 +227,16 @@ const Checkout = () => {
                                                 onChange={(e) => setCity(e.target.value)} 
                                                 required 
                                                 placeholder="New York" 
+                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">State / Province</label>
+                                            <input 
+                                                value={province} 
+                                                onChange={(e) => setProvince(e.target.value)} 
+                                                required
+                                                placeholder="NY" 
                                                 className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
                                             />
                                         </div>
@@ -232,8 +276,41 @@ const Checkout = () => {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="w-full mt-10 bg-slate-900 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200">
-                                    Continue to Payment <ChevronRight size={16} />
+                                {shippingRates.length > 0 && (
+                                    <div className="mt-8 space-y-4">
+                                        <h3 className="text-lg font-bold text-slate-900">Select Shipping Method</h3>
+                                        <div className="space-y-3">
+                                            {shippingRates.map((rate) => (
+                                                <div 
+                                                    key={rate.id}
+                                                    onClick={() => setSelectedRate(rate)}
+                                                    className={`p-4 rounded-xl border-2 cursor-pointer flex justify-between items-center transition-all ${
+                                                        selectedRate?.id === rate.id 
+                                                            ? 'border-slate-900 bg-slate-50' 
+                                                            : 'border-slate-100 hover:border-slate-300'
+                                                    }`}
+                                                >
+                                                    <div>
+                                                        <div className="font-bold text-slate-900">{rate.service}</div>
+                                                        <div className="text-xs text-slate-500">{rate.carrier} • {rate.delivery_days ? `${rate.delivery_days} days` : 'Standard'}</div>
+                                                    </div>
+                                                    <div className="font-bold text-slate-900">
+                                                        ${Number(rate.rate).toFixed(2)} {rate.currency}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <button type="submit" disabled={loading} className="w-full mt-10 bg-slate-900 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200 disabled:opacity-70 disabled:cursor-wait">
+                                     {loading ? <Loader2 className="animate-spin" /> : (
+                                        shippingRates.length > 0 ? (
+                                            <>Proceed to Payment <ChevronRight size={16} /></>
+                                        ) : (
+                                            <>Calculate Shipping <Truck size={16} /></>
+                                        )
+                                    )}
                                 </button>
                             </form>
                         ) : (
