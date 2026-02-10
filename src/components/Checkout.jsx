@@ -81,7 +81,7 @@ const Checkout = () => {
     }, [userInfo, cartItems, navigate, step]);
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-    const taxPrice = Number((0.15 * subtotal).toFixed(2));
+    const taxPrice = 0;
     const shippingPrice = selectedRate ? Number(selectedRate.rate) : 0;
     const totalPrice = subtotal + taxPrice + shippingPrice;
 
