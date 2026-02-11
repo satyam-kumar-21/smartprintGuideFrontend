@@ -1,5 +1,5 @@
 import React from 'react';
-import WhyImage from '../../assets/about.jpg'; // Replace with your actual image
+const WhyImage = "/assets/about.jpg";
 
 const choosePoints = [
     {

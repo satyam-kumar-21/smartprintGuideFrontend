@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { listProductDetails, listProducts } from "../../redux/actions/productActions";
 import { addToCart } from "../../redux/actions/cartActions";
-import printerImg from "../../assets/printer.png"; // fallback image
+
 
 const ProductDetails = () => {
     const { productSlug } = useParams();
@@ -17,6 +18,8 @@ const ProductDetails = () => {
     const [isZooming, setIsZooming] = useState(false);
     const [showLoginMessage, setShowLoginMessage] = useState(false);
     const [showReviewLoginMessage, setShowReviewLoginMessage] = useState(false);
+    const [showEligibilityMessage, setShowEligibilityMessage] = useState(false);
+    const [canReview, setCanReview] = useState(false);
 
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
@@ -26,6 +29,24 @@ const ProductDetails = () => {
 
     const productList = useSelector((state) => state.productList);
     const { products: relatedProducts } = productList;
+
+    useEffect(() => {
+        const checkEligibility = async () => {
+            if (userInfo && product && product._id) {
+                try {
+                    const config = {
+                        headers: { Authorization: `Bearer ${userInfo.token}` },
+                    };
+                    const baseUrl = import.meta.env.VITE_API_URL || '/api';
+                    const { data } = await axios.get(`${baseUrl}/orders/check-review-eligibility/${product._id}`, config);
+                    setCanReview(data.canReview);
+                } catch (error) {
+                    setCanReview(false);
+                }
+            }
+        };
+        checkEligibility();
+    }, [userInfo, product]);
 
     useEffect(() => {
         if (productSlug) {
@@ -79,10 +100,18 @@ const handleWriteReview = () => {
         if (!userInfo) {
             setShowReviewLoginMessage(true);
             setTimeout(() => setShowReviewLoginMessage(false), 3000);
+            return;
         }
+
+        if (!canReview) {
+            setShowEligibilityMessage(true);
+            setTimeout(() => setShowEligibilityMessage(false), 3000);
+            return;
+        }
+
+        // Logic to open review form would go here
     };
 
-    
     if (loading) return (
         <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-6">
             <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin"></div>
@@ -117,7 +146,7 @@ const handleWriteReview = () => {
 
     const productImages = product.images && product.images.length > 0
         ? product.images.map(img => img.startsWith('http') ? img : `${import.meta.env.VITE_API_URL.replace('/api', '')}${img}`)
-        : [printerImg];
+        : ["/assets/printer.png"];
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 bg-white overflow-hidden">
@@ -352,6 +381,11 @@ const handleWriteReview = () => {
                                     {showReviewLoginMessage && (
                                         <div className="p-2 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold border border-red-100 animate-pulse text-center w-full">
                                             Please login to write a review
+                                        </div>
+                                    )}
+                                    {showEligibilityMessage && (
+                                        <div className="p-2 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold border border-orange-100 animate-pulse text-center w-full">
+                                            Please purchase and receive this item to review
                                         </div>
                                     )}
                                     <button 

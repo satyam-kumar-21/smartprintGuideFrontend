@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Tag, ChevronLeft, ChevronRight } from 'lucide-react';
-import OfferImage from '../../assets/printer.png'; // Replace with your images
+const OfferImage = "/assets/printer.png";
 import { Link } from 'react-router-dom';
 
 const specialOffers = [

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import tip from "../../assets/printer.png"
+const tip = "/assets/printer.png";
 
 const LatestTips = () => {
     const scrollRef = useRef(null);

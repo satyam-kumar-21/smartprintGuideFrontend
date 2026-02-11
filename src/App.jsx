@@ -46,6 +46,14 @@ import CCPAPrivacyPolicy from './components/privacyPolicy/CCPAPrivacyPolicy';
 import AccessibilityStatement from './components/privacyPolicy/AccessibilityStatement';
 import Disclaimer from './components/privacyPolicy/Disclaimer';
 
+// Blog Imports
+import BlogsMain from './components/blogs/BlogsMain';
+import ChoosingPrinterGuide from './components/blogs/posts/ChoosingPrinterGuide';
+import PrinterMaintenanceGuide from './components/blogs/posts/PrinterMaintenanceGuide';
+import SavePrintingCostsGuide from './components/blogs/posts/SavePrintingCostsGuide';
+import PrintingMistakesGuide from './components/blogs/posts/PrintingMistakesGuide';
+import SmallBusinessPrintingGuide from './components/blogs/posts/SmallBusinessPrintingGuide';
+
 function App() {
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/admin');
@@ -70,6 +78,14 @@ function App() {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/order/:id" element={<OrderDetails />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    
+                    {/* Blogs */}
+                    <Route path="/blogs" element={<BlogsMain />} />
+                    <Route path="/blogs/choosing-right-printer-home-office" element={<ChoosingPrinterGuide />} />
+                    <Route path="/blogs/printer-maintenance-guide" element={<PrinterMaintenanceGuide />} />
+                    <Route path="/blogs/top-7-printing-mistakes" element={<PrintingMistakesGuide />} />
+                    <Route path="/blogs/save-printing-costs-guide" element={<SavePrintingCostsGuide />} />
+                    <Route path="/blogs/small-business-printing-essential-tools" element={<SmallBusinessPrintingGuide />} />
 
                     <Route path="/product/:productSlug" element={<ProductDetails />} />
 

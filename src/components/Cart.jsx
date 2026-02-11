@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { removeFromCart, addToCart } from "../redux/actions/cartActions";
-import printerImg from "../assets/printer.png";
+const printerImg = "/assets/printer.png";
 
 const Cart = () => {
     const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import React from 'react';
-import ClickPrintImg from '../../assets/printer.png'; // replace with your image
-import PrintCoreImg from '../../assets/printer.png';   // replace with your image
+const ClickPrintImg = "/assets/printer.png";
+const PrintCoreImg = "/assets/printer.png";
 import { Link } from 'react-router-dom';
 
 const TwoBannerSections = () => {

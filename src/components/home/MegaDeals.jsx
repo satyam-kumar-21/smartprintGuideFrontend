@@ -3,7 +3,7 @@ import { ShoppingCart, Heart, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../../redux/actions/productActions';
-import printerImg from '../../assets/printer.png';
+
 
 const MegaDeals = () => {
     const navigate = useNavigate();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listProducts } from "../../redux/actions/productActions";
 import ProductGrid from "./ProductGrid";
-import printerImg from "../../assets/printer.png";
+
 
 const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }) => {
     const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
             ? (product.image.startsWith('http') ? product.image : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${product.image}`)
             : (product.images && product.images.length > 0 
                 ? (product.images[0].startsWith('http') ? product.images[0] : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${product.images[0]}`) 
-                : printerImg),
+                : "/assets/printer.png"),
         link: `/product/${product.slug || product._id}`
     }));
 

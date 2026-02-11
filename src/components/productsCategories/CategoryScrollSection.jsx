@@ -2,11 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import printer from "../../assets/printer.png";
-import allone from "../../assets/allone.png";
-import inkjet from "../../assets/inkjet.png";
-import laser from "../../assets/laser.jpg";
-import inktoner from "../../assets/inktoner.png";
+
 import { listCategories } from "../../redux/actions/categoryActions";
 
 const getCategoryImage = (categoryName, originalImage) => {
@@ -14,17 +10,17 @@ const getCategoryImage = (categoryName, originalImage) => {
     const name = categoryName?.toLowerCase() || '';
     
     // Check for explicit matches or contains
-    if (name.includes('all in one')) return allone;
-    if (name.includes('inkjet')) return inkjet;
-    if (name.includes('laser')) return laser;
-    if (name.includes('ink') && name.includes('toner')) return inktoner;
+    if (name.includes('all in one')) return "/assets/allone.png";
+    if (name.includes('inkjet')) return "/assets/inkjet.png";
+    if (name.includes('laser')) return "/assets/laser.jpg";
+    if (name.includes('ink') && name.includes('toner')) return "/assets/inktoner.png";
 
     // Default fallbacks
     return originalImage
         ? (originalImage.startsWith('http')
             ? originalImage
             : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${originalImage}`)
-        : printer;
+        : "/assets/printer.png";
 };
 
 const CategoryScrollSection = () => {
@@ -105,7 +101,7 @@ const CategoryScrollSection = () => {
                                 src={getCategoryImage(item.name, item.image)}
                                 alt={item.name} 
                                 className="w-full h-full object-contain p-2"
-                                onError={(e) => { e.target.src = printer; }}
+                                onError={(e) => { e.target.src = "/assets/printer.png"; }}
                             />
                         </div>
 

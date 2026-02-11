@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import printerImg from "../../assets/printer.png"; // fallback product image
+
 
 const TrackOrder = () => {
     const [orderId, setOrderId] = useState("");

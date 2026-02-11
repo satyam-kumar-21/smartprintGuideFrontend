@@ -1,5 +1,9 @@
 import React from "react";
-import heroImage from "../../assets/printer.png"; // Main image for all sections
+const aboutUsHero = "/assets/aboutUsHero.png";
+const whoweare = "/assets/whoweare.png";
+const inktoner = "/assets/inktoner.png";
+const printingacceseries = "/assets/printingacceseries.png";
+const printer = "/assets/printer.png";
 
 const AboutContent = () => {
   return (
@@ -13,7 +17,7 @@ const AboutContent = () => {
     {/* Image Section */}
     <div className="md:w-1/2 flex justify-center md:justify-start">
       <img
-        src={heroImage}
+        src={aboutUsHero}
         alt="Smart ePrinting Team"
         className="w-full max-w-2xl h-64 object-cover rounded-xl shadow-lg"
       />
@@ -54,7 +58,7 @@ const AboutContent = () => {
           </div>
           <div>
             <img
-              src={heroImage}
+              src={whoweare}
               alt="Our Story"
               className="w-full h-80 object-cover rounded-xl shadow-lg"
             />
@@ -69,7 +73,7 @@ const AboutContent = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <img
-                src={heroImage}
+                src={printer}
                 alt="Printers"
                 className="w-full h-48 object-cover"
               />
@@ -84,7 +88,7 @@ const AboutContent = () => {
             </div>
             <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <img
-                src={heroImage}
+                src={inktoner}
                 alt="Ink & Toner"
                 className="w-full h-48 object-cover"
               />
@@ -99,7 +103,7 @@ const AboutContent = () => {
             </div>
             <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <img
-                src={heroImage}
+                src={printingacceseries}
                 alt="Printing Accessories"
                 className="w-full h-48 object-cover"
               />

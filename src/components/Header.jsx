@@ -167,6 +167,7 @@ const Header = () => {
                                 <Link to="/product-category/inkjet-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">Inkjet</Link>
                                 <Link to="/product-category/laser-printers" className="hidden 2xl:block hover:text-blue-600 transition-colors uppercase tracking-wide">Laser</Link>
                                 <Link to="/product-category/ink-toner" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Ink & Toner</Link>
+                                <Link to="/blogs" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Blogs</Link>
                                 <Link to="/customer-service" className="hover:text-blue-600 transition-colors uppercase tracking-wide">Customer Support</Link>
 
                             </nav>
@@ -284,6 +285,7 @@ const Header = () => {
                                             { name: 'Inkjet', path: '/product-category/inkjet-printers' },
                                             { name: 'Laser', path: '/product-category/laser-printers' },
                                             { name: 'Ink & Toner', path: '/product-category/ink-toner' },
+                                            { name: 'Blogs', path: '/blogs' },
                                             { name: 'Customer Support', path: '/customer-service' },
                                             { name: 'Track Your Order', path: '/track-order' },
                                         ].map((item) => (
