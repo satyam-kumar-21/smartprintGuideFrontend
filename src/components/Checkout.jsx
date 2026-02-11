@@ -100,19 +100,42 @@ const Checkout = () => {
                 
                 const rates = data.rates || (Array.isArray(data) ? data : []);
                 setDistance(data.distance || null);
+                                // Debug: log raw rates from backend
+                                // console.log('Raw rates from backend:', rates); 
+                                if (Array.isArray(rates)) {
+                                    rates.forEach((rate, idx) => {
+                                        console.log(`Rate #${idx}: carrier=${rate.carrier}, account_id=${rate.carrier_account_id}, service=${rate.service}`);
+                                    });
+                                }
 
-                // Only show Canada Post, FedEx, UPS, USPS shipping methods
-                const allowedAccounts = [
-                    'ca_e3cbd16a6eb84914985d90875a6ec074', // Canada Post
-                    'ca_76d0939dc1ce4c99870bbc2844d8d02b', // FedEx Wallet
-                    'ca_c5f03a14c10d4fbab837e8a35b01c7df', // UPS
-                    'ca_b82a2962176446d09a48bc649977f467'  // USPS
-                ];
-                const filteredRates = rates.filter(rate => allowedAccounts.includes(rate.carrier_account_id));
-
-                const sortedRates = filteredRates.sort((a, b) => Number(a.rate) - Number(b.rate));
-                setShippingRates(sortedRates);
-                if (sortedRates.length > 0) setSelectedRate(sortedRates[0]);
+                                // Only show Canada Post, FedEx, UPS, USPS shipping methods (strict carrier name and account id)
+                                const allowedAccounts = [
+                                        'ca_e3cbd16a6eb84914985d90875a6ec074', // Canada Post
+                                        'ca_76d0939dc1ce4c99870bbc2844d8d02b', // FedEx Wallet
+                                        'ca_c5f03a14c10d4fbab837e8a35b01c7df'  // UPS
+                                ];
+                                // Only show Canada Post, FedEx (FedExDefault), UPS (UPSDAP), and USPS
+                                const allowedCarrierMap = {
+                                    'ca_e3cbd16a6eb84914985d90875a6ec074': 'Canada Post',
+                                    'ca_76d0939dc1ce4c99870bbc2844d8d02b': 'FedExDefault',
+                                    'ca_c5f03a14c10d4fbab837e8a35b01c7df': 'UPSDAP',
+                                    'ca_b82a2962176446d09a48bc649977f467': 'USPS',
+                                    'ca_fb3ad562209b4e7d930bd0f31f44f2fe': 'DHLExpress'
+                                };
+                                const filteredRates = rates.filter(
+                                    rate => allowedCarrierMap[rate.carrier_account_id] && rate.carrier === allowedCarrierMap[rate.carrier_account_id]
+                                );
+                                // Only show the lowest-priced rate per carrier/account
+                                const bestRatesMap = {};
+                                filteredRates.forEach(rate => {
+                                    const key = rate.carrier_account_id;
+                                    if (!bestRatesMap[key] || Number(rate.rate) < Number(bestRatesMap[key].rate)) {
+                                        bestRatesMap[key] = rate;
+                                    }
+                                });
+                                const bestRates = Object.values(bestRatesMap).sort((a, b) => Number(a.rate) - Number(b.rate));
+                                setShippingRates(bestRates);
+                                if (bestRates.length > 0) setSelectedRate(bestRates[0]);
             } catch (error) {
                 alert(error.response?.data?.message || 'Error fetching shipping rates');
             } finally {
@@ -305,17 +328,17 @@ const Checkout = () => {
                                                 <div 
                                                     key={rate.id}
                                                     onClick={() => setSelectedRate(rate)}
-                                                    className={`p-4 rounded-xl border-2 cursor-pointer flex justify-between items-center transition-all ${
+                                                    className={`p-4 rounded-xl border-2 cursor-pointer flex justify-between items-center transition-all flex-wrap sm:flex-nowrap ${
                                                         selectedRate?.id === rate.id 
                                                             ? 'border-slate-900 bg-slate-50' 
                                                             : 'border-slate-100 hover:border-slate-300'
                                                     }`}
                                                 >
-                                                    <div>
-                                                        <div className="font-bold text-slate-900">{rate.service}</div>
-                                                        <div className="text-xs text-slate-500">{rate.carrier} • {rate.delivery_days ? `${rate.delivery_days} days` : 'Standard'}</div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="font-bold text-slate-900 break-words whitespace-normal text-sm sm:text-base">{rate.service}</div>
+                                                        <div className="text-xs text-slate-500 break-words whitespace-normal">{rate.carrier} • {rate.delivery_days ? `${rate.delivery_days} days` : 'Standard'}</div>
                                                     </div>
-                                                    <div className="font-bold text-slate-900">
+                                                    <div className="font-bold text-slate-900 text-right mt-2 sm:mt-0 min-w-[80px]">
                                                         ${Number(rate.rate).toFixed(2)} {rate.currency}
                                                     </div>
                                                 </div>
@@ -342,80 +365,74 @@ const Checkout = () => {
                             </form>
                         ) : (
                             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-100 space-y-8">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                                {/* Payment Header */}
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                                    <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-900">
                                             <CreditCard size={20} />
                                         </div>
-                                        Payment
-                                    </h2>
-                                    <button onClick={() => setStep(1)} className="text-xs font-bold text-slate-400 hover:text-slate-600">
+                                        <h2 className="text-2xl font-black text-slate-900">Payment</h2>
+                                    </div>
+                                    <button onClick={() => setStep(1)} className="text-xs font-bold text-slate-400 hover:text-slate-600 whitespace-nowrap">
                                         Edit Shipping
                                     </button>
                                 </div>
 
-                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4">
-                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Order Summary</h4>
+                                {/* Order Summary */}
+                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4 mb-6">
+                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Order Summary</h4>
                                     <div className="divide-y divide-slate-200">
                                         {cartItems.map((item, i) => (
-                                            <div key={i} className="flex justify-between py-3 text-sm font-medium text-slate-700">
-                                                <span className="line-clamp-1">{item.title}</span>
+                                            <div key={i} className="flex flex-col sm:flex-row sm:justify-between py-3 text-sm font-medium text-slate-700 gap-1">
+                                                <span className="line-clamp-1 font-semibold">{item.title}</span>
                                                 <span className="shrink-0">{item.qty} × ${item.price}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
+                                {/* Card Payment Section */}
+                                <div className="space-y-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                         <label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Pay with Card</label>
                                         <div className="flex gap-2">
-                                            {/* Simple visual indicators for accepted cards */}
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[8px] font-bold text-slate-400">VISA</div>
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[8px] font-bold text-slate-400">MC</div>
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[8px] font-bold text-slate-400">AMEX</div>
+                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">VISA</div>
+                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">MC</div>
+                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">AMEX</div>
                                         </div>
                                     </div>
-                                    
-                                    <div className="space-y-4">
-                                        {/* Card Number */}
+
+                                    {/* Card Number */}
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Card Number</label>
+                                        <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                            <div id="card-number" className="w-full h-5"></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Expiry, CVV, Zip - Responsive Grid */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                         <div className="space-y-2">
-                                            <div className="flex justify-between items-center px-1">
-                                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder">Card Number</label>
-                                            </div>
-                                            <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
-                                                <div id="card-number" className="w-full h-5"></div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Expiry</label>
+                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                                <div id="card-date" className="w-full h-5"></div>
                                             </div>
                                         </div>
-
-                                        <div className="grid grid-cols-3 gap-4">
-                                            {/* Expiry Date */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder px-1">Expiry</label>
-                                                <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
-                                                    <div id="card-date" className="w-full h-5"></div>
-                                                </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">CVV</label>
+                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                                <div id="card-cvv" className="w-full h-5"></div>
                                             </div>
-
-                                            {/* CVV */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder px-1">CVV</label>
-                                                <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
-                                                    <div id="card-cvv" className="w-full h-5"></div>
-                                                </div>
-                                            </div>
-
-                                            {/* Zip Code */}
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder px-1">Zip Code</label>
-                                                <div className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
-                                                    <div id="card-postal-code" className="w-full h-5"></div>
-                                                </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Zip Code</label>
+                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                                <div id="card-postal-code" className="w-full h-5"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium px-1">
+
+                                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium px-1 mt-2">
                                         <Lock size={10} />
                                         <span>Instant Payment Processing. No OTP required for supported cards.</span>
                                     </div>
@@ -423,8 +440,8 @@ const Checkout = () => {
 
                                 <button
                                     onClick={initPayment}
-                                    disabled={loading} // removed "|| !clover" to avoid hydration mismatch
-                                    className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={loading}
+                                    className="w-full mt-6 bg-indigo-600 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? <Loader2 className="animate-spin" size={18} /> : <>Pay with Clover <ShieldCheck size={18} /></>}
                                 </button>
