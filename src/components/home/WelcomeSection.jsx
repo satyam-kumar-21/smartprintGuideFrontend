@@ -1,26 +1,55 @@
-import React from 'react';
+import React from "react";
 
 const WelcomeSection = () => {
-    return (
-        <section className="w-full bg-white py-12">
-            <div className="max-w-6xl mx-auto px-4">
-                <div className="text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
-                        Welcome to Smart ePrinting
-                    </h2>
-                    <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto mb-6">
-                        Smart ePrinting is an independent online retailer dedicated to helping individuals, families, and businesses find the printing essentials they need with confidence. Our platform is designed to offer a straightforward and transparent shopping experience—so you can make the right choice without confusion.
-                    </p>
-                    <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto">
-                        Whether you print occasionally or manage regular work documents, our goal is to bring you reliable products, honest communication, and an easy, enjoyable experience from browsing to delivery.
-                    </p>
-                    <p className="text-base md:text-lg text-slate-600 max-w-4xl mx-auto mt-4">
-                        Designed for Everyday Printing Needs. Whether you're printing at home, working remotely, or managing office routines, Smart ePrinting offers products that support your daily tasks. We aim to make the process simple—from browsing to checkout—so you can shop confidently.
-                    </p>
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <section className="relative w-full py-16 md:py-24 bg-gradient-to-br from-blue-50 via-white to-blue-100 overflow-hidden">
+
+      {/* Background Glow */}
+      <div className="absolute -top-20 -left-20 w-80 h-80 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
+
+      <div className="max-w-4xl mx-auto px-5 md:px-6 relative z-10">
+
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 md:p-14">
+
+          {/* Heading */}
+          <h2 className="text-3xl md:text-5xl font-extrabold text-blue-800 leading-tight text-left">
+            Welcome to{" "}
+            <span className="text-blue-600">smartPrintGuide</span>
+          </h2>
+
+          {/* Divider */}
+          <div className="w-20 h-1 bg-blue-600 rounded-full mt-4 mb-8"></div>
+
+          {/* Content */}
+          <div className="space-y-6 text-gray-700 text-base md:text-lg leading-relaxed text-left">
+
+            <p>
+              smartPrintGuide is your trusted destination for printers,
+              ink, toner, and everyday printing essentials. Our goal is to
+              simplify your decisions by providing clear information and
+              dependable recommendations.
+            </p>
+
+            <p>
+              Whether you're printing at home, working remotely, or managing
+              office tasks, we help you find solutions that are reliable,
+              efficient, and easy to understand.
+            </p>
+
+            <p>
+              From browsing to checkout, we focus on creating a smooth,
+              transparent experience so you can shop with confidence
+              and clarity.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
 };
 
 export default WelcomeSection;

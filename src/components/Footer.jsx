@@ -4,111 +4,99 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/f
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 py-12">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white pt-16 pb-8 relative overflow-hidden">
 
-        {/* 1. Brand + description + social */}
-        <div>
+      {/* 3D Glow Effects */}
+      <div className="absolute -top-10 -left-10 w-72 h-72 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-300 opacity-20 rounded-full blur-3xl"></div>
+
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
+
+        {/* Brand Section */}
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
           <div className="mb-4">
             <img 
-              src="/smartEprintingLogo.png" 
-              alt="Smart ePrinting" 
+              src="/smartPrintGuideLogo.png" 
+              alt="smartPrintGuide" 
               className="h-16 w-auto object-contain"
             />
           </div>
-          <p className="text-gray-600 text-sm mb-4">
-            Smart ePrinting is your trusted online destination for printers,
-            ink, toner, and office printing supplies. We focus on quality
-            products, secure shopping, and reliable customer support.
+          <p className="text-blue-100 text-sm mb-4">
+            smartPrintGuide is your trusted destination for printers,
+            ink, toner, and expert printing guides. We focus on quality
+            recommendations, secure shopping, and reliable support.
           </p>
-          <div className="flex space-x-4 mt-2">
-            <a href="#" aria-label="Facebook" className="text-gray-600 hover:text-gray-900 transition">
-              <FaFacebookF />
-            </a>
-            <a href="#" aria-label="Twitter" className="text-gray-600 hover:text-gray-900 transition">
-              <FaTwitter />
-            </a>
-            <a href="#" aria-label="Instagram" className="text-gray-600 hover:text-gray-900 transition">
-              <FaInstagram />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="text-gray-600 hover:text-gray-900 transition">
-              <FaLinkedinIn />
-            </a>
+
+          <div className="flex space-x-4 mt-4">
+            {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
+              <a
+                key={i}
+                href="#"
+                className="bg-white/20 p-2 rounded-full hover:bg-white hover:text-blue-700 transition duration-300 shadow-md"
+              >
+                <Icon />
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* 2. Quick Links */}
-        <div>
-          <h3 className="text-gray-900 font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2 text-gray-600 text-sm">
-            <li>
-              <Link to="/track-order" className="hover:text-gray-900">
-                Track Your Order
-              </Link>
-            </li>
-            <li>
-              <Link to="/return-exchange-policy" className="hover:text-gray-900">
-                Returns & Exchanges
-              </Link>
-            </li>
-            <li>
-              <Link to="/customer-service" className="hover:text-gray-900">
-                Contact Support
-              </Link>
-            </li>
-            <li>
-              <Link to="/faq" className="hover:text-gray-900">
-                FAQ
-              </Link>
-            </li>
+        {/* Quick Links */}
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
+          <h3 className="font-semibold text-lg mb-4 border-b border-blue-400 pb-2">
+            Quick Links
+          </h3>
+          <ul className="space-y-3 text-sm text-blue-100">
+            <li><Link to="/track-order" className="hover:text-white hover:translate-x-1 transition inline-block">Track Order</Link></li>
+            <li><Link to="/returns" className="hover:text-white hover:translate-x-1 transition inline-block">Returns & Exchanges</Link></li>
+            <li><Link to="/contact" className="hover:text-white hover:translate-x-1 transition inline-block">Contact Support</Link></li>
+            <li><Link to="/faq" className="hover:text-white hover:translate-x-1 transition inline-block">FAQ</Link></li>
           </ul>
         </div>
 
-        {/* 3. Company & Legal */}
-        <div>
-          <h3 className="text-gray-900 font-semibold mb-4">Company</h3>
-          <ul className="space-y-2 text-gray-600 text-sm">
-            <li><Link to="/about" className="hover:text-gray-900">About Us</Link></li>
-            <li><Link to="/privacy-policy" className="hover:text-gray-900">Privacy Policy</Link></li>
-            <li><Link to="/terms-and-conditions" className="hover:text-gray-900">Terms & Conditions</Link></li>
-            <li><Link to="/shipping-policy" className="hover:text-gray-900">Shipping Policy</Link></li>
-            <li><Link to="/return-exchange-policy" className="hover:text-gray-900">Return & Exchange Policy</Link></li>
-            <li><Link to="/cookie-policy" className="hover:text-gray-900">Cookie Policy</Link></li>
-            <li><Link to="/ccpa-privacy-policy" className="hover:text-gray-900">CCPA / CPRA</Link></li>
-            <li><Link to="/accessibility-statement" className="hover:text-gray-900">Accessibility</Link></li>
-            <li><Link to="/disclaimer" className="hover:text-gray-900">Disclaimer</Link></li>
+        {/* Company */}
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
+          <h3 className="font-semibold text-lg mb-4 border-b border-blue-400 pb-2">
+            Company
+          </h3>
+          <ul className="space-y-2 text-sm text-blue-100">
+            <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+            <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="hover:text-white transition">Terms & Conditions</Link></li>
+            <li><Link to="/shipping" className="hover:text-white transition">Shipping Policy</Link></li>
+            <li><Link to="/return-policy" className="hover:text-white transition">Return Policy</Link></li>
           </ul>
         </div>
 
-        {/* 4. Contact Details */}
-        <div>
-          <h3 className="text-gray-900 font-semibold mb-4">Get in Touch</h3>
-          <ul className="space-y-2 text-gray-600 text-sm">
+        {/* Contact */}
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
+          <h3 className="font-semibold text-lg mb-4 border-b border-blue-400 pb-2">
+            Get in Touch
+          </h3>
+          <ul className="space-y-3 text-sm text-blue-100">
             <li>
-              Email:{" "}
+              Email:
+              <br />
               <a
-                href="mailto:support@smarteprinting.com"
-                className="hover:text-gray-900"
+                href="mailto:support@smartprintguide.com"
+                className="hover:text-white transition"
               >
-                support@smarteprinting.com
+                support@smartprintguide.com
               </a>
             </li>
-            {/* <li>Phone: Available via email support</li> */}
             <li>
-              Address:
-              17807 Lakecrest View Drive, #1205<br />
-              Cypress, TX 77433<br />
-              United States
+              Your Business Address Here<br />
+              City, State ZIP<br />
+              Country
             </li>
-            <li>Support Hours: Monday–Friday</li>
+            <li>Support: Monday–Friday</li>
           </ul>
         </div>
 
       </div>
 
-      {/* Footer Bottom */}
-      <div className="mt-12 border-t border-gray-200 pt-6 text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} Smart ePrinting. All rights reserved.
+      {/* Bottom */}
+      <div className="mt-16 border-t border-blue-500 pt-6 text-center text-blue-200 text-sm relative z-10">
+        © {new Date().getFullYear()} smartPrintGuide. All rights reserved.
       </div>
     </footer>
   );

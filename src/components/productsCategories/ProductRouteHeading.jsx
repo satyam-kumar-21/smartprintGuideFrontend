@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProductRouteHeading = ({
     breadcrumbs = [],
@@ -6,48 +7,55 @@ const ProductRouteHeading = ({
     description,
 }) => {
     return (
-        <section className="relative bg-gradient-to-b from-gray-50 via-white to-gray-100 border-b">
-            <div className="max-w-7xl mx-auto px-4 py-16 md:py-20 text-center">
+        <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100">
 
-                {/* Title */}
-                <h1 className="text-3xl md:text-4xl font-semibold text-gray-900">
-                    {title}
-                </h1>
+            {/* Glow Effects */}
+            <div className="absolute -top-20 -left-20 w-96 h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
 
-                {/* Breadcrumbs */}
-                <nav className="mt-4 text-sm text-gray-500 flex justify-center flex-wrap items-center">
-                    {breadcrumbs.map((item, index) => (
-                        <span key={index} className="flex items-center">
-                            {item.link ? (
-                                <a
-                                    href={item.link}
-                                    className="hover:text-gray-900 transition-colors"
-                                >
-                                    {item.label}
-                                </a>
-                            ) : (
-                                <span className="text-gray-700 font-medium">
-                                    {item.label}
-                                </span>
-                            )}
+            <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-20">
 
-                            {index < breadcrumbs.length - 1 && (
-                                <span className="mx-2 text-gray-400">/</span>
-                            )}
-                        </span>
-                    ))}
-                </nav>
+                <div className="bg-white/60 backdrop-blur-xl border border-blue-100 rounded-3xl shadow-2xl p-10 text-center">
 
-                {/* Description */}
-                {description && (
-                    <p className="mt-6 text-gray-600 max-w-3xl mx-auto text-base md:text-lg">
-                        {description}
-                    </p>
-                )}
+                    {/* Title */}
+                    <h1 className="text-3xl md:text-5xl font-extrabold text-blue-800 drop-shadow-sm">
+                        {title}
+                    </h1>
+
+                    {/* Breadcrumbs */}
+                    <nav className="mt-6 text-sm md:text-base flex justify-center flex-wrap items-center gap-2">
+                        {breadcrumbs.map((item, index) => (
+                            <span key={index} className="flex items-center">
+
+                                {item.link ? (
+                                    <Link
+                                        to={item.link}
+                                        className="text-blue-600 hover:text-blue-800 transition font-medium"
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ) : (
+                                    <span className="text-blue-900 font-semibold">
+                                        {item.label}
+                                    </span>
+                                )}
+
+                                {index < breadcrumbs.length - 1 && (
+                                    <span className="mx-2 text-blue-300">/</span>
+                                )}
+                            </span>
+                        ))}
+                    </nav>
+
+                    {/* Description */}
+                    {description && (
+                        <p className="mt-8 text-gray-600 max-w-3xl mx-auto text-base md:text-lg leading-relaxed">
+                            {description}
+                        </p>
+                    )}
+
+                </div>
             </div>
-
-            {/* Subtle bottom divider */}
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
         </section>
     );
 };

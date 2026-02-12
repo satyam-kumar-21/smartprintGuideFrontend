@@ -5,7 +5,6 @@ import axios from "axios";
 import { listProductDetails, listProducts } from "../../redux/actions/productActions";
 import { addToCart } from "../../redux/actions/cartActions";
 
-
 const ProductDetails = () => {
     const { productSlug } = useParams();
     const navigate = useNavigate();
@@ -14,53 +13,46 @@ const ProductDetails = () => {
     const [qty, setQty] = useState(1);
     const [activeImage, setActiveImage] = useState(0);
     const [activeTab, setActiveTab] = useState("overview");
-    const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-    const [isZooming, setIsZooming] = useState(false);
     const [showLoginMessage, setShowLoginMessage] = useState(false);
     const [showReviewLoginMessage, setShowReviewLoginMessage] = useState(false);
     const [showEligibilityMessage, setShowEligibilityMessage] = useState(false);
     const [canReview, setCanReview] = useState(false);
 
-    const productDetails = useSelector((state) => state.productDetails);
-    const { loading, error, product } = productDetails;
+    const { loading, error, product } = useSelector((state) => state.productDetails);
+    const { userInfo } = useSelector((state) => state.userLogin);
+    const { products: relatedProducts } = useSelector((state) => state.productList);
 
-    const userLogin = useSelector((state) => state.userLogin);
-    const { userInfo } = userLogin;
+    useEffect(() => {
+        if (productSlug) dispatch(listProductDetails(productSlug));
+    }, [dispatch, productSlug]);
 
-    const productList = useSelector((state) => state.productList);
-    const { products: relatedProducts } = productList;
+    useEffect(() => {
+        if (product?.category) {
+            const categoryName = product.category.name || product.category;
+            dispatch(listProducts("", categoryName, 1));
+        }
+    }, [dispatch, product]);
 
     useEffect(() => {
         const checkEligibility = async () => {
-            if (userInfo && product && product._id) {
+            if (userInfo && product?._id) {
                 try {
                     const config = {
                         headers: { Authorization: `Bearer ${userInfo.token}` },
                     };
-                    const baseUrl = import.meta.env.VITE_API_URL || '/api';
-                    const { data } = await axios.get(`${baseUrl}/orders/check-review-eligibility/${product._id}`, config);
+                    const baseUrl = import.meta.env.VITE_API_URL || "/api";
+                    const { data } = await axios.get(
+                        `${baseUrl}/orders/check-review-eligibility/${product._id}`,
+                        config
+                    );
                     setCanReview(data.canReview);
-                } catch (error) {
+                } catch {
                     setCanReview(false);
                 }
             }
         };
         checkEligibility();
     }, [userInfo, product]);
-
-    useEffect(() => {
-        if (productSlug) {
-            dispatch(listProductDetails(productSlug));
-        }
-    }, [dispatch, productSlug]);
-
-    useEffect(() => {
-        if (product && product.category) {
-            const categoryName = product.category.name || product.category;
-            // Fetch related products (page 1)
-            dispatch(listProducts('', categoryName, 1));
-        }
-    }, [dispatch, product]);
 
     const addToCartHandler = () => {
         if (!userInfo) {
@@ -69,7 +61,7 @@ const ProductDetails = () => {
             return;
         }
         dispatch(addToCart(product.slug || product._id, qty));
-        navigate('/cart');
+        navigate("/cart");
     };
 
     const buyNowHandler = () => {
@@ -79,404 +71,289 @@ const ProductDetails = () => {
             return;
         }
         dispatch(addToCart(product.slug || product._id, qty));
-        navigate('/cart?redirect=shipping');
+        navigate("/cart?redirect=shipping");
     };
 
-    const handleMouseEnter = () => {
-        setIsZooming(true);
-    };
-
-    const handleMouseLeave = () => {
-        setIsZooming(false);
-    };
-
-    const handleMouseMove = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        setZoomPosition({ x, y });
-    };
-const handleWriteReview = () => {
+    const handleWriteReview = () => {
         if (!userInfo) {
             setShowReviewLoginMessage(true);
             setTimeout(() => setShowReviewLoginMessage(false), 3000);
             return;
         }
-
         if (!canReview) {
             setShowEligibilityMessage(true);
             setTimeout(() => setShowEligibilityMessage(false), 3000);
             return;
         }
-
-        // Logic to open review form would go here
+        alert("Open review form here");
     };
 
-    if (loading) return (
-        <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 space-y-6">
-            <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin"></div>
-            <div className="text-center">
-                <p className="font-black uppercase text-[10px] tracking-[0.4em] text-slate-400 animate-pulse">Synchronizing Hardware Details</p>
-                <p className="text-slate-300 text-[9px] font-bold uppercase mt-2 tracking-widest">Bridging with Central Inventory...</p>
+    if (loading)
+        return (
+            <div className="min-h-[60vh] flex justify-center items-center">
+                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
             </div>
-        </div>
-    );
+        );
 
-    if (error || !product) return (
-        <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center space-y-8">
-            <div className="w-24 h-24 bg-rose-50 rounded-[2rem] flex items-center justify-center">
-                <svg className="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+    if (error || !product)
+        return (
+            <div className="text-center py-20 text-red-500 font-bold">
+                Product Not Found
             </div>
-            <div className="space-y-4 max-w-sm">
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Inventory Mismatch</h2>
-                <p className="text-slate-400 font-medium text-sm leading-relaxed">
-                    The requested hardware identifier <span className="text-slate-900 font-bold">"{productSlug}"</span> could not be verified within our current database synchronization.
-                </p>
-            </div>
-            <button
-                onClick={() => navigate('/')}
-                className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all shadow-xl shadow-slate-200"
-            >
-                Return to Command Center
-            </button>
-        </div>
-    );
+        );
 
-    const productImages = product.images && product.images.length > 0
-        ? product.images.map(img => img.startsWith('http') ? img : `${import.meta.env.VITE_API_URL.replace('/api', '')}${img}`)
-        : ["/assets/printer.png"];
+    const productImages =
+        product?.images?.length > 0
+            ? product.images.map((img) =>
+                  img.startsWith("http")
+                      ? img
+                      : `${import.meta.env.VITE_API_URL?.replace("/api", "")}${img}`
+              )
+            : ["/printer.png"];
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 bg-white overflow-hidden">
-            <div className="flex flex-col lg:flex-row gap-12">
-                {/* Image Gallery Section */}
-                {/* Image Gallery Section */}
-                {/* Image Gallery Section */}
-                <div className="lg:w-[45%] flex flex-col md:flex-row gap-4 h-fit lg:sticky lg:top-24">
+        <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-100 py-8 sm:py-12 md:py-16 overflow-hidden">
 
-                    {/* Thumbnails Container */}
-                    <div className="flex flex-row md:flex-col gap-3 w-full md:w-20 order-2 md:order-1 
-                    /* Mobile: Horizontal scroll, no max-height */
-                    overflow-x-auto overflow-y-hidden pb-2 
-                    /* Desktop: Vertical scroll with specific height */
-                    md:overflow-y-auto md:max-h-[500px] md:pb-0 
-                    scrollbar-hide">
+            {/* Glow Background */}
+            <div className="absolute -top-16 sm:-top-24 -left-4 sm:-left-24 w-60 sm:w-96 h-60 sm:h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
 
-                        {productImages.map((img, index) => (
+            <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-4 md:px-6">
+
+                {/* PRODUCT SECTION */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-14">
+
+                    {/* LEFT IMAGES */}
+                    <div>
+                        <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border border-blue-100 h-[320px] sm:h-[400px] md:h-[550px] flex items-center justify-center">
+                            <img
+                                src={productImages[activeImage]}
+                                alt={product.title}
+                                className="w-full h-full object-contain rounded-2xl transition-all duration-300"
+                            />
+                        </div>
+
+                        <div className="flex gap-2 sm:gap-4 mt-4 sm:mt-6 overflow-x-auto">
+                            {productImages.map((img, index) => (
+                                <img
+                                    key={index}
+                                    src={img}
+                                    onClick={() => setActiveImage(index)}
+                                    className={`w-14 h-14 sm:w-20 sm:h-20 object-contain rounded-xl cursor-pointer border transition
+                                    ${
+                                        activeImage === index
+                                            ? "border-blue-600 shadow-lg"
+                                            : "border-blue-100"
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* RIGHT INFO */}
+                    <div className="space-y-4 sm:space-y-6">
+
+                        {product.brand && (
+                            <div className="text-base sm:text-lg font-bold text-blue-600 mb-1 sm:mb-2">
+                                {product.brand}
+                            </div>
+                        )}
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-blue-800">
+                            {product.title}
+                        </h1>
+                        {product.shortDetails && (
+                            <div className="mt-2 sm:mt-4 bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl p-3 sm:p-4 md:p-6 border border-blue-100 text-gray-800 text-base sm:text-lg font-semibold">
+                                {typeof product.shortDetails === 'string'
+                                    ? product.shortDetails.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')
+                                    : product.shortDetails}
+                            </div>
+                        )}
+
+                        <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+                            {product.description}
+                        </p>
+
+                        <div className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-700">
+                            ${product.price?.toFixed(2)}
+                        </div>
+
+                        {product.countInStock > 0 && (
+                            <div className="flex items-center gap-2 sm:gap-4">
+                                <button
+                                    onClick={() => setQty(Math.max(1, qty - 1))}
+                                    className="px-3 sm:px-4 py-2 bg-blue-100 rounded-xl"
+                                >
+                                    -
+                                </button>
+                                <span>{qty}</span>
+                                <button
+                                    onClick={() =>
+                                        setQty(Math.min(product.countInStock, qty + 1))
+                                    }
+                                    className="px-3 sm:px-4 py-2 bg-blue-100 rounded-xl"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        )}
+
+                        {showLoginMessage && (
+                            <div className="text-red-500 text-xs sm:text-sm font-semibold">
+                                Please login first
+                            </div>
+                        )}
+
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                             <button
-                                key={index}
-                                onClick={() => setActiveImage(index)}
-                                /* min-w-[70px] and max-w-[70px] fixes the mobile size to your original small square.
-                                   md:max-w-none and md:w-full lets it expand to the sidebar width on desktop.
-                                */
-                                className={`aspect-square min-w-[70px] max-w-[70px] md:min-w-0 md:max-w-none md:w-full rounded-xl border-2 transition-all overflow-hidden bg-slate-50 p-2 flex-shrink-0
-                    ${activeImage === index ? 'border-slate-900 shadow-lg' : 'border-slate-100 hover:border-slate-300'}`}
+                                onClick={addToCartHandler}
+                                className="flex-1 bg-blue-600 text-white py-2 sm:py-3 rounded-2xl font-semibold hover:bg-blue-700 transition shadow-xl"
                             >
-                                <img src={img} alt={`${product.title} ${index}`} className="w-full h-full object-contain" />
+                                Add to Cart
+                            </button>
+
+                            <button
+                                onClick={buyNowHandler}
+                                className="flex-1 bg-white text-blue-700 border border-blue-200 py-2 sm:py-3 rounded-2xl font-semibold hover:bg-blue-50 transition shadow-lg"
+                            >
+                                Buy Now
+                            </button>
+                        </div>
+
+                        {product.shortSpecification && (
+                            <div className="mt-4 sm:mt-6 bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl p-3 sm:p-4 md:p-6 border border-blue-100 text-gray-800 text-xs sm:text-base font-medium">
+                                {typeof product.shortSpecification === 'string'
+                                    ? product.shortSpecification.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')
+                                    : product.shortSpecification}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* TABS */}
+                <div className="mt-20">
+                    <div className="flex gap-10 border-b border-blue-200">
+                        {["overview", "specifications", "reviews"].map((tab) => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`py-4 font-semibold capitalize ${
+                                    activeTab === tab
+                                        ? "text-blue-700 border-b-2 border-blue-600"
+                                        : "text-gray-500"
+                                }`}
+                            >
+                                {tab}
                             </button>
                         ))}
                     </div>
 
-                    {/* Main Image */}
-                    <div className="flex-1 aspect-[4/5] bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 flex items-center justify-center p-8 overflow-hidden group order-1 md:order-2 relative">
-                        <img
-                            src={productImages[activeImage]}
-                            alt={product.title}
-                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-                        />
-
-                        {/* ... Zoom logic remains exactly as you had it ... */}
-                        {isZooming && (
+                    <div className="py-10">
+                        {activeTab === "overview" && (
                             <div
-                                className="hidden lg:block absolute w-32 h-32 border-3 border-blue-500 rounded-full pointer-events-none z-10 shadow-xl overflow-hidden"
-                                style={{
-                                    left: `${zoomPosition.x}%`,
-                                    top: `${zoomPosition.y}%`,
-                                    transform: 'translate(-50%, -50%)',
-                                    backgroundImage: `url(${productImages[activeImage]})`,
-                                    backgroundSize: '600% 600%',
-                                    backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                                    backgroundRepeat: 'no-repeat'
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        product.overview ||
+                                        "<p>No overview available</p>",
                                 }}
                             />
                         )}
 
-                        {isZooming && (
-                            <div className="hidden lg:block absolute top-0 -right-96 w-[28rem] h-[28rem] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-20">
-                                <div
-                                    className="w-full h-full"
-                                    style={{
-                                        backgroundImage: `url(${productImages[activeImage]})`,
-                                        backgroundSize: '600% 600%',
-                                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                                        backgroundRepeat: 'no-repeat'
-                                    }}
-                                />
-                            </div>
+                        {activeTab === "specifications" && (
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html:
+                                        product.technicalSpecification ||
+                                        "<p>No specifications available</p>",
+                                }}
+                            />
                         )}
 
-                        <div
-                            className="absolute inset-0 cursor-crosshair"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onMouseMove={handleMouseMove}
-                        />
-                    </div>
-                </div>
+                        {activeTab === "reviews" && (
+                            <div>
+                                <button
+                                    onClick={handleWriteReview}
+                                    className="mb-6 px-6 py-3 bg-blue-600 text-white rounded-2xl"
+                                >
+                                    Write Review
+                                </button>
 
-                {/* Info Section */}
-                <div className="flex-1 space-y-8">
-                    {/* Header */}
-                    <div className="space-y-4">
-                        <div className="flex items-center flex-wrap gap-3">
-                            <span className="px-4 py-1.5 bg-slate-50 text-slate-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-100">
-                                {product.brand || 'Premium Hardware'}
-                            </span>
-                            {product.countInStock > 0 ? (
-                                <span className="text-emerald-500 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                    In Stock
-                                </span>
-                            ) : (
-                                <span className="text-rose-500 text-[9px] font-black uppercase tracking-widest">Out of Stock</span>
-                            )}
-                        </div>
-                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 leading-tight tracking-tight uppercase">
-                            {product.title}
-                        </h1>
-                    </div>
-
-                    {/* Short Details */}
-                    {product.shortDetails && (
-                        <div className="space-y-3">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Highlights</h3>
-                            <div
-                                dangerouslySetInnerHTML={{ __html: product.shortDetails }}
-                                className="text-slate-600 text-sm font-medium leading-relaxed space-y-2 prose-sm prose-slate"
-                            />
-                        </div>
-                    )}
-
-                    {/* Price & Actions */}
-                    <div className="p-6 md:p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 space-y-6">
-                        <div className="flex items-baseline gap-4">
-                            <span className="text-4xl font-black text-slate-900 tracking-tighter">
-                                ${product.price?.toFixed(2)}
-                            </span>
-                            {product.oldPrice > 0 && product.oldPrice > product.price && (
-                                <span className="text-xl text-slate-300 line-through font-bold">
-                                    ${product.oldPrice?.toFixed(2)}
-                                </span>
-                            )}
-                        </div>
-
-                        {product.countInStock > 0 && (
-                            <div className="flex flex-col gap-4">
-                                {showLoginMessage && (
-                                    <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-bold text-center border border-red-100 animate-pulse">
-                                        Please login to add items to cart
+                                {showReviewLoginMessage && (
+                                    <div className="text-red-500 text-sm font-semibold mb-4">
+                                        Please login first
                                     </div>
                                 )}
-                                <div className="flex items-center gap-4">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
-                                    <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white">
-                                        <button
-                                            onClick={() => setQty(Math.max(1, qty - 1))}
-                                            className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
-                                        > - </button>
-                                        <span className="px-4 text-xs font-black text-slate-900">{qty}</span>
-                                        <button
-                                            onClick={() => setQty(Math.min(product.countInStock, qty + 1))}
-                                            className="px-4 py-2 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-colors"
-                                        > + </button>
+                                {showEligibilityMessage && (
+                                    <div className="text-red-500 text-sm font-semibold mb-4">
+                                        Please buy and receive item to write review
                                     </div>
-                                </div>
+                                )}
+
+                                {product.reviews?.length > 0 ? (
+                                    product.reviews.map((review, index) => (
+                                        <div
+                                            key={index}
+                                            className="bg-white/70 backdrop-blur-xl border border-blue-100 p-6 rounded-2xl mb-4 shadow-lg"
+                                        >
+                                            <strong className="text-blue-700">
+                                                {review.name}
+                                            </strong>
+                                            <p className="mt-2 text-gray-600">
+                                                {review.comment}
+                                            </p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No reviews yet</p>
+                                )}
                             </div>
                         )}
-
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <button
-                                onClick={addToCartHandler}
-                                disabled={product.countInStock === 0}
-                                className={`flex-1 py-5 rounded-2xl transition-all font-black uppercase text-[10px] tracking-widest shadow-xl active:scale-95
-                                    ${product.countInStock > 0
-                                        ? 'bg-slate-900 text-white hover:bg-black shadow-slate-200'
-                                        : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'}`}
-                            >
-                                {product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                            </button>
-                            {product.countInStock > 0 && (
-                                <button
-                                    onClick={buyNowHandler}
-                                    className="flex-1 py-5 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition-all font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 active:scale-95"
-                                >
-                                    Buy Now
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Short Specs */}
-                    {product.shortSpecification && (
-                        <div className="space-y-3">
-                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Key Specifications</h3>
-                            <div
-                                dangerouslySetInnerHTML={{ __html: product.shortSpecification }}
-                                className="text-slate-500 text-xs font-semibold grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4"
-                            />
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Tabbed Content */}
-            <div className="mt-20 border-t border-slate-100">
-                <div className="flex gap-8 md:gap-12 overflow-x-auto pb-px scrollbar-hide">
-                    {["overview", "specifications", "reviews"].map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`py-8 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative whitespace-nowrap
-                                ${activeTab === tab ? 'text-slate-900' : 'text-slate-300 hover:text-slate-500'}`}
-                        >
-                            {tab}
-                            {activeTab === tab && (
-                                <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-900 rounded-full" />
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="py-12">
-                    {activeTab === "overview" && (
-                        <div className="max-w-4xl animate-fadeIn">
-                            <p className="text-slate-600 font-medium leading-relaxed text-base md:text-lg mb-8">
-                                {product.description}
-                            </p>
-                            {product.overview && (
-                                <div dangerouslySetInnerHTML={{ __html: product.overview }} className="prose prose-slate max-w-none text-slate-600 prose-sm md:prose-base" />
-                            )}
-                        </div>
-                    )}
-
-                    {activeTab === "reviews" && (
-                        <div className="space-y-8 animate-fadeIn">
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
-                                <div>
-                                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Verified Feedback</h2>
-                                    <div className="flex items-center gap-4 mt-2">
-                                        <div className="flex text-yellow-400">
-                                            {[1, 2, 3, 4, 5].map(star => (
-                                                <svg key={star} className={`w-4 h-4 ${product.rating >= star ? 'fill-current' : 'text-slate-200 fill-current'}`} viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                            ))}
-                                        </div>
-                                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{product.rating ? product.rating.toFixed(1) : '0.0'} / 5.0</span>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col items-end gap-2 w-full md:w-auto">
-                                    {showReviewLoginMessage && (
-                                        <div className="p-2 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold border border-red-100 animate-pulse text-center w-full">
-                                            Please login to write a review
-                                        </div>
-                                    )}
-                                    {showEligibilityMessage && (
-                                        <div className="p-2 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold border border-orange-100 animate-pulse text-center w-full">
-                                            Please purchase and receive this item to review
-                                        </div>
-                                    )}
-                                    <button 
-                                        onClick={handleWriteReview}
-                                        className="w-full md:w-auto px-6 py-3 border-2 border-slate-900 text-slate-900 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-900 hover:text-white transition-all"
-                                    >
-                                        Write a Review
-                                    </button>
-                                </div>
-                            </div>
-
-                            {product.reviews && product.reviews.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {product.reviews.map((review, index) => (
-                                        <div key={index} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
-                                            <div className="flex justify-between items-center">
-                                                <span className="font-black text-[10px] uppercase tracking-widest text-slate-900">{review.name}</span>
-                                                <div className="flex text-yellow-400">
-                                                    {[1, 2, 3, 4, 5].map(s => (
-                                                        <svg key={s} className={`w-3 h-3 ${review.rating >= s ? 'fill-current' : 'text-slate-200 fill-current'}`} viewBox="0 0 20 20">
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-slate-600 text-xs font-medium leading-relaxed italic">"{review.comment}"</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest py-10 text-center border-2 border-dashed border-slate-100 rounded-[2rem]">Be the first to share your experience</p>
-                            )}
-                        </div>
-                    )}
-
-                    {activeTab === "specifications" && (
-                        <div className="animate-fadeIn">
-                            {product.technicalSpecification ? (
-                                <div dangerouslySetInnerHTML={{ __html: product.technicalSpecification }} className="prose prose-slate max-w-none text-slate-600 prose-sm md:prose-base" />
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                                    {[
-                                        { label: 'Brand', value: product.brand },
-                                        { label: 'Color', value: product.color },
-                                        { label: 'Width', value: product.width ? `${product.width}"` : null },
-                                        { label: 'Height', value: product.height ? `${product.height}"` : null },
-                                        { label: 'Depth', value: product.depth ? `${product.depth}"` : null },
-                                        { label: 'Screen Size', value: product.screenSize },
-                                    ].map(item => (
-                                        item.value && (
-                                            <div key={item.label} className="flex justify-between py-4 border-b border-slate-100">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.label}</span>
-                                                <span className="font-bold text-slate-900 uppercase text-xs">{item.value}</span>
-                                            </div>
-                                        )
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
-            
-             {/* Related Products Section */}
-             {Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
-                <div className="mt-24 pt-16 border-t border-slate-100">
-                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-8">Related Products</h3>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                        {relatedProducts.filter(p => p && p._id !== product._id && p.slug !== (product.slug || productSlug)).slice(0, 4).map((item) => (
-                            <Link 
-                                to={`/product/${item.slug || item._id}`} 
-                                key={item._id}
-                                className="group bg-white border border-slate-100 rounded-2xl p-4 hover:shadow-xl hover:shadow-slate-200/50 hover:border-slate-200 transition-all block"
-                                onClick={() => window.scrollTo(0, 0)}
-                            >
-                                <div className="aspect-square bg-slate-50 rounded-xl mb-4 overflow-hidden p-4">
-                                    <img 
-                                        src={item.image || (item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}${item.images[0]}`) : printerImg)} 
-                                        alt={item.title} 
-                                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 mix-blend-multiply"
-                                    />
-                                </div>
-                                <h4 className="font-bold text-slate-900 truncate mb-1 text-sm">{item.title}</h4>
-                                <p className="text-blue-600 font-bold text-sm">${item.price}</p>
-                            </Link>
-                        ))}
                     </div>
                 </div>
-            )}
 
-        </div>
+                {/* RELATED PRODUCTS */}
+                {relatedProducts?.length > 0 && (
+                    <div className="mt-24">
+                        <h2 className="text-3xl font-bold text-blue-800 mb-10">
+                            Related Products
+                        </h2>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                            {relatedProducts
+                                .filter((p) => p?._id !== product._id)
+                                .slice(0, 4)
+                                .map((item) => {
+                                    const firstImage =
+                                        item?.images?.length > 0
+                                            ? item.images[0].startsWith("http")
+                                                ? item.images[0]
+                                                : `${import.meta.env.VITE_API_URL?.replace("/api", "")}${item.images[0]}`
+                                            : "/printer.png";
+
+                                    return (
+                                        <Link
+                                            key={item._id}
+                                            to={`/product/${item.slug || item._id}`}
+                                            className="bg-white/60 backdrop-blur-xl rounded-3xl border border-blue-100 p-6 shadow-xl hover:-translate-y-2 transition"
+                                        >
+                                            <img
+                                                src={firstImage}
+                                                alt={item.title}
+                                                className="h-32 object-contain w-full mb-4"
+                                            />
+                                            <h4 className="font-semibold text-blue-700 text-sm line-clamp-2">
+                                                {item.title}
+                                            </h4>
+                                            <p className="text-blue-600 font-bold mt-2">
+                                                ${item.price}
+                                            </p>
+                                        </Link>
+                                    );
+                                })}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </section>
     );
 };
 
