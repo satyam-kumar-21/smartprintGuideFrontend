@@ -15,7 +15,7 @@ const ProductRouteHeading = ({
 
             <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-20">
 
-                <div className="bg-white/60 backdrop-blur-xl border border-blue-100 rounded-3xl shadow-2xl p-10 text-center">
+                <div className="bg-transparent p-10 text-center">
 
                     {/* Title */}
                     <h1 className="text-3xl md:text-5xl font-extrabold text-blue-800 drop-shadow-sm">

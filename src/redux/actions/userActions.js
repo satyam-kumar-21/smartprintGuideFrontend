@@ -63,8 +63,10 @@ export const login = (email, password, isAdminLogin = false) => async (dispatch)
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: USER_DETAILS_RESET });
+    dispatch({ type: 'CART_CLEAR_ITEMS' });
 };
 
 export const register = (firstName, lastName, email, password) => async (dispatch) => {

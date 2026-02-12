@@ -14,12 +14,14 @@ const Footer = () => {
 
         {/* Brand Section */}
         <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
-          <div className="mb-4">
-            <img 
-              src="/smartPrintGuideLogo.png" 
-              alt="smartPrintGuide" 
-              className="h-16 w-auto object-contain"
+          <div className="mb-4 flex items-center gap-2">
+            <img
+              src="/spglogo.png"
+              alt="SmartPrintGuide Logo"
+              className="h-16 w-auto sm:h-20 md:h-24 object-contain drop-shadow-md"
+              style={{ maxWidth: '180px' }}
             />
+            {/* <span className="hidden sm:inline text-lg md:text-xl font-extrabold bg-gradient-to-r from-blue-100 to-blue-400 bg-clip-text text-transparent drop-shadow-md">SmartPrintGuide</span> */}
           </div>
           <p className="text-blue-100 text-sm mb-4">
             smartPrintGuide is your trusted destination for printers,

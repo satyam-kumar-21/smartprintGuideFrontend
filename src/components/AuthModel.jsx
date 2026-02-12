@@ -5,6 +5,8 @@ import {
   EyeOff,
   ArrowRight,
   Loader2,
+  Mail,
+  Key,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -187,18 +189,159 @@ const AuthModal = ({ isOpen, onClose }) => {
               )}
             </button>
 
-            <div className="text-sm text-center">
-              Don’t have account?{" "}
+            <div className="flex justify-between items-center mt-2">
               <button
                 type="button"
-                className="text-blue-600 font-semibold"
-                onClick={() => setMode("signup")}
+                className="text-xs text-blue-600 hover:underline font-semibold"
+                onClick={() => setMode("forgot-password")}
               >
-                Signup
+                Forgot Password?
               </button>
+              <div className="text-sm text-center">
+                Don’t have account?{" "}
+                <button
+                  type="button"
+                  className="text-blue-600 font-semibold"
+                  onClick={() => setMode("signup")}
+                >
+                  Signup
+                </button>
+              </div>
             </div>
           </form>
         )}
+          {/* VERIFY OTP */}
+          {mode === "verify-otp" && (
+            <form onSubmit={submitHandler} className="space-y-5">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="text-blue-600" size={24} />
+                </div>
+                <p className="text-slate-600 text-sm">
+                  We've sent a 6-digit OTP to <strong>{email}</strong>
+                </p>
+              </div>
+              <input
+                type="text"
+                className="w-full rounded-xl border border-blue-200 px-4 py-3 text-center text-2xl font-mono tracking-widest focus:ring-2 focus:ring-blue-500 bg-white/80"
+                placeholder="000000"
+                value={otp}
+                onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength={6}
+                required
+              />
+              <button
+                type="submit"
+                disabled={otp.length !== 6}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-semibold shadow-lg shadow-blue-200"
+              >
+                Verify & Create Account
+              </button>
+              <div className="text-sm text-center mt-6">
+                Didn't receive OTP?{' '}
+                <button
+                  type="button"
+                  className="text-blue-600 font-semibold"
+                  onClick={() => { setMode('signup'); setOtp(''); }}
+                >
+                  Try again
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* FORGOT PASSWORD */}
+          {mode === "forgot-password" && (
+            <form onSubmit={submitHandler} className="space-y-5">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="text-blue-600" size={24} />
+                </div>
+                <p className="text-slate-600 text-sm">
+                  Enter your email address and we'll send you a reset code
+                </p>
+              </div>
+              <input
+                type="email"
+                className="w-full rounded-xl border border-blue-200 px-4 py-3 focus:ring-2 focus:ring-blue-500 bg-white/80"
+                placeholder="Enter your email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-semibold shadow-lg shadow-blue-200"
+              >
+                Send Reset Code
+              </button>
+              <div className="text-sm text-center mt-6">
+                Remember your password?{' '}
+                <button
+                  type="button"
+                  className="text-blue-600 font-semibold"
+                  onClick={() => setMode('login')}
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* RESET PASSWORD */}
+          {mode === "reset-password" && (
+            <form onSubmit={submitHandler} className="space-y-5">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Key className="text-blue-600" size={24} />
+                </div>
+                <p className="text-slate-600 text-sm">
+                  Enter the OTP sent to <strong>{email}</strong> and your new password
+                </p>
+              </div>
+              <input
+                type="text"
+                className="w-full rounded-xl border border-blue-200 px-4 py-3 text-center text-2xl font-mono tracking-widest focus:ring-2 focus:ring-blue-500 bg-white/80"
+                placeholder="000000"
+                value={otp}
+                onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength={6}
+                required
+              />
+              <input
+                type="password"
+                className="w-full rounded-xl border border-blue-200 px-4 py-3 focus:ring-2 focus:ring-blue-500 bg-white/80"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                className="w-full rounded-xl border border-blue-200 px-4 py-3 focus:ring-2 focus:ring-blue-500 bg-white/80"
+                placeholder="Confirm New Password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                disabled={otp.length !== 6}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-semibold shadow-lg shadow-blue-200"
+              >
+                Reset Password
+              </button>
+              <div className="text-sm text-center mt-6">
+                <button
+                  type="button"
+                  className="text-blue-600 font-semibold"
+                  onClick={() => setMode('forgot-password')}
+                >
+                  Try different email
+                </button>
+              </div>
+            </form>
+          )}
 
         {/* SIGNUP */}
         {mode === "signup" && (

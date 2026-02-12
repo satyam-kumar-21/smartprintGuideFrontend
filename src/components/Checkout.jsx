@@ -215,15 +215,18 @@ const Checkout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 py-12">
-            <div className="max-w-5xl mx-auto px-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 py-12 relative overflow-hidden">
+            {/* 3D Glow Effects */}
+            <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-400 opacity-30 rounded-full blur-3xl z-0"></div>
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600 opacity-20 rounded-full blur-3xl z-0"></div>
+            <div className="max-w-5xl mx-auto px-4 relative z-10">
 
                 {/* Progress */}
                 <div className="flex items-center justify-center mb-12 space-x-4">
                     {[1, 2].map((s) => (
                         <div key={s} className="flex items-center gap-2">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
-                                step >= s ? 'bg-slate-900 text-white' : 'bg-white border text-slate-300'
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-black shadow-lg shadow-blue-200 transition-all duration-300 ${
+                                step >= s ? 'bg-gradient-to-br from-blue-700 to-blue-400 text-white scale-110' : 'bg-white border-2 border-blue-200 text-blue-300'
                             }`}>
                                 {s}
                             </div>
@@ -231,83 +234,83 @@ const Checkout = () => {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
 
                     {/* LEFT */}
                     <div className="lg:col-span-3">
                         {step === 1 ? (
-                            <form onSubmit={submitShippingHandler} className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-100">
-                                <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-900">
-                                        <Truck size={20} />
+                            <form onSubmit={submitShippingHandler} className="bg-white/80 p-8 md:p-10 rounded-3xl shadow-2xl border border-blue-100 backdrop-blur-xl">
+                                <h2 className="text-3xl font-extrabold text-blue-800 mb-8 flex items-center gap-3 drop-shadow-lg">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-200 to-blue-500 rounded-full flex items-center justify-center text-blue-900 shadow-lg">
+                                        <Truck size={28} />
                                     </div>
                                     Shipping Details
                                 </h2>
 
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">Street Address</label>
+                                        <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">Street Address</label>
                                         <input 
                                             value={address} 
                                             onChange={(e) => setAddress(e.target.value)} 
                                             required 
                                             placeholder="123 Main St" 
-                                            className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                            className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">City</label>
+                                            <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">City</label>
                                             <input 
                                                 value={city} 
                                                 onChange={(e) => setCity(e.target.value)} 
                                                 required 
                                                 placeholder="New York" 
-                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                                className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">State / Province</label>
+                                            <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">State / Province</label>
                                             <input 
                                                 value={province} 
                                                 onChange={(e) => setProvince(e.target.value)} 
                                                 required
                                                 placeholder="NY" 
-                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                                className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">Postal Code</label>
+                                            <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">Postal Code</label>
                                             <input 
                                                 value={postalCode} 
                                                 onChange={(e) => setPostalCode(e.target.value)} 
                                                 required 
                                                 placeholder="10001" 
-                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                                className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                             />
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">Country</label>
+                                            <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">Country</label>
                                             <input 
                                                 value={country} 
                                                 onChange={(e) => setCountry(e.target.value)} 
                                                 required 
                                                 placeholder="United States" 
-                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                                className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wilder ml-1">Phone Number</label>
+                                            <label className="text-xs font-bold text-blue-500 uppercase tracking-wider ml-1">Phone Number</label>
                                             <input 
                                                 value={phone} 
                                                 onChange={(e) => setPhone(e.target.value)} 
                                                 required 
                                                 placeholder="+1 (555) 000-0000" 
-                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400" 
+                                                className="w-full px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md" 
                                             />
                                         </div>
                                     </div>
@@ -318,7 +321,7 @@ const Checkout = () => {
                                         <div className="flex justify-between items-end">
                                             <h3 className="text-lg font-bold text-slate-900">Select Shipping Method</h3>
                                             {distance && (
-                                                <span className="text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                                                <span className="text-sm font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full border border-blue-200 shadow">
                                                     Distance: {distance} miles
                                                 </span>
                                             )}
@@ -328,17 +331,17 @@ const Checkout = () => {
                                                 <div 
                                                     key={rate.id}
                                                     onClick={() => setSelectedRate(rate)}
-                                                    className={`p-4 rounded-xl border-2 cursor-pointer flex justify-between items-center transition-all flex-wrap sm:flex-nowrap ${
+                                                    className={`p-4 rounded-2xl border-2 cursor-pointer flex justify-between items-center transition-all flex-wrap sm:flex-nowrap shadow-lg ${
                                                         selectedRate?.id === rate.id 
-                                                            ? 'border-slate-900 bg-slate-50' 
-                                                            : 'border-slate-100 hover:border-slate-300'
+                                                            ? 'border-blue-700 bg-gradient-to-br from-blue-100 to-blue-300 scale-105' 
+                                                            : 'border-blue-100 bg-white hover:border-blue-400 hover:bg-blue-50'
                                                     }`}
                                                 >
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="font-bold text-slate-900 break-words whitespace-normal text-sm sm:text-base">{rate.service}</div>
-                                                        <div className="text-xs text-slate-500 break-words whitespace-normal">{rate.carrier} • {rate.delivery_days ? `${rate.delivery_days} days` : 'Standard'}</div>
+                                                        <div className="font-bold text-blue-900 break-words whitespace-normal text-base drop-shadow-sm">{rate.service}</div>
+                                                        <div className="text-xs text-blue-500 break-words whitespace-normal">{rate.carrier} • {rate.delivery_days ? `${rate.delivery_days} days` : 'Standard'}</div>
                                                     </div>
-                                                    <div className="font-bold text-slate-900 text-right mt-2 sm:mt-0 min-w-[80px]">
+                                                    <div className="font-bold text-blue-800 text-right mt-2 sm:mt-0 min-w-[80px] drop-shadow-sm">
                                                         ${Number(rate.rate).toFixed(2)} {rate.currency}
                                                     </div>
                                                 </div>
@@ -353,25 +356,25 @@ const Checkout = () => {
                                      </div>
                                 )}
 
-                                <button type="submit" disabled={loading} className="w-full mt-10 bg-slate-900 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200 disabled:opacity-70 disabled:cursor-wait">
+                                <button type="submit" disabled={loading} className="w-full mt-10 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-extrabold uppercase text-base tracking-widest hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-70 disabled:cursor-wait">
                                      {loading ? <Loader2 className="animate-spin" /> : (
                                         shippingRates.length > 0 ? (
-                                            <>Proceed to Payment <ChevronRight size={16} /></>
+                                            <>Proceed to Payment <ChevronRight size={20} /></>
                                         ) : (
-                                            <>Calculate Shipping <Truck size={16} /></>
+                                            <>Calculate Shipping <Truck size={20} /></>
                                         )
                                     )}
                                 </button>
                             </form>
                         ) : (
-                            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-100 space-y-8">
+                            <div className="bg-white/80 p-8 md:p-10 rounded-3xl shadow-2xl border border-blue-100 backdrop-blur-xl space-y-8">
                                 {/* Payment Header */}
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-900">
-                                            <CreditCard size={20} />
+                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-200 to-blue-500 rounded-full flex items-center justify-center text-blue-900 shadow-lg">
+                                            <CreditCard size={28} />
                                         </div>
-                                        <h2 className="text-2xl font-black text-slate-900">Payment</h2>
+                                        <h2 className="text-3xl font-extrabold text-blue-800 drop-shadow-lg">Payment</h2>
                                     </div>
                                     <button onClick={() => setStep(1)} className="text-xs font-bold text-slate-400 hover:text-slate-600 whitespace-nowrap">
                                         Edit Shipping
@@ -379,7 +382,7 @@ const Checkout = () => {
                                 </div>
 
                                 {/* Order Summary */}
-                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 space-y-4 mb-6">
+                                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-100 space-y-4 mb-6 shadow-md">
                                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Order Summary</h4>
                                     <div className="divide-y divide-slate-200">
                                         {cartItems.map((item, i) => (
@@ -396,16 +399,16 @@ const Checkout = () => {
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                         <label className="text-xs text-slate-500 font-bold uppercase tracking-wider">Pay with Card</label>
                                         <div className="flex gap-2">
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">VISA</div>
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">MC</div>
-                                            <div className="h-5 w-8 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-400">AMEX</div>
+                                            <div className="h-5 w-8 bg-blue-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-400 shadow">VISA</div>
+                                            <div className="h-5 w-8 bg-blue-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-400 shadow">MC</div>
+                                            <div className="h-5 w-8 bg-blue-100 rounded flex items-center justify-center text-[10px] font-bold text-blue-400 shadow">AMEX</div>
                                         </div>
                                     </div>
 
                                     {/* Card Number */}
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Card Number</label>
-                                        <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                        <div className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-transparent transition-all shadow-md">
                                             <div id="card-number" className="w-full h-5"></div>
                                         </div>
                                     </div>
@@ -414,25 +417,25 @@ const Checkout = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Expiry</label>
-                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                            <div className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-transparent transition-all shadow-md">
                                                 <div id="card-date" className="w-full h-5"></div>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">CVV</label>
-                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                            <div className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-transparent transition-all shadow-md">
                                                 <div id="card-cvv" className="w-full h-5"></div>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">Zip Code</label>
-                                            <div className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                                            <div className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-400 focus-within:border-transparent transition-all shadow-md">
                                                 <div id="card-postal-code" className="w-full h-5"></div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium px-1 mt-2">
+                                    <div className="flex items-center gap-2 text-[11px] text-blue-400 font-medium px-1 mt-2">
                                         <Lock size={10} />
                                         <span>Instant Payment Processing. No OTP required for supported cards.</span>
                                     </div>
@@ -441,50 +444,43 @@ const Checkout = () => {
                                 <button
                                     onClick={initPayment}
                                     disabled={loading}
-                                    className="w-full mt-6 bg-indigo-600 text-white py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-extrabold uppercase text-base tracking-widest hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? <Loader2 className="animate-spin" size={18} /> : <>Pay with Clover <ShieldCheck size={18} /></>}
+                                    {loading ? <Loader2 className="animate-spin" size={22} /> : <>Pay with Clover <ShieldCheck size={22} /></>}
                                 </button>
                             </div>
                         )}
                     </div>
 
                     {/* RIGHT */}
-                    <div className="lg:col-span-2 bg-slate-900 text-white p-10 rounded-3xl h-fit">
-                        <h3 className="text-xl font-black mb-6">Summary</h3>
-                        
-                        <div className="space-y-4 text-slate-300 font-medium">
+                    <div className="lg:col-span-2 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 text-white p-10 rounded-3xl h-fit shadow-2xl border-2 border-blue-200">
+                        <h3 className="text-2xl font-extrabold mb-6 tracking-wide drop-shadow-lg">Summary</h3>
+                        <div className="space-y-4 text-blue-100 font-semibold">
                             <div className="flex justify-between">
                                 <span>Subtotal:</span>
                                 <span>${subtotal.toFixed(2)}</span>
                             </div>
-
                             {distance && (
-                                <div className="flex justify-between text-indigo-400">
+                                <div className="flex justify-between text-blue-300">
                                     <span>Distance:</span>
                                     <span>{distance} miles</span>
                                 </div>
                             )}
-
                             <div className="flex justify-between">
                                 <span>Tax:</span>
                                 <span>${taxPrice.toFixed(2)}</span>
                             </div>
-
                             <div className="flex justify-between">
                                 <span>Shipping:</span>
                                 <span>${shippingPrice.toFixed(2)}</span>
                             </div>
                         </div>
-
-                        <hr className="my-6 border-slate-800" />
-                        
+                        <hr className="my-6 border-blue-400/30" />
                         <div className="flex justify-between items-center text-white">
-                            <span className="font-bold text-lg">Total:</span>
-                            <span className="text-3xl font-black">${totalPrice.toFixed(2)}</span>
+                            <span className="font-bold text-xl">Total:</span>
+                            <span className="text-4xl font-extrabold drop-shadow-lg">${totalPrice.toFixed(2)}</span>
                         </div>
-
-                        <p className="text-xs text-slate-500 mt-8 font-medium leading-relaxed">
+                        <p className="text-xs text-blue-200 mt-8 font-medium leading-relaxed">
                             Payments are securely processed via Clover (PCI-DSS compliant).
                         </p>
                     </div>

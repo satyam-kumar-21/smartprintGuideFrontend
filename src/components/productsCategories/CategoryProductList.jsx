@@ -4,6 +4,7 @@ import { listProducts } from "../../redux/actions/productActions";
 import ProductGrid from "./ProductGrid";
 
 const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }) => {
+
   const dispatch = useDispatch();
   const [sort, setSort] = useState("");
   const [brand, setBrand] = useState("");
@@ -11,6 +12,40 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
 
   const productList = useSelector((state) => state.productList);
   const { loading, error, products, page, pages } = productList;
+
+  // Ensure products is always an array
+  const safeProducts = Array.isArray(products) ? products : [];
+  let formattedProducts = safeProducts;
+  // If categoryName is 'ink-toner', show only ink/toner products
+  if (categoryName && categoryName.toLowerCase().includes("ink-toner")) {
+    formattedProducts = formattedProducts.filter((product) => {
+      let category = "";
+      if (typeof product.category === "object" && product.category?.name) {
+        category = product.category.name.toLowerCase();
+      } else if (typeof product.category === "string") {
+        category = product.category.toLowerCase();
+      }
+      return category.includes("ink") || category.includes("toner");
+    });
+  } else if (!categoryName) {
+    // For Home section (no categoryName), remove ink/toner
+    // For Home section (no categoryName), show only all-in-one products
+    // For Home section (no categoryName), show all products
+    // No filter applied, show all
+  }
+  formattedProducts = formattedProducts.map((product) => ({
+    ...product,
+    image: product.image
+      ? product.image.startsWith("http")
+        ? product.image
+        : `${import.meta.env.VITE_API_URL?.replace("/api", "") || ""}${product.image}`
+      : product.images && Array.isArray(product.images) && product.images.length > 0
+      ? product.images[0].startsWith("http")
+        ? product.images[0]
+        : `${import.meta.env.VITE_API_URL?.replace("/api", "") || ""}${product.images[0]}`
+      : "/assets/printer.png",
+    link: `/product/${product.slug || product._id}`,
+  }));
 
   useEffect(() => {
     dispatch(listProducts("", categoryName, 1, sort, brand));
@@ -35,51 +70,6 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
   const handleFilterChange = (newSort, newBrand) => {
     setSort(newSort);
     setBrand(newBrand);
-  };
-
-  const safeProducts = Array.isArray(products) ? products : [];
-
-  const formattedProducts = safeProducts.map((product) => ({
-    ...product,
-    image: product.image
-      ? product.image.startsWith("http")
-        ? product.image
-        : `${import.meta.env.VITE_API_URL?.replace("/api", "") || ""}${product.image}`
-      : product.images && product.images.length > 0
-      ? product.images[0].startsWith("http")
-        ? product.images[0]
-        : `${import.meta.env.VITE_API_URL?.replace("/api", "") || ""}${product.images[0]}`
-      : "/assets/printer.png",
-    link: `/product/${product.slug || product._id}`,
-  }));
-
-  if (error)
-    return (
-      <div className="py-20 text-center text-red-500 font-semibold">
-        {error}
-      </div>
-    );
-
-  if (!loading && safeProducts.length === 0 && !sort && !brand) {
-    return (
-      <div className="relative max-w-7xl mx-auto px-6 py-24 text-center">
-        <div className="bg-white/70 backdrop-blur-xl border border-blue-100 rounded-3xl p-6 shadow-xl">
-          <h2 className="text-3xl font-bold text-blue-800 mb-6">
-            {heading || categoryName}
-          </h2>
-
-          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-4 border border-dashed border-blue-200">
-            <p className="text-blue-700 font-bold uppercase tracking-widest text-sm">
-              Products Coming Soon
-            </p>
-            <p className="mt-4 text-gray-600">
-              We’re currently updating this category for smartPrintGuide.
-              Please check back shortly.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -89,10 +79,10 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
       <div className="absolute top-0 left-10 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-10 w-96 h-96 bg-blue-300/40 rounded-full blur-3xl"></div>
 
-      <div className="relative max-w-7xl mx-auto px-0 sm:px-2">
+      <div className="relative max-w-7xl mx-auto px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0">
 
         {/* Product Grid */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-100 p-0 sm:p-2 md:p-4 transition-all duration-500" id="product-grid">
+        <div className="bg-transparent p-0 transition-all duration-500" id="product-grid">
           <ProductGrid
             heading={heading || categoryName}
             products={formattedProducts}

@@ -41,8 +41,8 @@ const CategoryScrollSection = () => {
           </p>
         </div>
 
-        {/* Category Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Category Grid with 3D effect */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-100 p-4 sm:p-8 md:p-10 transition-all duration-500 hover:shadow-blue-200/60 hover:-translate-y-1">
           {categories
             .filter(
               (item) =>
@@ -51,7 +51,15 @@ const CategoryScrollSection = () => {
             .map((item, index) => (
               <Link
                 key={item._id || index}
-                to={`/product-category/${item.slug}`}
+                to={`/product-category/${
+                  item.name.toLowerCase() === 'all in one'
+                    ? 'all-in-one-printers'
+                    : item.name.toLowerCase() === 'laser'
+                    ? 'laser-printers'
+                    : item.name.toLowerCase() === 'inkjet'
+                    ? 'inkjet-printers'
+                    : item.slug
+                }`}
                 className="group relative bg-white/80 backdrop-blur-lg border border-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-blue-300/50 transition-all duration-500 hover:-translate-y-2"
               >
                 {/* Category Name */}

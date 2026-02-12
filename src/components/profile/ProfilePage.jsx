@@ -60,62 +60,62 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 pt-24 pb-12 px-4 relative overflow-hidden">
+            {/* 3D Glow Effects */}
+            <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-400 opacity-30 rounded-full blur-3xl z-0"></div>
+            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600 opacity-20 rounded-full blur-3xl z-0"></div>
+            <div className="max-w-6xl mx-auto relative z-10">
                 {/* Header Section */}
                 <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">Account Settings</h1>
-                        <p className="text-slate-500 mt-1">Manage your account preferences and order history</p>
+                        <h1 className="text-4xl font-extrabold text-blue-800 drop-shadow-lg">Account Settings</h1>
+                        <p className="text-blue-500 mt-1 font-medium">Manage your account preferences and order history</p>
                     </div>
-                    <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                    <div className="flex bg-white/80 p-1 rounded-2xl shadow-xl border border-blue-100 backdrop-blur-xl">
                         <button
                             onClick={() => setActiveTab('settings')}
-                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'settings' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
-                                }`}
+                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'settings' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
                         >
                             Profile Details
                         </button>
                         <button
                             onClick={() => setActiveTab('orders')}
-                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'orders' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
-                                }`}
+                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'orders' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
                         >
                             Order History
                         </button>
                         <button
                             onClick={() => setActiveTab('help')}
-                            className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'help' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50'
-                                }`}
+                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'help' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
                         >
                             Help & Support
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                     {/* Left Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                        <div className="bg-white/80 rounded-3xl p-8 shadow-2xl border border-blue-100 backdrop-blur-xl">
                             <div className="flex flex-col items-center text-center">
-                                <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4 text-white shadow-lg">
-                                    <span className="text-3xl font-bold uppercase">{user.firstName?.charAt(0) || user.name?.charAt(0)}</span>
+                                <div className="w-28 h-28 bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4 text-white shadow-2xl border-4 border-blue-200">
+                                    <span className="text-4xl font-extrabold uppercase drop-shadow-lg">{user.firstName?.charAt(0) || user.name?.charAt(0)}</span>
                                 </div>
-                                <h2 className="text-xl font-bold text-slate-800">{user.name}</h2>
-                                <p className="text-slate-500 text-xs truncate max-w-full">{user.email}</p>
-                                <div className="mt-4 inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+                                <h2 className="text-2xl font-extrabold text-blue-800 drop-shadow-lg">{user.name}</h2>
+                                <p className="text-blue-500 text-sm truncate max-w-full font-medium">{user.email}</p>
+                                <div className="mt-4 inline-flex items-center px-4 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 text-base font-bold rounded-full shadow-md">
                                     {user.isAdmin ? 'Administrator' : 'Customer'}
                                 </div>
                             </div>
 
-                            <div className="mt-8 pt-6 border-t border-slate-50 space-y-4">
-                                <div className="flex items-center justify-between text-slate-600 text-sm">
-                                    <span className="flex items-center gap-2"><Package size={16} /> Orders</span>
-                                    <span className="font-bold text-slate-900">{orders?.length || 0}</span>
+                            <div className="mt-8 pt-6 border-t border-blue-100 space-y-4">
+                                <div className="flex items-center justify-between text-blue-700 text-base font-semibold">
+                                    <span className="flex items-center gap-2"><Package size={18} /> Orders</span>
+                                    <span className="font-extrabold text-blue-900">{orders?.length || 0}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-slate-600 text-sm">
-                                    <span className="flex items-center gap-2"><CreditCard size={16} /> Saved Cards</span>
-                                    <span className="font-bold text-slate-900">0</span>
+                                <div className="flex items-center justify-between text-blue-700 text-base font-semibold">
+                                    <span className="flex items-center gap-2"><CreditCard size={18} /> Saved Cards</span>
+                                    <span className="font-extrabold text-blue-900">0</span>
                                 </div>
                             </div>
                         </div>
@@ -137,16 +137,16 @@ const ProfilePage = () => {
                     {/* Main Content Area */}
                     <div className="lg:col-span-3">
                         {activeTab === 'settings' ? (
-                            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                            <div className="bg-white/80 rounded-3xl shadow-2xl border border-blue-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop-blur-xl">
+                                <div className="p-8 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-blue-100 to-blue-200">
                                     <div>
-                                        <h2 className="text-xl font-bold text-slate-800">Personal Information</h2>
-                                        <p className="text-slate-500 text-sm mt-1">Update your basic profile info and email</p>
+                                        <h2 className="text-2xl font-extrabold text-blue-800 drop-shadow-lg">Personal Information</h2>
+                                        <p className="text-blue-500 text-base mt-1 font-medium">Update your basic profile info and email</p>
                                     </div>
-                                    <User className="text-slate-200" size={32} />
+                                    <User className="text-blue-300 drop-shadow-lg" size={36} />
                                 </div>
 
-                                <form onSubmit={submitHandler} className="p-6 space-y-6">
+                                <form onSubmit={submitHandler} className="p-8 space-y-8">
                                     {message && (
                                         <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg flex items-center gap-2">
                                             <AlertCircle size={16} />
@@ -166,14 +166,14 @@ const ProfilePage = () => {
                                         </div>
                                     )}
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                         <div className="space-y-2">
                                             <label className="text-sm font-semibold text-slate-700">First Name</label>
                                             <input
                                                 type="text"
                                                 value={firstName}
                                                 onChange={(e) => setFirstName(e.target.value)}
-                                                className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
+                                                className="w-full px-5 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md"
                                                 placeholder="First Name"
                                             />
                                         </div>
@@ -183,7 +183,7 @@ const ProfilePage = () => {
                                                 type="text"
                                                 value={lastName}
                                                 onChange={(e) => setLastName(e.target.value)}
-                                                className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
+                                                className="w-full px-5 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md"
                                                 placeholder="Last Name"
                                             />
                                         </div>
@@ -197,7 +197,7 @@ const ProfilePage = () => {
                                                 type="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
+                                                className="w-full pl-10 pr-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md"
                                                 placeholder="Email Address"
                                             />
                                         </div>
@@ -214,7 +214,7 @@ const ProfilePage = () => {
                                                         type="password"
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
-                                                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
+                                                        className="w-full pl-10 pr-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md"
                                                         placeholder="••••••••"
                                                     />
                                                 </div>
@@ -227,7 +227,7 @@ const ProfilePage = () => {
                                                         type="password"
                                                         value={confirmPassword}
                                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
+                                                        className="w-full pl-10 pr-4 py-3 bg-blue-50 border border-blue-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all font-medium text-blue-900 placeholder:text-blue-400 shadow-md"
                                                         placeholder="••••••••"
                                                     />
                                                 </div>
@@ -239,13 +239,13 @@ const ProfilePage = () => {
                                         <button
                                             type="submit"
                                             disabled={loading || updateLoading}
-                                            className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all transform hover:shadow-lg disabled:opacity-50 active:scale-95"
+                                            className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-600 text-white font-extrabold rounded-2xl transition-all transform hover:shadow-xl disabled:opacity-50 active:scale-95 shadow-lg shadow-blue-200 text-lg"
                                         >
                                             {updateLoading || loading ? (
-                                                <Loader2 className="animate-spin" size={20} />
+                                                <Loader2 className="animate-spin" size={24} />
                                             ) : (
                                                 <>
-                                                    <Save size={18} />
+                                                    <Save size={22} />
                                                     Save Changes
                                                 </>
                                             )}
@@ -254,16 +254,16 @@ const ProfilePage = () => {
                                 </form>
                             </div>
                         ) : activeTab === 'orders' ? (
-                            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                            <div className="bg-white/80 rounded-3xl shadow-2xl border border-blue-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop-blur-xl">
+                                <div className="p-8 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-blue-100 to-blue-200">
                                     <div>
-                                        <h2 className="text-xl font-bold text-slate-800">Order History</h2>
-                                        <p className="text-slate-500 text-sm mt-1">View and track all your previous purchases</p>
+                                        <h2 className="text-2xl font-extrabold text-blue-800 drop-shadow-lg">Order History</h2>
+                                        <p className="text-blue-500 text-base mt-1 font-medium">View and track all your previous purchases</p>
                                     </div>
-                                    <Package className="text-slate-200" size={32} />
+                                    <Package className="text-blue-300 drop-shadow-lg" size={36} />
                                 </div>
 
-                                <div className="p-6">
+                                <div className="p-8">
                                     {loadingOrders ? (
                                         <div className="flex flex-col items-center justify-center py-12">
                                             <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
@@ -276,14 +276,14 @@ const ProfilePage = () => {
                                         </div>
                                     ) : orders && orders.length === 0 ? (
                                         <div className="text-center py-12">
-                                            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                <Package className="text-slate-400" size={32} />
+                                            <div className="w-20 h-20 bg-gradient-to-br from-blue-200 to-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                                <Package className="text-blue-400" size={36} />
                                             </div>
-                                            <h3 className="text-slate-800 font-bold text-lg">No orders found</h3>
-                                            <p className="text-slate-500 mb-6">Looks like you haven't placed any orders yet.</p>
+                                            <h3 className="text-blue-800 font-extrabold text-xl">No orders found</h3>
+                                            <p className="text-blue-500 mb-6 font-medium">Looks like you haven't placed any orders yet.</p>
                                             <Link
                                                 to="/"
-                                                className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all"
+                                                className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-extrabold rounded-2xl hover:from-blue-700 hover:to-blue-600 transition-all text-lg shadow-lg shadow-blue-200"
                                             >
                                                 Start Shopping
                                             </Link>
@@ -292,39 +292,39 @@ const ProfilePage = () => {
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-left border-collapse">
                                                 <thead>
-                                                    <tr className="border-b border-slate-100">
-                                                        <th className="pb-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Order ID</th>
-                                                        <th className="pb-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Date</th>
-                                                        <th className="pb-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Total</th>
-                                                        <th className="pb-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
-                                                        <th className="pb-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Action</th>
+                                                    <tr className="border-b border-blue-100">
+                                                        <th className="pb-4 pt-2 text-xs font-extrabold text-blue-400 uppercase tracking-widest">Order ID</th>
+                                                        <th className="pb-4 pt-2 text-xs font-extrabold text-blue-400 uppercase tracking-widest">Date</th>
+                                                        <th className="pb-4 pt-2 text-xs font-extrabold text-blue-400 uppercase tracking-widest">Total</th>
+                                                        <th className="pb-4 pt-2 text-xs font-extrabold text-blue-400 uppercase tracking-widest">Status</th>
+                                                        <th className="pb-4 pt-2 text-xs font-extrabold text-blue-400 uppercase tracking-widest text-right">Action</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody className="divide-y divide-slate-50">
+                                                <tbody className="divide-y divide-blue-50">
                                                     {orders && orders.map((order) => (
-                                                        <tr key={order._id} className="group hover:bg-slate-50/50 transition-colors">
-                                                            <td className="py-4 font-mono text-sm text-slate-600">#{order._id.substring(18)}</td>
+                                                        <tr key={order._id} className="group hover:bg-blue-50/50 transition-colors">
+                                                            <td className="py-4 font-mono text-base text-blue-700">#{order._id.substring(18)}</td>
                                                             <td className="py-4">
-                                                                <div className="flex items-center gap-2 text-slate-600 text-sm">
-                                                                    <Calendar size={14} />
+                                                                <div className="flex items-center gap-2 text-blue-700 text-base">
+                                                                    <Calendar size={16} />
                                                                     {new Date(order.createdAt).toLocaleDateString()}
                                                                 </div>
                                                             </td>
-                                                            <td className="py-4 font-bold text-slate-800">${order.totalPrice.toFixed(2)}</td>
+                                                            <td className="py-4 font-extrabold text-blue-900 text-lg">${order.totalPrice.toFixed(2)}</td>
                                                             <td className="py-4">
                                                                 {order.isPaid ? (
-                                                                    <span className="px-2.5 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full uppercase">Paid</span>
+                                                                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-extrabold rounded-full uppercase">Paid</span>
                                                                 ) : (
-                                                                    <span className="px-2.5 py-1 bg-red-50 text-red-700 text-[10px] font-bold rounded-full uppercase">Failed</span>
+                                                                    <span className="px-3 py-1 bg-red-100 text-red-700 text-xs font-extrabold rounded-full uppercase">Failed</span>
                                                                 )}
                                                             </td>
                                                             <td className="py-4 text-right">
                                                                 <Link
                                                                     to={`/order/${order._id}`}
-                                                                    className="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                                                                    className="inline-flex items-center gap-1 text-lg font-extrabold text-blue-600 hover:text-blue-700 transition-colors"
                                                                 >
                                                                     Details
-                                                                    <ChevronRight size={16} />
+                                                                    <ChevronRight size={18} />
                                                                 </Link>
                                                             </td>
                                                         </tr>

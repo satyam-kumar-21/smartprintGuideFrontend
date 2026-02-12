@@ -1,3 +1,7 @@
+import HomePrinter from './components/productsCategories/HomePrinter';
+import HomePrinterSection from './components/productsCategories/HomePrinterSection';
+import OfficePrinter from './components/productsCategories/OfficePrinter';
+import OfficePrinterSection from './components/productsCategories/OfficePrinterSection';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import Header from './components/Header';
@@ -68,6 +72,8 @@ function App() {
                     {/* Public Routes */}
                     <Route path="/" element={<HomeMain />} />
                     <Route path="/product-category/all-in-one-printers" element={<AllInOne />} />
+                    <Route path="/home-printer" element={<HomePrinterSection />} />
+                    <Route path="/office-printer" element={<OfficePrinterSection />} />
                     <Route path="/product-category/large-format-printers" element={<LargeFormat />} />
                     <Route path="/product-category/inkjet-printers" element={<InkjetPrinters />} />
                     <Route path="/product-category/laser-printers" element={<LaserPrinters />} />
