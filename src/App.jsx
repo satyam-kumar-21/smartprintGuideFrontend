@@ -37,6 +37,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Cart from './components/Cart';
 import Checkout from './components/Checkout';
 import ProductDetails from './components/productsCategories/ProductDetails';
+import Search from './pages/Search';
 import OrderDetails from './components/order/OrderDetails';
 import TrackOrder from './components/order/TrackOrder';
 import ReturnsAndExchanges from './components/order/ReturnsAndExchanges';
@@ -93,7 +94,9 @@ function App() {
                     <Route path="/blogs/save-printing-costs-guide" element={<SavePrintingCostsGuide />} />
                     <Route path="/blogs/small-business-printing-essential-tools" element={<SmallBusinessPrintingGuide />} />
 
+
                     <Route path="/product/:productSlug" element={<ProductDetails />} />
+                    <Route path="/search" element={<Search />} />
 
                     {/*order*/}
                     <Route path="/track-order" element={<TrackOrder />} />

@@ -101,6 +101,7 @@ const ProductGrid = ({
             return (
               <div
                 key={index}
+                data-product-card
                 className={
                   enableFlowLayout
                     ? "float-left w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-3 box-border"

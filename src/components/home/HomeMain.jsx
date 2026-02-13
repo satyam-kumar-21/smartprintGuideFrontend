@@ -6,10 +6,10 @@ import { listProducts } from "../../redux/actions/productActions";
 import Hero from "./Hero";
 import WelcomeSection from "./WelcomeSection";
 import Home from "./Home";
-import LatestTips from "./LatestTips";
 import Reviews from "./Reviews";
 import StatsCircles from "./StatsCircles";
 import WhyChooseSection from "./WhyChooseSection";
+import FeaturedServices from "./FeaturedServices";
 import OurPromiseSection from "./OurPromiseSection";
 import ImportantInfoSection from "./ImportantInfoSection";
 import ProductGrid from "../productsCategories/ProductGrid";
@@ -61,16 +61,16 @@ const HomeMain = () => {
     // ================= HOME PAGE =================
     return (
         <div className="overflow-hidden">
-
             <Hero />
             <WelcomeSection />
             <Home />
+            {/* Show new blue-themed section after products */}
+            <FeaturedServices />
             <WhyChooseSection />
             <OurPromiseSection />
             <Reviews />
             <StatsCircles />
             <ImportantInfoSection />
-
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import { ShieldCheck, Truck, Info, Users, BadgeCheck } from "lucide-react";
 
-const WhyImage = "/assets/about.jpg";
+const WhyImage = "/assets/whychooseus.jpg"; 
 
 const choosePoints = [
   {

@@ -54,16 +54,16 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
   const loadMoreHandler = async () => {
     if (page < pages) {
       setLoadingMore(true);
+      // Find the last product card before loading more
+      const lastProduct = document.querySelector('[data-product-card]:last-of-type');
       await new Promise((resolve) => setTimeout(resolve, 2000)); // artificial delay
       await dispatch(listProducts("", categoryName, page + 1, sort, brand));
       setLoadingMore(false);
-      // Scroll to the new products
-      setTimeout(() => {
-        const grid = document.getElementById('product-grid');
-        if (grid) {
-          grid.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-      }, 100);
+      // Scroll to the first new product card
+      // Do not scroll after loading more products; let user scroll manually to see new items
+      // This keeps the current view unchanged and new products appear below
+      // setTimeout intentionally left empty
+      setTimeout(() => {}, 100);
     }
   };
 

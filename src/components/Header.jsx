@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X, ShoppingCart, ChevronDown } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Menu, X, ShoppingCart, ChevronDown, Search } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from '../redux/actions/userActions';
 import AuthModal from "./AuthModel";
@@ -9,8 +9,14 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const debounceRef = useRef();
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const cartCount = useSelector((state) =>
     state.cart.cartItems.reduce((acc, item) => acc + item.qty, 0)
@@ -45,6 +51,41 @@ const Header = () => {
   }, [mobileOpen]);
 
   const isActive = (path) => location.pathname === path;
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchOpen(false);
+      setSearchTerm("");
+      setSuggestions([]);
+    }
+  };
+
+  // Fetch suggestions as user types
+  useEffect(() => {
+    if (!searchOpen) {
+      setSuggestions([]);
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (searchTerm.trim().length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/products?search=${encodeURIComponent(searchTerm.trim())}&limit=5`);
+        const data = await res.json();
+        setSuggestions(Array.isArray(data.products) ? data.products : []);
+      } catch {
+        setSuggestions([]);
+      }
+      setLoadingSuggestions(false);
+    }, 300);
+    return () => debounceRef.current && clearTimeout(debounceRef.current);
+  }, [searchTerm, searchOpen]);
 
   return (
     <>
@@ -111,8 +152,82 @@ const Header = () => {
               )}
             </nav>
 
+
             {/* Right Side */}
             <div className="flex items-center gap-6">
+              {/* Search Icon */}
+              <button
+                className="text-blue-700 hover:scale-110 transition-transform relative"
+                onClick={() => setSearchOpen((v) => !v)}
+                aria-label="Search"
+              >
+                <Search size={24} />
+              </button>
+      {/* Search Modal/Dropdown */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="mt-32 bg-white rounded-2xl shadow-2xl p-6 flex flex-col gap-4 w-full max-w-md border border-blue-200 relative"
+          >
+            <div className="flex items-center gap-2">
+              <Search size={22} className="text-blue-700" />
+              <input
+                autoFocus
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Search products by title, description, brand..."
+                className="flex-1 px-4 py-2 rounded-xl border border-blue-200 focus:ring-2 focus:ring-blue-400 outline-none"
+              />
+              <button
+                type="button"
+                className="ml-2 text-gray-400 hover:text-blue-700"
+                onClick={() => setSearchOpen(false)}
+                aria-label="Close search"
+              >
+                <X size={22} />
+              </button>
+            </div>
+            {/* Suggestions Dropdown */}
+            {searchTerm.trim().length > 1 && (
+              <div className="absolute left-0 right-0 top-20 bg-white border border-blue-100 rounded-xl shadow-xl z-50 max-h-72 overflow-y-auto">
+                {loadingSuggestions ? (
+                  <div className="p-4 text-blue-600 text-center">Searching...</div>
+                ) : suggestions.length > 0 ? (
+                  suggestions.map((product) => (
+                    <div
+                      key={product._id || product.slug}
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 cursor-pointer"
+                      onClick={() => {
+                        navigate(`/product/${product.slug || product._id}`);
+                        setSearchOpen(false);
+                        setSearchTerm("");
+                        setSuggestions([]);
+                      }}
+                    >
+                      <img src={product.image || (product.images && product.images[0]) || "/printer.png"} alt={product.title} className="w-10 h-10 object-contain rounded" />
+                      <div className="flex-1">
+                        <div className="font-semibold text-blue-900 text-sm line-clamp-1">{product.title}</div>
+                        <div className="text-xs text-gray-500 line-clamp-1">{product.brand}</div>
+                      </div>
+                      <span className="text-blue-700 font-bold">${product.price}</span>
+                    </div>
+                  ))
+                ) : searchTerm.trim().length > 1 ? (
+                  <div className="p-4 text-gray-400 text-center">No products found</div>
+                ) : null}
+              </div>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-xl font-semibold hover:bg-blue-700 transition mt-2"
+            >
+              Search
+            </button>
+          </form>
+        </div>
+      )}
 
               <Link
                 to="/cart"
