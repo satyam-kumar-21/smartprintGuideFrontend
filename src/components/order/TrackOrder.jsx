@@ -21,7 +21,7 @@ const TrackOrder = () => {
             setError(null);
             // We'll try to fetch without token first if they are on a public page
             // If it fails with 401, we know it's protected
-            const { data } = await axios.get(`https://printersbackend.onrender.com/api/orders/${cleanId}`);
+            const { data } = await axios.get(`https://smartprintguidebackendlive.onrender.com/api/orders/${cleanId}`);
             
             // Format order data for tracking display
             const formattedOrder = {
@@ -52,104 +52,81 @@ const TrackOrder = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Track Your Order</h1>
-
+            <h1 className="text-3xl font-extrabold text-blue-800 mb-6 text-center drop-shadow-lg">Track Your Order</h1>
             {/* Input */}
             <form
                 onSubmit={handleTrack}
-                className="flex flex-col sm:flex-row gap-2 mb-6"
+                className="flex flex-col sm:flex-row gap-2 mb-8 justify-center"
             >
                 <input
                     type="text"
                     placeholder="Enter your Order ID"
                     value={orderId}
                     onChange={(e) => setOrderId(e.target.value)}
-                    className="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="flex-grow px-4 py-3 bg-white/80 border border-blue-200 rounded-2xl shadow focus:outline-none focus:ring-2 focus:ring-blue-400 text-blue-900 font-semibold placeholder:text-blue-300"
                 />
-                <button className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
+                <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold shadow hover:from-blue-700 hover:to-blue-800 transition-all">
                     Track
                 </button>
             </form>
-
+            {/* Error/Loading */}
+            {loading && <div className="text-blue-600 text-center font-semibold">Loading...</div>}
+            {error && <div className="text-red-600 text-center font-semibold mb-4">{error}</div>}
             {/* Order Details */}
             {orderDetails && (
-                <div className="bg-white shadow-md rounded-md p-4 space-y-6">
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg p-6 md:p-10 space-y-8">
                     {/* Order Summary */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <p>
-                                <span className="font-medium">Order ID:</span>{" "}
-                                {orderDetails.orderId}
-                            </p>
-                            <p>
-                                <span className="font-medium">Customer:</span>{" "}
-                                {orderDetails.customerName}
-                            </p>
+                            <p className="text-blue-700 font-bold text-lg mb-1">Order ID: <span className="font-mono text-blue-900">{orderDetails.orderId}</span></p>
+                            <p className="text-blue-600 font-semibold">Customer: {orderDetails.customerName}</p>
                         </div>
                         <div>
-                            <p>
-                                <span className="font-medium">Payment:</span>{" "}
-                                <span
-                                    className={
-                                        orderDetails.paid ? "text-green-600" : "text-red-600"
-                                    }
-                                >
-                                    {orderDetails.paid ? "Paid" : "Failed - Please Reorder"}
-                                </span>
-                            </p>
-                            <p>
-                                <span className="font-medium">Current Status:</span>{" "}
-                                {orderDetails.status}
-                            </p>
+                            <p className="font-bold">Payment: <span className={orderDetails.paid ? "text-blue-600" : "text-red-600"}>{orderDetails.paid ? "Paid" : "Failed - Please Reorder"}</span></p>
+                            <p className="font-bold text-blue-700">Current Status: <span className="font-semibold text-blue-900">{orderDetails.status}</span></p>
                         </div>
                     </div>
-
                     {/* Products */}
                     <div>
-                        <h2 className="font-semibold mb-2">Products</h2>
+                        <h2 className="font-bold text-blue-800 mb-2">Products</h2>
                         <div className="space-y-2">
                             {orderDetails.products.map((prod, index) => (
                                 <div
                                     key={index}
-                                    className="flex flex-col sm:flex-row items-center gap-4 border p-2 rounded-md"
+                                    className="flex flex-col sm:flex-row items-center gap-4 border border-blue-100 bg-blue-50/50 rounded-2xl p-3 shadow-sm"
                                 >
                                     <img
                                         src={prod.image}
                                         alt={prod.name}
-                                        className="w-20 h-20 object-contain"
+                                        className="w-20 h-20 object-contain rounded-xl bg-white"
                                     />
                                     <div className="flex-1">
-                                        <p className="font-medium">{prod.name}</p>
-                                        <p className="text-gray-600">
-                                            Quantity: {prod.quantity}
-                                        </p>
+                                        <p className="font-bold text-blue-900">{prod.name}</p>
+                                        <p className="text-blue-500">Quantity: {prod.quantity}</p>
                                     </div>
-                                    <p className="font-semibold">${prod.price.toFixed(2)}</p>
+                                    <p className="font-bold text-blue-700">${prod.price.toFixed(2)}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-
-                    {/* Tracking Timeline */}
                     {/* Tracking Timeline */}
                     <div>
-                        <h2 className="font-semibold text-xl mb-4">Tracking History</h2>
-                        <ul className="relative border-l-2 border-gray-300 pl-6">
-                            {orderDetails.history.map((step, idx) => {
-                                const isCompleted = idx < orderDetails.history.length - 1;
-                                const isCurrent = idx === orderDetails.history.length - 1;
-
+                        <h2 className="font-bold text-blue-800 text-xl mb-4">Tracking History</h2>
+                        <ul className="relative border-l-4 border-blue-200 pl-8">
+                            {(orderDetails.history || []).map((step, idx) => {
+                                const isCompleted = idx < (orderDetails.history?.length || 0) - 1;
+                                const isCurrent = idx === (orderDetails.history?.length || 0) - 1;
                                 return (
-                                    <li key={idx} className="mb-8 relative">
+                                    <li key={idx} className="mb-10 relative">
                                         {/* Dot */}
                                         <span
-                                            className={`absolute -left-3 top-0 w-5 h-5 rounded-full border-2 flex items-center justify-center
-              ${isCompleted ? "bg-gray-500 border-gray-500" : isCurrent ? "bg-indigo-500 border-indigo-500" : "bg-white border-gray-300"}
+                                            className={`absolute -left-5 top-0 w-7 h-7 rounded-full border-4 flex items-center justify-center
+              ${isCompleted ? "bg-blue-400 border-blue-400" : isCurrent ? "bg-blue-600 border-blue-600" : "bg-white border-blue-200"}
             `}
                                         >
                                             {isCompleted && (
                                                 <svg
-                                                    className="w-3 h-3 text-white"
+                                                    className="w-4 h-4 text-white"
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -163,22 +140,19 @@ const TrackOrder = () => {
                                                 </svg>
                                             )}
                                         </span>
-
                                         {/* Content */}
                                         <div className="ml-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                                            <p className={`font-medium ${isCurrent ? "text-indigo-600" : isCompleted ? "text-gray-500" : "text-gray-400"}`}>
+                                            <p className={`font-bold ${isCurrent ? "text-blue-700" : isCompleted ? "text-blue-400" : "text-blue-300"}`}>
                                                 {step.status}
                                             </p>
-                                            <p className="text-gray-500 text-sm">{step.date}</p>
+                                            <p className="text-blue-400 text-sm">{step.date}</p>
                                         </div>
-                                        <p className="text-gray-600 text-sm mt-1">{step.location}</p>
+                                        <p className="text-blue-500 text-sm mt-1">{step.location}</p>
                                     </li>
                                 );
                             })}
                         </ul>
                     </div>
-
-
                 </div>
             )}
         </div>

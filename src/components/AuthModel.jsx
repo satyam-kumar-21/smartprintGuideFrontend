@@ -34,7 +34,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   const dispatch = useDispatch();
 
-  const { loading, userInfo } = useSelector((state) => state.userLogin);
+  const { loading, userInfo, error } = useSelector((state) => state.userLogin);
   const { loading: loadingSendOTP, success: successSendOTP } =
     useSelector((state) => state.userSendOTP);
   const { success: successVerifyOTP } =
@@ -119,7 +119,9 @@ const AuthModal = ({ isOpen, onClose }) => {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
 
       {/* Modal Box */}
-      <div className="relative w-[95%] sm:w-[480px] bg-white/70 backdrop-blur-2xl border border-blue-100 rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+      <div className="relative w-[95%] sm:w-[480px] bg-white/70 backdrop-blur-2xl border border-blue-100 rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300"
+        style={{ maxWidth: '480px' }}
+      >
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -140,6 +142,10 @@ const AuthModal = ({ isOpen, onClose }) => {
 
         {errorMessage && (
           <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+        )}
+        {/* Show incorrect userid/password error if login fails */}
+        {mode === "login" && error && (
+          <div className="mb-4 text-red-500 text-sm">Incorrect email or password.</div>
         )}
         {successMessage && (
           <div className="mb-4 text-blue-600 text-sm">{successMessage}</div>
@@ -175,6 +181,15 @@ const AuthModal = ({ isOpen, onClose }) => {
               </button>
             </div>
 
+            {/* Move Forgot Password above Login button */}
+            <button
+              type="button"
+              className="w-full text-xs text-blue-600 hover:underline font-semibold mb-2"
+              onClick={() => setMode("forgot-password")}
+            >
+              Forgot Password?
+            </button>
+
             <button
               type="submit"
               disabled={loading}
@@ -189,24 +204,15 @@ const AuthModal = ({ isOpen, onClose }) => {
               )}
             </button>
 
-            <div className="flex justify-between items-center mt-2">
+            <div className="text-sm text-center mt-2">
+              Don’t have account?{" "}
               <button
                 type="button"
-                className="text-xs text-blue-600 hover:underline font-semibold"
-                onClick={() => setMode("forgot-password")}
+                className="text-blue-600 font-semibold"
+                onClick={() => setMode("signup")}
               >
-                Forgot Password?
+                Signup
               </button>
-              <div className="text-sm text-center">
-                Don’t have account?{" "}
-                <button
-                  type="button"
-                  className="text-blue-600 font-semibold"
-                  onClick={() => setMode("signup")}
-                >
-                  Signup
-                </button>
-              </div>
             </div>
           </form>
         )}

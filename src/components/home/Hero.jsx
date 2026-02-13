@@ -1,5 +1,6 @@
 import React from "react";
 import heroImage from "../../assets/printer.png";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -26,14 +27,17 @@ const Hero = () => {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              
+              <Link to="/product-category/all-in-one-printers" className="w-full sm:w-auto">
               <button className="bg-blue-600 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl hover:scale-105 hover:bg-blue-700 transition duration-300">
                 Explore Products
               </button>
-
+              </Link>
+              
+              <Link to="/about" className="w-full sm:w-auto">
               <button className="bg-white text-blue-700 font-semibold px-8 py-4 rounded-2xl shadow-xl hover:scale-105 border border-blue-200 transition duration-300">
-                Read Guides
+                Know More About Us
               </button>
+              </Link>
 
             </div>
 
