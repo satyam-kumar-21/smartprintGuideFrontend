@@ -1,6 +1,6 @@
 import React from "react";
 import ProductRouteHeading from "./ProductRouteHeading";
-import CategoryScrollSection from "./CategoryScrollSection";
+import CommonCategoryBar from "./CommonCategoryBar";
 import OfficePrinter from "./OfficePrinter";
 import FeaturesSection from "./FeaturesSection";
 
@@ -16,7 +16,7 @@ function OfficePrinterSection() {
         title="Office Printers"
         description="Printers for office use."
       />
-      <CategoryScrollSection />
+      <CommonCategoryBar />
       <OfficePrinter />
       <FeaturesSection />
     </>

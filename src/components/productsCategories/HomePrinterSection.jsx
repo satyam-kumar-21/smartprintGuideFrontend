@@ -1,6 +1,6 @@
 import React from "react";
 import ProductRouteHeading from "./ProductRouteHeading";
-import CategoryScrollSection from "./CategoryScrollSection";
+import CommonCategoryBar from "./CommonCategoryBar";
 import HomePrinter from "./HomePrinter";
 import FeaturesSection from "./FeaturesSection";
 
@@ -16,7 +16,7 @@ function HomePrinterSection() {
         title="Home Printers"
         description="Printers for home use."
       />
-      <CategoryScrollSection />
+      <CommonCategoryBar />
       <HomePrinter />
       <FeaturesSection />
     </>
