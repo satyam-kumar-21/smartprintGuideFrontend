@@ -65,6 +65,8 @@ const Footer = () => {
              <li><Link to="/ccpa-privacy-policy" className="hover:text-white hover:translate-x-1 transition inline-block">CCPA / CPRA</Link></li>
               <li><Link to="/accessibility-statement" className="hover:text-white hover:translate-x-1 transition inline-block">Accessibility</Link></li>
                <li><Link to="/disclaimer" className="hover:text-white hover:translate-x-1 transition inline-block">Disclaimer</Link></li>
+               <li><Link to="/consumer-rights" className="hover:text-white hover:translate-x-1 transition inline-block">Consumer Rights</Link></li>
+               <li><Link to="/do-not-sell-or-share-my-personal-information" className="hover:text-white hover:translate-x-1 transition inline-block">Do Not Sell or Share My Info</Link></li>
             
 
           </ul>
@@ -79,7 +81,9 @@ const Footer = () => {
             <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
             <li><Link to="/customer-service" className="hover:text-white transition">Contact us</Link></li>
             <li><Link to="/terms-and-conditions" className="hover:text-white transition">Terms & Conditions</Link></li>
-            <li><Link to="/faq" className="hover:text-white hover:translate-x-1 transition inline-block">FAQ</Link></li>
+            <li><Link to="/help-center" className="hover:text-white hover:translate-x-1 transition inline-block">FAQ & Help Center</Link></li>
+            <li><Link to="/printer-buying-guide" className="hover:text-white hover:translate-x-1 transition inline-block">Printer Buying Guide</Link></li>
+            <li><Link to="/guides-resources" className="hover:text-white hover:translate-x-1 transition inline-block">Guides & Resources</Link></li>
           </ul>
         </div>
 

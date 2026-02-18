@@ -41,7 +41,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     useSelector((state) => state.userVerifyOTP);
   const { success: successForgot } =
     useSelector((state) => state.userForgotPassword);
-  const { success: successReset } =
+  const { success: successReset, error: errorReset } =
     useSelector((state) => state.userResetPassword);
 
   useEffect(() => {
@@ -141,17 +141,30 @@ const AuthModal = ({ isOpen, onClose }) => {
         </div>
 
         {errorMessage && (
-          <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+          <div className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2 font-semibold">
+            {errorMessage}
+          </div>
         )}
         {/* Show incorrect userid/password error if login fails */}
         {mode === "login" && error && (
-          <div className="mb-4 text-red-500 text-sm">Incorrect email or password.</div>
+          <div className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2 font-semibold">
+            Incorrect email or password.
+          </div>
         )}
         {successMessage && (
-          <div className="mb-4 text-blue-600 text-sm">{successMessage}</div>
+          <div className="mb-4 text-green-600 text-sm text-center bg-green-50 border border-green-200 rounded-lg px-3 py-2 font-semibold">
+            {successMessage}
+          </div>
         )}
         {mode === "signup" && errorSendOTP && (
-          <div className="mb-4 text-red-500 text-sm">{errorSendOTP}</div>
+          <div className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2 font-semibold">
+            {errorSendOTP}
+          </div>
+        )}
+        {mode === "reset-password" && errorReset && (
+          <div className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2 font-semibold">
+            {errorReset === 'Invalid or expired OTP' || errorReset === 'OTP not matched' ? 'OTP not matched' : errorReset}
+          </div>
         )}
 
         {/* LOGIN */}

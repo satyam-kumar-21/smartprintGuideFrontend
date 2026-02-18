@@ -33,6 +33,7 @@ import InkjetPrinters from './components/productsCategories/inkjetPrinters/Inkje
 import LedPrinters from './components/productsCategories/ledPrinters/LedPrinters';
 import InkToner from './components/productsCategories/inkToner/InkToner';
 import CustomerService from './components/customerService/CustomerService1';
+import HelpCenter from './components/customerService/HelpCenter';
 import LaserPrinters from './components/productsCategories/laserPrinters/LaserPrinters';
 import ScrollToTop from './components/ScrollToTop';
 import Cart from './components/Cart';
@@ -41,9 +42,11 @@ import ProductDetails from './components/productsCategories/ProductDetails';
 import Search from './pages/Search';
 import OrderDetails from './components/order/OrderDetails';
 import TrackOrder from './components/order/TrackOrder';
+import React from 'react';
 import ReturnsAndExchanges from './components/order/ReturnsAndExchanges';
 import FAQMain from './components/faq/FAQMain';
 import CustomerMain from './components/customerService/CustomerMain';
+
 import RefundReturnPolicy from './components/privacyPolicy/RefundReturnPolicy';
 import ReturnExchangePolicy from './components/privacyPolicy/ReturnExchangePolicy';
 import ShippingPolicy from './components/privacyPolicy/ShippingPolicy';
@@ -51,11 +54,15 @@ import CookiePolicy from './components/privacyPolicy/CookiePolicy';
 import CCPAPrivacyPolicy from './components/privacyPolicy/CCPAPrivacyPolicy';
 import AccessibilityStatement from './components/privacyPolicy/AccessibilityStatement';
 import Disclaimer from './components/privacyPolicy/Disclaimer';
+import ConsumerRights from './components/privacyPolicy/ConsumerRights';
+import DoNotSellOrShare from './components/privacyPolicy/DoNotSellOrShare';
 import OrderHistory from './components/profile/OrderHistory';
 
 // Blog Imports
 import BlogsMain from './components/blogs/BlogsMain';
 import ChoosingPrinterGuide from './components/blogs/posts/ChoosingPrinterGuide';
+import PrinterBuyingGuide from './components/guides/PrinterBuyingGuide';
+import GuidesResources from './components/guides/GuidesResources';
 import PrinterMaintenanceGuide from './components/blogs/posts/PrinterMaintenanceGuide';
 import SavePrintingCostsGuide from './components/blogs/posts/SavePrintingCostsGuide';
 import PrintingMistakesGuide from './components/blogs/posts/PrintingMistakesGuide';
@@ -111,7 +118,7 @@ function App() {
                     <Route path="/search" element={<Search />} />
 
                     <Route path="/resource-center/choose-right-printer" element={<GuideDetails />} />
-
+                    <Route path="/printer-buying-guide" element={<PrinterBuyingGuide />} />
                     <Route path="/resource-center/wifi-6-vs-wifi-5" element={<ResourceCenterGuideDetailsWiFi6 />} />
                     <Route path="/resource-center/managed-print-services" element={<ResourceCenterGuideDetailsMPS />} />
                     <Route path="/resource-center/document-security" element={<ResourceCenterGuideDetailsSecurity />} />
@@ -120,7 +127,11 @@ function App() {
 
                     <Route path="/track-order" element={<TrackOrder />} />
                     <Route path="/returns-exchanges" element={<ReturnsAndExchanges />} />
+
                     <Route path="/faq" element={<FAQMain />} />
+                    <Route path="/help-center" element={<HelpCenter />} />
+                    <Route path="/printer-buying-guide" element={<PrinterBuyingGuide />} />
+                     <Route path="/guides-resources" element={<GuidesResources />} />
 
 
                     {/* other static routes */}
@@ -135,6 +146,10 @@ function App() {
                     <Route path="/ccpa-privacy-policy" element={<CCPAPrivacyPolicy />} />
                     <Route path="/accessibility-statement" element={<AccessibilityStatement />} />
                     <Route path="/disclaimer" element={<Disclaimer />} />
+                    <Route path="/consumer-rights" element={<ConsumerRights />} />
+                    <Route path="/do-not-sell-or-share-my-personal-information" element={<DoNotSellOrShare />} />
+
+                    <Route path="/consumer-rights" element={<ConsumerRights />} />
 
                     {/* Admin Routes */}
                     <Route path="/admin/login" element={<AdminLogin />} />

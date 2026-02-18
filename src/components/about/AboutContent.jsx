@@ -1,228 +1,189 @@
+
 import React from "react";
-const aboutUsHero = "/assets/aboutUsHero.png";
-const whoweare = "/assets/whoweare.png";
-const inktoner = "/assets/inktoner.png";
-const printingacceseries = "/assets/printingacceseries.png";
-const printer = "/assets/printer.png";
 
-const AboutContent = () => {
-  return (
-    <section className="w-full bg-blue-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-
-        {/* Header with Image */}
-       <div className="mb-16">
-  <div className="flex flex-col md:flex-row items-center md:items-start max-w-6xl mx-auto gap-8">
-    
-    {/* Image Section */}
-    <div className="md:w-1/2 flex justify-center md:justify-start">
+const AboutContent = () => (
+  <section className="w-full bg-gradient-to-b from-blue-50 to-white py-0">
+    {/* Hero Section */}
+    <div className="w-full bg-blue-900 py-12 px-4 sm:px-8 flex flex-col items-center text-center">
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 drop-shadow-lg">About Smart Print Guide</h1>
+      <p className="text-lg sm:text-xl text-white max-w-2xl mb-8">Your independent online destination for printers, multifunction devices, and printing solutions across the United States.</p>
       <img
-        src={aboutUsHero}
-        alt="Smart ePrinting Team"
-        className="w-full max-w-2xl h-64 object-cover rounded-xl shadow-lg"
+        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80"
+        alt="Office printers overview"
+        className="rounded-2xl shadow-2xl w-full max-w-3xl h-48 sm:h-64 md:h-80 object-cover border-4 border-white"
       />
     </div>
 
-    {/* Text Section */}
-    <div className="md:w-1/2 text-center md:text-left">
-      <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">
-        About Us – Smart Print Guide
-      </h2>
-      <h3 className="text-2xl sm:text-3xl font-semibold text-blue-800 mb-6">
-        Your trusted online store for printing essentials
-      </h3>
-      <p className="text-blue-700 text-base sm:text-lg">
-        Welcome to Smart Print Guide — an independent online retailer dedicated to making it easy for individuals, families, and businesses to shop for reliable printers, ink, toner, and essential printing supplies. Our mission is simple: to provide a clear, honest, and customer-friendly shopping experience where you can confidently choose products that match your everyday printing needs.
-      </p>
+    {/* Main Content Container */}
+    <div className="max-w-5xl mx-auto px-4 sm:px-8 py-12 grid gap-12">
+      {/* Company Overview */}
+      <section className="bg-white rounded-xl shadow-md p-8 flex flex-col md:flex-row gap-8 items-center">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold text-blue-500 mb-3">Company Overview</h2>
+          <p className="text-black mb-2">
+            Smart Print Guide is an independent online retail platform specializing in printers, multifunction devices, and related printing technology solutions for customers throughout the United States.
+          </p>
+          <p className="text-black mb-2">
+            Our e-commerce platform, <a href="https://www.smartprintguide.com" className="text-blue-600 underline">www.smartprintguide.com</a>, is designed to provide structured product information, clearly defined purchasing policies, and secure transaction processes. We operate exclusively online and serve individuals, remote professionals, and small business customers nationwide.
+          </p>
+        </div>
+        <div className="flex-1 flex justify-center">
+          <img
+            src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80"
+            alt="Printer supplies"
+            className="rounded-xl shadow-lg w-full max-w-xs h-40 sm:h-56 object-cover"
+          />
+        </div>
+      </section>
+
+      {/* Purpose & Mission */}
+      <section className="bg-blue-50 rounded-xl shadow p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Our Purpose & Mission</h2>
+        <p className="text-black mb-2">
+          The primary objective of Smart Print Guide is to simplify the process of selecting and purchasing printing equipment.
+        </p>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li className="font-bold text-blue-500">Provide transparent and organized product specifications</li>
+          <li className="font-bold text-blue-500">Offer structured guidance for printer selection</li>
+          <li className="font-bold text-blue-500">Maintain clear and accessible consumer policies</li>
+          <li className="font-bold text-blue-500">Process transactions through secure systems</li>
+          <li className="font-bold text-blue-500">Support customers with defined service procedures</li>
+        </ul>
+        <p className="text-black">
+          Printing technology can be complex, particularly when evaluating compatibility, cost-per-page, duty cycle, and wireless functionality. Our platform is structured to present relevant information clearly so customers can make informed purchasing decisions.
+        </p>
+      </section>
+
+      {/* What We Offer */}
+      <section className="bg-white rounded-xl shadow-md p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">What We Offer</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <>
+            <ul className="list-disc list-inside text-black mb-2 pl-4">
+              <li><span className="font-bold text-blue-500">Inkjet Printers</span><br/>Suitable for color-intensive tasks, personal printing, and moderate-volume use.</li>
+              <li><span className="font-bold text-blue-500">Laser Printers</span><br/>Designed for document-heavy environments and higher monthly output requirements.</li>
+              <li><span className="font-bold text-blue-500">Multifunction Devices</span><br/>Integrated systems offering printing, scanning, copying, and fax capabilities for home offices and business settings.</li>
+              <li><span className="font-bold text-blue-500">Printing Supplies & Accessories</span><br/>Compatible consumables, connectivity accessories, and operational components designed to support supported devices.</li>
+            </ul>
+            <div className="flex justify-center">
+              <img
+                src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80"
+                alt="Printing accessories"
+                className="rounded-xl shadow-md w-full max-w-xs h-40 sm:h-56 object-cover"
+              />
+            </div>
+          </>
+        </div>
+        <p className="text-black mt-4">
+          All products are sourced through authorized distributors and established supply channels. Availability is subject to supplier inventory.
+        </p>
+      </section>
+
+      {/* Who We Serve */}
+      <section className="bg-blue-50 rounded-xl shadow p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Who We Serve</h2>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li><span className="font-bold text-blue-500">Individual & Household Users</span><br/>Customers seeking dependable and cost-conscious printing solutions for everyday needs.</li>
+          <li><span className="font-bold text-blue-500">Remote Professionals</span><br/>Users operating from home offices who require wireless connectivity, compact design, and multifunction capability.</li>
+          <li><span className="font-bold text-blue-500">Small & Growing Businesses</span><br/>Organizations seeking efficient, cost-per-page optimized solutions with higher output capacity.</li>
+        </ul>
+        <p className="text-black">
+          We strive to support customers at varying levels of technical familiarity by presenting product information in a structured and accessible format.
+        </p>
+      </section>
+
+      {/* Operational Transparency */}
+      <section className="bg-white rounded-xl shadow-md p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Operational Transparency</h2>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li className="font-bold text-blue-500">Accept orders through secure digital checkout systems</li>
+          <li className="font-bold text-blue-500">Coordinate fulfillment through distribution networks</li>
+          <li className="font-bold text-blue-500">Provide shipment tracking information</li>
+          <li className="font-bold text-blue-500">Maintain a structured return authorization process (RMA)</li>
+          <li className="font-bold text-blue-500">Respond to customer inquiries via email-based support</li>
+        </ul>
+        <p className="text-black">
+          Customers are encouraged to review our published policies prior to purchase to understand shipping timelines, return eligibility, and refund procedures.
+        </p>
+      </section>
+
+      {/* Independent Retailer Disclosure */}
+      <section className="bg-blue-50 rounded-xl shadow p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Independent Retailer Disclosure</h2>
+        <p className="text-black mb-2">
+          Smart Print Guide operates as an independent online retailer.<br/>
+          We are not affiliated with, endorsed by, sponsored by, or authorized by any printer manufacturer unless explicitly stated.<br/>
+          All brand names, logos, product names, and trademarks displayed on this Website remain the property of their respective owners and are used solely for identification and compatibility purposes.<br/>
+          The use of brand references does not imply manufacturer partnership or official authorization.
+        </p>
+      </section>
+
+      {/* Commitment to Compliance & Consumer Protection */}
+      <section className="bg-white rounded-xl shadow-md p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Commitment to Compliance & Consumer Protection</h2>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li className="font-bold text-blue-500">Privacy & Data Protection</li>
+          <li className="font-bold text-blue-500">Terms & Conditions</li>
+          <li className="font-bold text-blue-500">Shipping & Delivery Procedures</li>
+          <li className="font-bold text-blue-500">Return & Refund Requirements</li>
+          <li className="font-bold text-blue-500">Consumer Rights</li>
+          <li className="font-bold text-blue-500">Accessibility Standards</li>
+          <li className="font-bold text-blue-500">Cookie & Data Use Transparency</li>
+        </ul>
+        <p className="text-black">
+          We operate in accordance with applicable U.S. consumer protection and privacy regulations and are committed to maintaining transparency in our retail operations.
+        </p>
+      </section>
+
+      {/* Customer Support Commitment */}
+      <section className="bg-blue-50 rounded-xl shadow p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Customer Support Commitment</h2>
+        <p className="text-black mb-2">
+          We provide structured email-based assistance for:
+        </p>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li className="font-bold text-blue-500">Product inquiries</li>
+          <li className="font-bold text-blue-500">Compatibility clarification</li>
+          <li className="font-bold text-blue-500">Order status requests</li>
+          <li className="font-bold text-blue-500">Return authorization</li>
+          <li className="font-bold text-blue-500">General policy questions</li>
+        </ul>
+        <p className="text-black">
+          To contact us:<br/>
+          <a href="mailto:support@smartprintguide.com" className="text-blue-600 underline">support@smartprintguide.com</a><br/>
+          We aim to respond within one business day.
+        </p>
+      </section>
+
+      {/* Continuous Improvement */}
+      <section className="bg-white rounded-xl shadow-md p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Continuous Improvement</h2>
+        <ul className="list-disc list-inside text-black mb-2 pl-4">
+          <li className="font-bold text-blue-500">Product listings</li>
+          <li className="font-bold text-blue-500">Supplier performance</li>
+          <li className="font-bold text-blue-500">Policy clarity</li>
+          <li className="font-bold text-blue-500">Customer feedback</li>
+          <li className="font-bold text-blue-500">Website accessibility</li>
+        </ul>
+        <p className="text-black">
+          We are committed to improving operational efficiency and maintaining accurate product representation.
+        </p>
+      </section>
+
+      {/* Contact Information */}
+      <section className="bg-blue-50 rounded-xl shadow p-8">
+        <h2 className="text-2xl font-bold text-blue-500 mb-3">Contact Information</h2>
+        <p className="text-black">
+          <span className="font-bold text-blue-500">Smart Print Guide</span><br/>
+          7181 Beacon Dr 15<br/>
+          Reno, NV 89506<br/>
+          United States<br/>
+          Email: <a href="mailto:support@smartprintguide.com" className="text-blue-600 underline">support@smartprintguide.com</a><br/>
+          Website: <a href="https://www.smartprintguide.com" className="text-blue-600 underline">www.smartprintguide.com</a>
+        </p>
+      </section>
     </div>
-
-  </div>
-</div>
-
-
-        {/* Who We Are - Two Column */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-          <div>
-            <h3 className="text-2xl font-semibold text-blue-900 mb-6">
-              Who We Are
-            </h3>
-            <p className="text-blue-700 leading-relaxed mb-4">
-              Smart Print Guide was created with the goal of helping customers understand and find the right printing products without confusion. In a world where technology and options continue to grow, we wanted to build a space that feels simple, transparent, and human-centered.
-            </p>
-            <p className="text-blue-700 leading-relaxed mb-4">
-              We operate independently and are not affiliated with or endorsed by any printer manufacturer. Our selections come from trusted suppliers, and every brand name or trademark used on our website belongs to its respective owner and is used strictly for identification purposes.
-            </p>
-            <p className="text-blue-700 leading-relaxed">
-              At Smart Print Guide, we combine accurate product information, clear communication, and dependable service to support customers in making informed decisions every day.
-            </p>
-          </div>
-          <div>
-            <img
-              src={whoweare}
-              alt="Our Story"
-              className="w-full h-80 object-cover rounded-xl shadow-lg"
-            />
-          </div>
-        </div>
-
-        {/* What We Offer - Three Column Cards */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-semibold text-blue-900 mb-8 text-center">
-            What We Offer
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-blue-100">
-              <img
-                src={printer}
-                alt="Printers"
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                  <span className="text-green-600 mr-2">✔</span> Printers for Home & Office
-                </h4>
-                <p className="text-blue-700">
-                  A curated selection of printers designed for personal use, schoolwork, small business environments, and everyday printing tasks.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-blue-100">
-              <img
-                src={inktoner}
-                alt="Ink & Toner"
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                  <span className="text-green-600 mr-2">✔</span> Ink & Toner Cartridges
-                </h4>
-                <p className="text-blue-700">
-                  A wide variety of genuine-quality ink and toner supplies with detailed compatibility information so you can choose the right fit with confidence.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-blue-100">
-              <img
-                src={printingacceseries}
-                alt="Printing Accessories"
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                  <span className="text-green-600 mr-2">✔</span> Printing Accessories
-                </h4>
-                <p className="text-blue-700">
-                  Paper, specialty supplies, and everyday essentials that support your home or office printing setup.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Our Commitment to Customers - Grid */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-semibold text-blue-900 mb-8 text-center">
-            Our Commitment to Customers
-          </h3>
-          <p className="text-blue-700 leading-relaxed mb-8 text-center max-w-3xl mx-auto">
-            At Smart Print Guide, we believe trust is built through clarity, consistency, and respect. That's why we focus on:
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow border border-blue-100">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔍</span>
-              </div>
-              <h4 className="text-lg font-semibold text-blue-900 mb-3">Transparency</h4>
-              <p className="text-blue-700 text-sm">Clear product details, honest descriptions, and straightforward communication without complexity.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow border border-blue-100">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h4 className="text-lg font-semibold text-blue-900 mb-3">Customer Respect</h4>
-              <p className="text-blue-700 text-sm">Every question matters. Our support team is here to help with product inquiries, order updates, and general shopping assistance.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow border border-blue-100">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔒</span>
-              </div>
-              <h4 className="text-lg font-semibold text-blue-900 mb-3">Security & Safety</h4>
-              <p className="text-blue-700 text-sm">We use secure checkout processes and industry-standard systems to protect your information.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow border border-blue-100">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⭐</span>
-              </div>
-              <h4 className="text-lg font-semibold text-blue-900 mb-3">Quality Choices</h4>
-              <p className="text-blue-700 text-sm">We offer products sourced through reliable channels so you can enjoy a dependable shopping experience.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Independent Retailer Statement - Highlighted */}
-        <div className="mb-16 bg-gradient-to-r from-blue-100 to-indigo-100 p-8 rounded-xl border-l-4 border-blue-500">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-            Independent Retailer Statement
-          </h3>
-          <p className="text-blue-700 leading-relaxed mb-4">
-            Smart Print Guide operates as an independent online retailer. We are not affiliated with, sponsored by, or endorsed by any printer or technology manufacturer.
-          </p>
-          <p className="text-blue-700 leading-relaxed">
-            All trademarks, brand names, product images, and labels belong to their respective owners and are used solely to help customers identify and select compatible products. Our role is to make shopping easier — not to represent or replace official brand support.
-          </p>
-        </div>
-
-        {/* Why Customers Choose Smart ePrinting - Cards */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-semibold text-blue-900 mb-8 text-center">
-            Why Customers Choose Smart Print Guide
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-blue-100">
-              <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <span className="text-green-600 mr-2">✔</span> Simple & Easy Shopping
-              </h4>
-              <p className="text-blue-700">A clean, intuitive website that helps you browse and compare products quickly.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-blue-100">
-              <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <span className="text-green-600 mr-2">✔</span> Professional & Responsive Support
-              </h4>
-              <p className="text-blue-700">We provide assistance with product-related questions, order status updates, and general shopping needs.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-blue-100">
-              <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <span className="text-green-600 mr-2">✔</span> Accurate Product Information
-              </h4>
-              <p className="text-blue-700">Each product page includes clear specifications and compatibility details to support well-informed decisions.</p>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-blue-100">
-              <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <span className="text-green-600 mr-2">✔</span> Dependable Customer Experience
-              </h4>
-              <p className="text-blue-700">Safe checkout, reliable delivery partners, and respectful communication every step of the way.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Our Vision - Hero Style */}
-        <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-8 rounded-xl">
-          <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-2xl font-semibold mb-6">
-              Our Vision
-            </h3>
-            <p className="leading-relaxed mb-4">
-              To be a trusted and customer-focused retailer that helps people shop for printing essentials confidently and comfortably. We continuously improve our platform with better transparency, clearer navigation, and a more helpful shopping experience.
-            </p>
-            <p className="leading-relaxed">
-              As printing needs evolve, our commitment to honesty, reliability, and customer care remains the foundation of everything we do.
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  );
-};
+  </section>
+);
 
 export default AboutContent;

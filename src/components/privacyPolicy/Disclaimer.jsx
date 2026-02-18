@@ -1,179 +1,147 @@
+
 import React from "react";
 
-const Disclaimer = () => {
-  return (
-    <section className="w-full bg-gray-50 min-h-screen py-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            Disclaimer — Smart ePrinting
-          </h1>
-          <p className="mt-4 text-gray-600 text-base sm:text-lg leading-relaxed">
-            Last Updated: January 31, 2026
-          </p>
-          <p className="mt-4 text-gray-600 text-base sm:text-lg leading-relaxed">
-            This Disclaimer (“Disclaimer”) applies to the website <a href="https://www.smarteprinting.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">www.smarteprinting.com</a>, operated by Smart ePrinting (“Company,” “we,” “our,” “us”). By accessing or using our Website, you acknowledge that you have read and agree to the terms outlined herein.
-          </p>
-          <p className="mt-2 text-gray-600 leading-relaxed">
-            Smart ePrinting strives to provide accurate and trustworthy information. However, certain limitations, conditions, and responsibilities apply when using our Website and purchasing our products.
+const Disclaimer = () => (
+  <section className="w-full bg-gray-50 min-h-screen py-16">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="text-center mb-12">
+        <h1 className="text-3xl sm:text-4xl font-bold text-blue-800">DISCLAIMER</h1>
+        <p className="mt-4 text-gray-600 text-base sm:text-lg leading-relaxed">Effective Date: February 18, 2026</p>
+        <p className="mt-4 text-gray-600 text-base sm:text-lg leading-relaxed">This Disclaimer applies to your use of the website located at:<br/><span className="text-blue-700">www.smartprintguide.com</span> (“Website”)</p>
+        <p className="mt-2 text-gray-600 leading-relaxed">The Website is operated by Smart Print Guide (“Company,” “we,” “our,” or “us”).<br/>By accessing or using this Website, you acknowledge and agree to the statements set forth in this Disclaimer.</p>
+      </div>
+      <div className="space-y-10">
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">1. Company Information</h2>
+          <p className="text-gray-600 leading-relaxed">
+            Smart Print Guide<br />
+            7181 Beacon Dr 15<br />
+            Reno, NV 89506<br />
+            United States<br />
+            Email: <a href="mailto:support@smartprintguide.com" className="text-blue-700 underline">support@smartprintguide.com</a><br />
+            Website: <a href="https://www.smartprintguide.com" className="text-blue-700 underline">www.smartprintguide.com</a><br />
+            Smart Print Guide operates exclusively as an independent online retail platform.
           </p>
         </div>
-
-        <div className="space-y-10">
-
-          {/* 1. Independent Retailer Disclosure */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">1. Independent Retailer Disclosure</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting is an independent online retailer. We are not affiliated with, endorsed by, or authorized by any printer or technology manufacturer, including but not limited to:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              <li>HP</li>
-              <li>Canon</li>
-              <li>Epson</li>
-              <li>Brother</li>
-              <li>Lexmark</li>
-              <li>Xerox</li>
-              <li>Any other brand referenced on our Website</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed">
-              All trademarks, brand names, product images, and model numbers belong to their respective owners. They are used solely for identification, compatibility, and descriptive purposes, and their appearance does not imply sponsorship or endorsement. This disclosure is provided to ensure transparency and proper trademark representation.
-            </p>
-          </div>
-
-          {/* 2. Accuracy of Product Information */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">2. Accuracy of Product Information</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting makes every reasonable effort to ensure product listings are complete and accurate. However, we do not guarantee that:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              <li>Product descriptions are error-free</li>
-              <li>Images perfectly represent actual items</li>
-              <li>Specifications remain unchanged after manufacturer updates</li>
-              <li>Compatibility details are always current</li>
-              <li>Color variations will not occur due to display differences</li>
-              <li>Inventory availability is always accurate</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed">
-              Manufacturers may update features or packaging without notice. We reserve the right to correct errors and update information at any time.
-            </p>
-          </div>
-
-          {/* 3. No Technical or Professional Advice */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">3. No Technical or Professional Advice</h2>
-            <p className="text-gray-600 leading-relaxed">
-              All information provided on this Website, including product content and descriptions, is for general retail guidance only. Smart ePrinting does not provide:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              <li>Technical support</li>
-              <li>Printer setup guidance</li>
-              <li>Troubleshooting assistance</li>
-              <li>Repair or maintenance advice</li>
-              <li>Professional recommendations or expert evaluations</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed">
-              For technical help, customers should refer to the manufacturer’s documentation or official support channels.
-            </p>
-          </div>
-
-          {/* 4. Third-Party Websites & External Content */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">4. Third-Party Websites & External Content</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Our Website may contain links to third-party websites for:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              <li>Product documentation</li>
-              <li>Shipping and tracking</li>
-              <li>Payment processing</li>
-              <li>Manufacturer information</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting does not control these external sites and is not responsible for content accuracy, privacy practices, security standards, or delivery/service performance. Users access third-party sites at their own discretion and should review their respective policies.
-            </p>
-          </div>
-
-          {/* 5. Pricing, Availability & Listing Errors */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">5. Pricing, Availability & Listing Errors</h2>
-            <p className="text-gray-600 leading-relaxed">
-              While we aim to provide accurate pricing, errors may occasionally occur. Smart ePrinting reserves the right to correct pricing mistakes, modify product information, cancel or refuse orders affected by an error, and notify customers before order processing. We are not obligated to honor incorrect prices displayed due to typographical or system errors.
-            </p>
-          </div>
-
-          {/* 6. Warranty Disclaimer */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">6. Warranty Disclaimer</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting does not manufacture the products sold on our Website. Any warranties provided are issued directly by the product manufacturer, not by us. Smart ePrinting:
-            </p>
-            <ul className="list-disc list-inside text-gray-600 space-y-1">
-              <li>Does not provide warranties or guarantees</li>
-              <li>Does not control manufacturer warranty terms</li>
-              <li>Is not responsible for warranty coverage decisions</li>
-              <li>Will assist customers in locating manufacturer warranty information</li>
-            </ul>
-            <p className="text-gray-600 leading-relaxed">
-              Warranty terms vary by brand, region, and product type.
-            </p>
-          </div>
-
-          {/* 7. Limitation of Liability */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">7. Limitation of Liability</h2>
-            <p className="text-gray-600 leading-relaxed">
-              To the fullest extent permitted by law, Smart ePrinting is not liable for indirect, incidental, or consequential damages, loss of profits, data, or business, delays caused by carriers or suppliers, product misuse, incompatibility with customer equipment, website downtime, or listing errors. Our maximum liability is limited to the amount you paid for the product giving rise to the claim.
-            </p>
-          </div>
-
-          {/* 8. Website Availability */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">8. Website Availability</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting does not guarantee uninterrupted access to the Website. Availability may be impacted by maintenance, technical issues, network outages, hosting provider problems, or external conditions beyond our control. We strive to maintain uptime but cannot be held responsible for temporary service disruptions.
-            </p>
-          </div>
-
-          {/* 9. Regulatory, Legal & Ethical Compliance */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">9. Regulatory, Legal & Ethical Compliance</h2>
-            <p className="text-gray-600 leading-relaxed">
-              This Disclaimer is designed to align with applicable U.S. and Canadian consumer protection laws, trademark and intellectual property requirements, e-commerce fair practice guidelines, and privacy/data protection regulations. We reserve the right to update this Disclaimer as laws evolve.
-            </p>
-          </div>
-
-          {/* 10. Updates to This Disclaimer */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">10. Updates to This Disclaimer</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting may revise this Disclaimer at any time. When updated, the revised version will be posted with a new Last Updated date. Continued use of the Website after updates constitutes acceptance of the revised terms.
-            </p>
-          </div>
-
-          {/* 11. Contact Information */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-gray-900">11. Contact Information</h2>
-            <p className="text-gray-600 leading-relaxed">
-              For questions or concerns related to this Disclaimer, contact:
-            </p>
-            <p className="text-gray-600 leading-relaxed">
-              Smart ePrinting<br/>
-              17807 Lakecrest View Drive, #1205<br/>
-              Cypress, TX 77433<br/>
-              United States<br/>
-              📧 Email: <a href="mailto:support@smarteprinting.com" className="text-indigo-600 underline">support@smarteprinting.com</a><br/>
-              🌐 Website: <a href="https://www.smarteprinting.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">www.smarteprinting.com</a>
-            </p>
-          </div>
-
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">2. General Information Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">The content provided on this Website is for general informational and commercial purposes only.<br/>While we strive to provide accurate and up-to-date information, Smart Print Guide makes no representations or warranties, express or implied, regarding:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Accuracy</li>
+            <li>Completeness</li>
+            <li>Reliability</li>
+            <li>Availability</li>
+            <li>Suitability of products for specific uses</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Your reliance on any information provided on this Website is at your own risk.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">3. Product Description Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">Product descriptions, specifications, compatibility details, and images are provided based on information available from suppliers and manufacturers.<br/>Smart Print Guide does not guarantee that:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>All product descriptions are error-free</li>
+            <li>Images precisely reflect packaging variations</li>
+            <li>Specifications remain unchanged by manufacturers</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Customers are responsible for reviewing product specifications carefully before completing a purchase.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">4. Compatibility Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">Customers are solely responsible for verifying compatibility between:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Printers</li>
+            <li>Ink cartridges</li>
+            <li>Toner cartridges</li>
+            <li>Accessories</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Incorrect purchases resulting from failure to confirm compatibility are not the responsibility of Smart Print Guide.<br/>We recommend confirming the exact printer model and cartridge code prior to ordering.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">5. Pricing & Typographical Errors</h2>
+          <p className="text-gray-600 leading-relaxed">Although we strive for accuracy, pricing or typographical errors may occur.<br/>Smart Print Guide reserves the right to:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Correct pricing errors</li>
+            <li>Cancel orders affected by incorrect pricing</li>
+            <li>Refuse transactions arising from technical mistakes</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">If payment has been processed for a canceled order, a full refund will be issued.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">6. Warranty Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">Products sold on this Website may be covered by manufacturer warranties where applicable.<br/>Smart Print Guide does not independently provide warranties beyond those offered by the manufacturer unless explicitly stated.<br/>To the fullest extent permitted by law, products are provided on an “AS IS” and “AS AVAILABLE” basis.<br/>We disclaim all implied warranties, including but not limited to:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Merchantability</li>
+            <li>Fitness for a particular purpose</li>
+            <li>Non-infringement</li>
+          </ul>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">7. Third-Party Links Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">The Website may contain links to third-party websites for convenience.<br/>Smart Print Guide:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Does not control third-party websites</li>
+            <li>Does not endorse third-party content</li>
+            <li>Is not responsible for third-party privacy practices</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Access to third-party websites is at your own discretion and risk.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">8. Technical & Professional Advice Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">Information provided in our:<br/>Buying Guide<br/>Guides & Resources<br/>Help Center<br/>Product listings<br/>is intended for general informational purposes only.<br/>It should not be interpreted as professional technical advice.<br/>For device-specific instructions, customers should consult official manufacturer documentation.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">9. Limitation of Liability</h2>
+          <p className="text-gray-600 leading-relaxed">To the fullest extent permitted by applicable law, Smart Print Guide shall not be liable for:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Direct damages</li>
+            <li>Indirect damages</li>
+            <li>Incidental damages</li>
+            <li>Consequential damages</li>
+            <li>Loss of profits</li>
+            <li>Business interruption</li>
+            <li>Data loss</li>
+            <li>Equipment malfunction allegedly related to consumables</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Our total liability shall not exceed the amount paid for the specific product giving rise to the claim.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">10. Website Availability Disclaimer</h2>
+          <p className="text-gray-600 leading-relaxed">We do not guarantee uninterrupted or error-free operation of the Website.<br/>Access may be temporarily suspended due to:</p>
+          <ul className="list-disc pl-6 text-gray-600">
+            <li>Maintenance</li>
+            <li>Technical issues</li>
+            <li>Security updates</li>
+            <li>External service disruptions</li>
+          </ul>
+          <p className="text-gray-600 leading-relaxed">Users access the Website at their own risk.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">11. Independent Retailer Disclosure</h2>
+          <p className="text-gray-600 leading-relaxed">Smart Print Guide operates as an independent online retailer.<br/>We are not affiliated with, endorsed by, sponsored by, or authorized by any printer manufacturer unless explicitly stated.<br/>All brand names, logos, trademarks, and product names remain the property of their respective owners and are used solely for identification and compatibility purposes.<br/>Use of brand references does not imply manufacturer authorization or partnership.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">12. Governing Law</h2>
+          <p className="text-gray-600 leading-relaxed">This Disclaimer shall be governed by the laws of the State of Nevada, without regard to conflict of law principles.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">13. Policy Updates</h2>
+          <p className="text-gray-600 leading-relaxed">Smart Print Guide reserves the right to modify this Disclaimer at any time.<br/>Changes become effective upon posting on this Website.<br/>Continued use of the Website constitutes acceptance of updated terms.</p>
+        </div>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-blue-700">14. Contact Information</h2>
+          <p className="text-gray-600 leading-relaxed">
+            If you have questions regarding this Disclaimer, please contact:<br />
+            Smart Print Guide<br />
+            7181 Beacon Dr 15<br />
+            Reno, NV 89506<br />
+            United States<br />
+            Email: <a href="mailto:support@smartprintguide.com" className="text-blue-700 underline">support@smartprintguide.com</a><br />
+            Website: <a href="https://www.smartprintguide.com" className="text-blue-700 underline">www.smartprintguide.com</a>
+          </p>
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default Disclaimer;

@@ -52,7 +52,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                 <div className="h-16 flex items-center gap-2 px-6 border-b border-slate-100 shrink-0">
                     <div className="flex-1 flex items-center justify-start">
                         <img 
-                            src="/smartEprintingLogo.png" 
+                            src="/spglogo.png" 
                             alt="SmartEprinting" 
                             className="h-12 w-auto object-contain max-w-[180px]"
                         />

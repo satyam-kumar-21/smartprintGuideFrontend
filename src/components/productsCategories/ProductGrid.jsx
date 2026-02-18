@@ -1,8 +1,10 @@
+
 import React, { useState } from "react";
 import ProductFilter from "./ProductFilter";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/actions/cartActions";
+import ProductSkeleton from "./ProductSkeleton";
 
 const ProductGrid = ({
   heading = "Products",
@@ -10,6 +12,8 @@ const ProductGrid = ({
   onFilterChange,
   enableFlowLayout = false,
   minimal = false,
+  loading = false,
+  skeletonCount = 8,
 }) => {
   // Filters are managed in parent (CategoryProductList), not here
 
@@ -34,6 +38,7 @@ const ProductGrid = ({
     navigate("/cart?redirect=shipping");
   };
 
+
   return (
     <section className="relative w-full overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100 py-16">
       {/* 3D Background Glow */}
@@ -56,7 +61,18 @@ const ProductGrid = ({
               : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-10"
           }
         >
-          {products.length === 0 ? (
+          {loading ? (
+            <>
+              <div className="col-span-4 flex justify-center items-center py-6">
+                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+              </div>
+              {Array.from({ length: skeletonCount }).map((_, idx) => (
+                <div key={idx} className={enableFlowLayout ? "float-left w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-3 box-border" : ""}>
+                  <ProductSkeleton />
+                </div>
+              ))}
+            </>
+          ) : products.length === 0 ? (
             <div className="col-span-4 text-center text-lg text-gray-500 py-16 font-semibold">
               No item found or item not available
             </div>
@@ -66,6 +82,7 @@ const ProductGrid = ({
               return (
                 <div
                   key={index}
+                  data-new-product={product._isNew ? 'true' : undefined}
                   className={
                     enableFlowLayout
                       ? "float-left w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-3 box-border"

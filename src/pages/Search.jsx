@@ -27,11 +27,8 @@ const Search = () => {
       <h2 className="text-3xl font-bold text-blue-800 mb-6">
         Search Results for: <span className="text-blue-600">{searchTerm}</span>
       </h2>
-      {loading && <div>Loading...</div>}
       {error && <div className="text-red-600">{error}</div>}
-      {!loading && !error && (
-        <ProductGrid products={products || []} heading="Results" />
-      )}
+      <ProductGrid products={products || []} heading="Results" loading={loading} />
     </div>
   );
 };

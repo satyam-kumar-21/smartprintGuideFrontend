@@ -41,17 +41,7 @@ const HomeMain = () => {
                             <span className="text-blue-600">"{searchQuery}"</span>
                         </h1>
 
-                        {loading ? (
-                            <div className="text-center py-12 text-lg text-gray-600">
-                                Loading products...
-                            </div>
-                        ) : products && products.length > 0 ? (
-                            <ProductGrid products={products} />
-                        ) : (
-                            <div className="text-center py-12 text-gray-600">
-                                No products found for "{searchQuery}"
-                            </div>
-                        )}
+                        <ProductGrid products={products} loading={loading} />
                     </div>
 
                 </div>
