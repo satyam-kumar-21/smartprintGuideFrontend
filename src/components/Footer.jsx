@@ -51,7 +51,7 @@ const Footer = () => {
         </div>
 
 
-         {/* Quick Links */}
+        {/* Quick Links */}
         <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-2xl hover:scale-105 transition duration-500">
           <h3 className="font-semibold text-lg mb-4 border-b border-blue-400 pb-2">
             Quick Links
@@ -59,15 +59,15 @@ const Footer = () => {
           <ul className="space-y-3 text-sm text-blue-100">
             <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
             <li><Link to="/shipping-policy" className="hover:text-white transition">Shipping Policy</Link></li>
-           
+
             <li><Link to="/return-exchange-policy" className="hover:text-white hover:translate-x-1 transition inline-block">Returns & Exchanges</Link></li>
-             <li><Link to="/cookie-policy" className="hover:text-white hover:translate-x-1 transition inline-block">Cookies Policy</Link></li>
-             <li><Link to="/ccpa-privacy-policy" className="hover:text-white hover:translate-x-1 transition inline-block">CCPA / CPRA</Link></li>
-              <li><Link to="/accessibility-statement" className="hover:text-white hover:translate-x-1 transition inline-block">Accessibility</Link></li>
-               <li><Link to="/disclaimer" className="hover:text-white hover:translate-x-1 transition inline-block">Disclaimer</Link></li>
-               <li><Link to="/consumer-rights" className="hover:text-white hover:translate-x-1 transition inline-block">Consumer Rights</Link></li>
-               <li><Link to="/do-not-sell-or-share-my-personal-information" className="hover:text-white hover:translate-x-1 transition inline-block">Do Not Sell or Share My Info</Link></li>
-            
+            <li><Link to="/cookie-policy" className="hover:text-white hover:translate-x-1 transition inline-block">Cookies Policy</Link></li>
+
+            <li><Link to="/accessibility-statement" className="hover:text-white hover:translate-x-1 transition inline-block">Accessibility</Link></li>
+            <li><Link to="/disclaimer" className="hover:text-white hover:translate-x-1 transition inline-block">Disclaimer</Link></li>
+            <li><Link to="/consumer-rights" className="hover:text-white hover:translate-x-1 transition inline-block">Consumer Rights</Link></li>
+            <li><Link to="/do-not-sell-or-share-my-personal-information" className="hover:text-white hover:translate-x-1 transition inline-block">Do Not Sell or Share My Info</Link></li>
+
 
           </ul>
         </div>
@@ -104,9 +104,9 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              311 2nd St N, Suite 301<br />
-              Safety Harbor, FL 34695<br />
-              USA
+              7181 Beacon Dr 15 <br />
+              Reno, NV 89506 <br />
+              United States
             </li>
             <li>Support: Monday–Friday, 9am–6pm ET</li>
 
@@ -122,7 +122,7 @@ const Footer = () => {
         <div className="text-blue-100 mb-4">All rights reserved.</div>
         {/* Legal/Disclaimer Content */}
         <div className="w-full max-w-5xl mx-auto px-4 text-xs text-blue-100 text-center leading-relaxed">
-         
+
           <div className="mb-2">
             <span className="font-semibold text-blue-200">Disclaimer:</span> smartPrintGuide is an independent retailer based in Safety Harbor, Florida and is not affiliated with, endorsed by, or sponsored by HP Inc., Canon Inc., Epson America Inc., Brother Industries Ltd., Fujitsu Limited, TP-Link Technologies Co., ASUSTeK Computer Inc., DJI Technology Co., or any other manufacturer. All product images, logos, and trademarks are the property of their respective owners. Product images are used for informational purposes only under fair use guidelines.
           </div>

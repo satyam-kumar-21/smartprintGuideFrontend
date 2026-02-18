@@ -143,7 +143,7 @@ function App() {
                     <Route path="/shipping-policy" element={<ShippingPolicy />} />
                     <Route path="/cookie-policy" element={<CookiePolicy />} />
                     <Route path="/customer-service" element={<CustomerService />} />
-                    <Route path="/ccpa-privacy-policy" element={<CCPAPrivacyPolicy />} />
+                    
                     <Route path="/accessibility-statement" element={<AccessibilityStatement />} />
                     <Route path="/disclaimer" element={<Disclaimer />} />
                     <Route path="/consumer-rights" element={<ConsumerRights />} />
