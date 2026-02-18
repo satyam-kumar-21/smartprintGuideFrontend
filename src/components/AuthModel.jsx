@@ -35,7 +35,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
   const { loading, userInfo, error } = useSelector((state) => state.userLogin);
-  const { loading: loadingSendOTP, success: successSendOTP } =
+  const { loading: loadingSendOTP, success: successSendOTP, error: errorSendOTP } =
     useSelector((state) => state.userSendOTP);
   const { success: successVerifyOTP } =
     useSelector((state) => state.userVerifyOTP);
@@ -149,6 +149,9 @@ const AuthModal = ({ isOpen, onClose }) => {
         )}
         {successMessage && (
           <div className="mb-4 text-blue-600 text-sm">{successMessage}</div>
+        )}
+        {mode === "signup" && errorSendOTP && (
+          <div className="mb-4 text-red-500 text-sm">{errorSendOTP}</div>
         )}
 
         {/* LOGIN */}

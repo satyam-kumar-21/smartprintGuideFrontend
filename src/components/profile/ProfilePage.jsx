@@ -65,77 +65,53 @@ const ProfilePage = () => {
             <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-400 opacity-30 rounded-full blur-3xl z-0"></div>
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600 opacity-20 rounded-full blur-3xl z-0"></div>
             <div className="max-w-6xl mx-auto relative z-10">
-                {/* Header Section */}
-                <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                    <div>
-                        <h1 className="text-4xl font-extrabold text-blue-800 drop-shadow-lg">Account Settings</h1>
-                        <p className="text-blue-500 mt-1 font-medium">Manage your account preferences and order history</p>
-                    </div>
-                    <div className="flex bg-white/80 p-1 rounded-2xl shadow-xl border border-blue-100 backdrop-blur-xl">
-                        <button
-                            onClick={() => setActiveTab('settings')}
-                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'settings' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
-                        >
-                            Profile Details
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('orders')}
-                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'orders' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
-                        >
-                            Order History
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('help')}
-                            className={`px-6 py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'help' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
-                        >
-                            Help & Support
-                        </button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-                    {/* Left Sidebar */}
-                    <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white/80 rounded-3xl p-8 shadow-2xl border border-blue-100 backdrop-blur-xl">
-                            <div className="flex flex-col items-center text-center">
-                                <div className="w-28 h-28 bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4 text-white shadow-2xl border-4 border-blue-200">
-                                    <span className="text-4xl font-extrabold uppercase drop-shadow-lg">{user.firstName?.charAt(0) || user.name?.charAt(0)}</span>
-                                </div>
-                                <h2 className="text-2xl font-extrabold text-blue-800 drop-shadow-lg">{user.name}</h2>
-                                <p className="text-blue-500 text-sm truncate max-w-full font-medium">{user.email}</p>
-                                <div className="mt-4 inline-flex items-center px-4 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 text-base font-bold rounded-full shadow-md">
-                                    {user.isAdmin ? 'Administrator' : 'Customer'}
-                                </div>
+                <div className="flex flex-col md:flex-row gap-8">
+                    {/* Sidebar Navigation */}
+                    <aside className="w-full md:w-72 flex-shrink-0 mb-8 md:mb-0">
+                        <div className="bg-white/90 rounded-3xl shadow-2xl border border-blue-100 p-8 flex flex-col items-center text-center">
+                            <div className="w-24 h-24 bg-gradient-to-br from-blue-400 via-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4 text-white shadow-2xl border-4 border-blue-200">
+                                <span className="text-3xl font-extrabold uppercase drop-shadow-lg">{user.firstName?.charAt(0) || user.name?.charAt(0)}</span>
                             </div>
-
-                            <div className="mt-8 pt-6 border-t border-blue-100 space-y-4">
-                                <div className="flex items-center justify-between text-blue-700 text-base font-semibold">
-                                    <span className="flex items-center gap-2"><Package size={18} /> Orders</span>
-                                    <span className="font-extrabold text-blue-900">{orders?.length || 0}</span>
+                            <h2 className="text-xl font-extrabold text-blue-800 drop-shadow-lg mb-1">{user.name}</h2>
+                            <p className="text-blue-500 text-xs truncate max-w-full font-medium mb-2">{user.email}</p>
+                            <div className="inline-flex items-center px-4 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 text-xs font-bold rounded-full shadow-md mb-4">
+                                {user.isAdmin ? 'Administrator' : 'Customer'}
+                            </div>
+                            <div className="w-full flex flex-col gap-2 mt-4">
+                                <button
+                                    onClick={() => setActiveTab('settings')}
+                                    className={`w-full py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'settings' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
+                                >
+                                    Profile Details
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('orders')}
+                                    className={`w-full py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'orders' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
+                                >
+                                    Order History
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('help')}
+                                    className={`w-full py-2 rounded-xl text-base font-bold transition-all ${activeTab === 'help' ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-lg' : 'text-blue-700 hover:bg-blue-100'} backdrop-blur-xl`}
+                                >
+                                    Help & Support
+                                </button>
+                            </div>
+                            <div className="w-full flex justify-between mt-8 pt-6 border-t border-blue-100">
+                                <div className="flex flex-col items-center">
+                                    <span className="text-blue-700 text-xs font-semibold flex items-center gap-1"><Package size={16} /> Orders</span>
+                                    <span className="font-extrabold text-blue-900 text-lg">{orders?.length || 0}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-blue-700 text-base font-semibold">
-                                    <span className="flex items-center gap-2"><CreditCard size={18} /> Saved Cards</span>
-                                    <span className="font-extrabold text-blue-900">0</span>
+                                <div className="flex flex-col items-center">
+                                    <span className="text-blue-700 text-xs font-semibold flex items-center gap-1"><CreditCard size={16} /> Saved Cards</span>
+                                    <span className="font-extrabold text-blue-900 text-lg">0</span>
                                 </div>
                             </div>
                         </div>
-
-                        {/* <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 shadow-xl text-white overflow-hidden relative">
-                            <div className="relative z-10">
-                                <h3 className="font-bold text-lg mb-2">Need help?</h3>
-                                <p className="text-slate-400 text-sm mb-4">Our support team is available 24/7 to help you with your orders.</p>
-                                <button className="w-full py-2 bg-white text-slate-900 rounded-lg text-sm font-bold hover:bg-slate-100 transition-colors">
-                                    Contact Support
-                                </button>
-                            </div>
-                            <div className="absolute -right-4 -bottom-4 opacity-10">
-                                <User size={120} />
-                            </div>
-                        </div> */}
-                    </div>
+                    </aside>
 
                     {/* Main Content Area */}
-                    <div className="lg:col-span-3">
+                    <main className="flex-1">
                         {activeTab === 'settings' ? (
                             <div className="bg-white/80 rounded-3xl shadow-2xl border border-blue-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 backdrop-blur-xl">
                                 <div className="p-8 border-b border-blue-100 flex items-center justify-between bg-gradient-to-r from-blue-100 to-blue-200">
@@ -338,7 +314,7 @@ const ProfilePage = () => {
                         ) : activeTab === 'help' ? (
                             <HelpSupport />
                         ) : null}
-                    </div>
+                    </main>
                 </div>
             </div>
         </div>

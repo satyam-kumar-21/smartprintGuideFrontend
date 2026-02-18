@@ -28,7 +28,7 @@ const TermsAndConditions = () => {
               17807 Lakecrest View Drive, #1205<br />
               Cypress, TX 77433, United States<br />
               Email: <a href="mailto:support@smarteprinting.com" className="text-indigo-600 underline">support@smarteprinting.com</a><br />
-              Website: <a href="https://www.smarteprinting.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">www.smarteprinting.com</a><br />
+              Website: <a href={import.meta.env.VITE_WEBSITE_URL} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">{import.meta.env.VITE_WEBSITE_URL_DISPLAY || import.meta.env.VITE_WEBSITE_URL}</a><br />
               Smart ePrinting is an independent online retailer of printers and printing supplies and is not affiliated with or authorized by any printer manufacturer.
             </p>
           </div>
@@ -239,7 +239,7 @@ const TermsAndConditions = () => {
               Smart ePrinting<br />
               17807 Lakecrest View Drive, #1205, Cypress, TX 77433, United States<br />
               Email: <a href="mailto:support@smarteprinting.com" className="text-indigo-600 underline">support@smarteprinting.com</a><br />
-              Website: <a href="https://www.smarteprinting.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">www.smarteprinting.com</a>
+              Website: <a href={import.meta.env.VITE_WEBSITE_URL} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">{import.meta.env.VITE_WEBSITE_URL_DISPLAY || import.meta.env.VITE_WEBSITE_URL}</a>
             </p>
           </div>
 

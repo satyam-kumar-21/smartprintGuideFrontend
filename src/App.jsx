@@ -12,6 +12,7 @@ import UnderConstruction from './components/common/UnderConstruction';
 import AboutMain from './components/about/AboutMain';
 import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
+import GuideDetails from "./components/ResourceCenterGuideDetails";
 
 // Admin Imports
 import AdminLogin from './components/admin/Auth/AdminLogin';
@@ -50,6 +51,7 @@ import CookiePolicy from './components/privacyPolicy/CookiePolicy';
 import CCPAPrivacyPolicy from './components/privacyPolicy/CCPAPrivacyPolicy';
 import AccessibilityStatement from './components/privacyPolicy/AccessibilityStatement';
 import Disclaimer from './components/privacyPolicy/Disclaimer';
+import OrderHistory from './components/profile/OrderHistory';
 
 // Blog Imports
 import BlogsMain from './components/blogs/BlogsMain';
@@ -58,6 +60,13 @@ import PrinterMaintenanceGuide from './components/blogs/posts/PrinterMaintenance
 import SavePrintingCostsGuide from './components/blogs/posts/SavePrintingCostsGuide';
 import PrintingMistakesGuide from './components/blogs/posts/PrintingMistakesGuide';
 import SmallBusinessPrintingGuide from './components/blogs/posts/SmallBusinessPrintingGuide';
+
+// Guide Details Components
+import ResourceCenterGuideDetailsWiFi6 from "./components/ResourceCenterGuideDetailsWiFi6";
+import ResourceCenterGuideDetailsMPS from "./components/ResourceCenterGuideDetailsMPS";
+import ResourceCenterGuideDetailsSecurity from "./components/ResourceCenterGuideDetailsSecurity";
+import ResourceCenterGuideDetailsSustainability from "./components/ResourceCenterGuideDetailsSustainability";
+import ResourceCenterGuideDetailsPopularTopics from "./components/ResourceCenterGuideDetailsPopularTopics";
 
 function App() {
     const location = useLocation();
@@ -86,6 +95,9 @@ function App() {
                     <Route path="/order/:id" element={<OrderDetails />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     
+                    <Route path="/profile/order-history" element={<OrderHistory />} />
+                    <Route path="/order-history" element={<OrderHistory />} />
+
                     {/* Blogs */}
                     <Route path="/blogs" element={<BlogsMain />} />
                     <Route path="/blogs/choosing-right-printer-home-office" element={<ChoosingPrinterGuide />} />
@@ -98,7 +110,14 @@ function App() {
                     <Route path="/product/:productSlug" element={<ProductDetails />} />
                     <Route path="/search" element={<Search />} />
 
-                    {/*order*/}
+                    <Route path="/resource-center/choose-right-printer" element={<GuideDetails />} />
+
+                    <Route path="/resource-center/wifi-6-vs-wifi-5" element={<ResourceCenterGuideDetailsWiFi6 />} />
+                    <Route path="/resource-center/managed-print-services" element={<ResourceCenterGuideDetailsMPS />} />
+                    <Route path="/resource-center/document-security" element={<ResourceCenterGuideDetailsSecurity />} />
+                    <Route path="/resource-center/sustainable-printing" element={<ResourceCenterGuideDetailsSustainability />} />
+                    <Route path="/resource-center/popular-topics" element={<ResourceCenterGuideDetailsPopularTopics />} />
+
                     <Route path="/track-order" element={<TrackOrder />} />
                     <Route path="/returns-exchanges" element={<ReturnsAndExchanges />} />
                     <Route path="/faq" element={<FAQMain />} />

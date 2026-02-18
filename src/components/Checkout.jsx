@@ -101,12 +101,7 @@ const Checkout = () => {
                 const rates = data.rates || (Array.isArray(data) ? data : []);
                 setDistance(data.distance || null);
                                 // Debug: log raw rates from backend
-                                // console.log('Raw rates from backend:', rates); 
-                                if (Array.isArray(rates)) {
-                                    rates.forEach((rate, idx) => {
-                                        console.log(`Rate #${idx}: carrier=${rate.carrier}, account_id=${rate.carrier_account_id}, service=${rate.service}`);
-                                    });
-                                }
+                                // ...existing code...
 
                                 // Only show Canada Post, FedEx, UPS, USPS shipping methods (strict carrier name and account id)
                                 const allowedAccounts = [
@@ -446,7 +441,7 @@ const Checkout = () => {
                                     disabled={loading}
                                     className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-extrabold uppercase text-base tracking-widest hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? <Loader2 className="animate-spin" size={22} /> : <>Pay with Clover <ShieldCheck size={22} /></>}
+                                    {loading ? <Loader2 className="animate-spin" size={22} /> : <>Pay Now <ShieldCheck size={22} /></>}
                                 </button>
                             </div>
                         )}

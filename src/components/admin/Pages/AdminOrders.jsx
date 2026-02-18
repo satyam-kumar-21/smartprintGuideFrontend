@@ -121,7 +121,7 @@ const AdminOrders = () => {
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`https://printersbackend.onrender.com/api/orders/${selectedOrder._id}/status`, updateForm, {
+            await axios.put(`${import.meta.env.VITE_API_URL}/orders/${selectedOrder._id}/status`, updateForm, {
                 headers: { Authorization: `Bearer ${userInfo.token}` }
             });
             fetchOrders();

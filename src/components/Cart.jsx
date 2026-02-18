@@ -72,7 +72,7 @@ const Cart = () => {
                                             <div className="col-span-1 md:col-span-2 flex gap-6 items-center">
                                                 <div className="w-20 h-20 bg-white border border-blue-100 rounded-2xl p-2 flex-shrink-0">
                                                     <img
-                                                        src={item.image ? (item.image.startsWith('http') ? item.image : `http://localhost:5000${item.image}`) : printerImg}
+                                                        src={item.image ? (item.image.startsWith('http') ? item.image : `${import.meta.env.VITE_API_URL}${item.image}`) : printerImg}
                                                         alt={item.title}
                                                         className="w-full h-full object-contain"
                                                     />
@@ -160,7 +160,7 @@ const Cart = () => {
                                         Proceed to Secure Checkout
                                     </button>
                                     <div className="flex items-center justify-center gap-6 py-4 px-4 bg-blue-50 rounded-2xl border border-blue-100">
-                                        <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razorpay" className="h-4 opacity-50" />
+                                        <img src={import.meta.env.VITE_RAZORPAY_LOGO_URL} alt="Razorpay" className="h-4 opacity-50" />
                                         <span className="text-[9px] font-extrabold text-blue-500 uppercase tracking-[0.2em]">Verified Secure Terminal</span>
                                     </div>
                                 </div>

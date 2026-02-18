@@ -7,7 +7,7 @@ const Reviews = () => {
       quote:
         "I have already saved a significant amount on refilling ink cartridges because the system is effective.",
       name: "Isabella Reed",
-      location: "Leeds, UK",
+      location: "San Diego, USA",
       rating: 5,
     },
     {
@@ -21,7 +21,7 @@ const Reviews = () => {
       quote:
         "This is an easy-to-use printer that can handle the small office workload without becoming overwhelmed.",
       name: "Harry Walker",
-      location: "Birmingham, UK",
+      location: "Chicago, USA",
       rating: 5,
     },
   ];
@@ -38,10 +38,10 @@ const Reviews = () => {
         {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-extrabold text-blue-800">
-            What Customers Say About smartPrintGuide
+            Customer Stories from Across the USA
           </h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-base md:text-lg">
-            Real experiences from customers who trust us for reliable printing solutions.
+            Real experiences from customers who trust us for reliable printing solutions—straight from the United States.
           </p>
         </div>
 

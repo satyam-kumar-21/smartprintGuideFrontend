@@ -6,8 +6,15 @@ import ProductGrid from "./ProductGrid";
 const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }) => {
 
   const dispatch = useDispatch();
-  const [sort, setSort] = useState("");
-  const [brand, setBrand] = useState("");
+  const [filters, setFilters] = useState({
+    sort: "",
+    brand: "",
+    technology: [],
+    usageCategory: [],
+    allInOneType: [],
+    wireless: "",
+    mainFunction: []
+  });
   const [loadingMore, setLoadingMore] = useState(false);
 
   const productList = useSelector((state) => state.productList);
@@ -48,28 +55,41 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
   }));
 
   useEffect(() => {
-    dispatch(listProducts("", categoryName, 1, sort, brand));
-  }, [dispatch, categoryName, sort, brand]);
+    dispatch(listProducts(
+      "",
+      categoryName,
+      1,
+      filters.sort,
+      filters.brand,
+      filters.technology,
+      filters.usageCategory,
+      filters.allInOneType,
+      filters.wireless,
+      filters.mainFunction
+    ));
+  }, [dispatch, categoryName, filters]);
 
   const loadMoreHandler = async () => {
     if (page < pages) {
       setLoadingMore(true);
-      // Find the last product card before loading more
-      const lastProduct = document.querySelector('[data-product-card]:last-of-type');
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // artificial delay
-      await dispatch(listProducts("", categoryName, page + 1, sort, brand));
+      await dispatch(listProducts(
+        "",
+        categoryName,
+        page + 1,
+        filters.sort,
+        filters.brand,
+        filters.technology,
+        filters.usageCategory,
+        filters.allInOneType,
+        filters.wireless,
+        filters.mainFunction
+      ));
       setLoadingMore(false);
-      // Scroll to the first new product card
-      // Do not scroll after loading more products; let user scroll manually to see new items
-      // This keeps the current view unchanged and new products appear below
-      // setTimeout intentionally left empty
-      setTimeout(() => {}, 100);
     }
   };
 
-  const handleFilterChange = (newSort, newBrand) => {
-    setSort(newSort);
-    setBrand(newBrand);
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   }
 
   return (

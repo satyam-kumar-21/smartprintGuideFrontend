@@ -26,18 +26,37 @@ import {
     PRODUCT_DELETE_REVIEW_FAIL,
 } from '../constants/productConstants';
 
-export const listProducts = (search = '', category = '', pageNumber = 1, sort = '', brand = '') => async (dispatch) => {
+export const listProducts = (
+    search = '',
+    category = '',
+    pageNumber = 1,
+    sort = '',
+    brand = '',
+    technology = [],
+    usageCategory = [],
+    allInOneType = [],
+    wireless = '',
+    mainFunction = []
+) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST });
 
+        const params = {
+            search,
+            category,
+            page: pageNumber,
+            sort,
+            brand,
+            limit: 20,
+        };
+        if (technology && technology.length > 0) params.technology = technology.join(',');
+        if (usageCategory && usageCategory.length > 0) params.usageCategory = usageCategory.join(',');
+        if (allInOneType && allInOneType.length > 0) params.allInOneType = allInOneType.join(',');
+        if (wireless) params.wireless = wireless;
+        if (mainFunction && mainFunction.length > 0) params.mainFunction = mainFunction.join(',');
+
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/products`, {
-            params: {
-                search,
-                category,
-                page: pageNumber,
-                sort,
-                brand,
-            }
+            params
         });
 
         dispatch({

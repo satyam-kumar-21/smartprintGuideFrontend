@@ -12,6 +12,7 @@ import WhyChooseSection from "./WhyChooseSection";
 import FeaturedServices from "./FeaturedServices";
 import OurPromiseSection from "./OurPromiseSection";
 import ImportantInfoSection from "./ImportantInfoSection";
+import ResourceCenter from "../ResourceCenter";
 import ProductGrid from "../productsCategories/ProductGrid";
 
 const HomeMain = () => {
@@ -71,6 +72,7 @@ const HomeMain = () => {
             <Reviews />
             <StatsCircles />
             <ImportantInfoSection />
+            <ResourceCenter />
         </div>
     );
 };

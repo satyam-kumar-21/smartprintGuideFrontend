@@ -65,7 +65,12 @@ const AdminProducts = () => {
         overview: '',
         technicalSpecification: '',
         images: [], // Array of existing image URLs
-        reviews: [] // Array of { name, avatar, rating, comment }
+        reviews: [], // Array of { name, avatar, rating, comment }
+        technology: [],
+        usageCategory: [],
+        allInOneType: [],
+        wireless: '',
+        mainFunction: []
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -119,8 +124,13 @@ const AdminProducts = () => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, multiple, options } = e.target;
+        if (multiple) {
+            const values = Array.from(options).filter(o => o.selected).map(o => o.value);
+            setFormData(prev => ({ ...prev, [name]: values }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleQuillChange = (name, value) => {
@@ -189,7 +199,12 @@ const AdminProducts = () => {
             overview: product.overview || '',
             technicalSpecification: techSpec,
             images: product.images || [],
-            reviews: product.reviews || []
+            reviews: product.reviews || [],
+            technology: Array.isArray(product.technology) ? product.technology : [],
+            usageCategory: Array.isArray(product.usageCategory) ? product.usageCategory : [],
+            allInOneType: Array.isArray(product.allInOneType) ? product.allInOneType : [],
+            mainFunction: Array.isArray(product.mainFunction) ? product.mainFunction : [],
+            wireless: typeof product.wireless === 'string' ? product.wireless : ''
         });
 
         // Parse Technical Specifications if it matches table structure
@@ -452,6 +467,111 @@ const AdminProducts = () => {
                                             <option key={cat._id} value={cat._id}>{cat.name}</option>
                                         ))}
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Structured Product Attributes */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Technology</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Inkjet', 'Laser', 'Laser (B/W)'].map(opt => (
+                                        <label key={opt} className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={Array.isArray(formData.technology) && formData.technology.includes(opt)}
+                                                onChange={e => {
+                                                    setFormData(prev => {
+                                                        const arr = Array.isArray(prev.technology) && prev.technology.includes(opt)
+                                                            ? prev.technology.filter(v => v !== opt)
+                                                            : [...(Array.isArray(prev.technology) ? prev.technology : []), opt];
+                                                        return { ...prev, technology: arr };
+                                                    });
+                                                }}
+                                            />
+                                            <span className="text-xs font-bold text-blue-700">{opt}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Usage Category</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Home', 'Office', 'Mobile', 'Photo'].map(opt => (
+                                        <label key={opt} className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={Array.isArray(formData.usageCategory) && formData.usageCategory.includes(opt)}
+                                                onChange={e => {
+                                                    setFormData(prev => {
+                                                        const arr = Array.isArray(prev.usageCategory) && prev.usageCategory.includes(opt)
+                                                            ? prev.usageCategory.filter(v => v !== opt)
+                                                            : [...(Array.isArray(prev.usageCategory) ? prev.usageCategory : []), opt];
+                                                        return { ...prev, usageCategory: arr };
+                                                    });
+                                                }}
+                                            />
+                                            <span className="text-xs font-bold text-blue-700">{opt}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">All-in-One Type</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Multifunction', 'Single Function'].map(opt => (
+                                        <label key={opt} className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={Array.isArray(formData.allInOneType) && formData.allInOneType.includes(opt)}
+                                                onChange={e => {
+                                                    setFormData(prev => {
+                                                        const arr = Array.isArray(prev.allInOneType) && prev.allInOneType.includes(opt)
+                                                            ? prev.allInOneType.filter(v => v !== opt)
+                                                            : [...(Array.isArray(prev.allInOneType) ? prev.allInOneType : []), opt];
+                                                        return { ...prev, allInOneType: arr };
+                                                    });
+                                                }}
+                                            />
+                                            <span className="text-xs font-bold text-purple-700">{opt}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Wireless</label>
+                                <select
+                                    name="wireless"
+                                    value={formData.wireless}
+                                    onChange={handleInputChange}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-800"
+                                >
+                                    <option value="">Select Wireless</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Function</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {['Print', 'Scan', 'Copy', 'Fax', 'Print Only'].map(opt => (
+                                        <label key={opt} className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={Array.isArray(formData.mainFunction) && formData.mainFunction.includes(opt)}
+                                                onChange={e => {
+                                                    setFormData(prev => {
+                                                        const arr = Array.isArray(prev.mainFunction) && prev.mainFunction.includes(opt)
+                                                            ? prev.mainFunction.filter(v => v !== opt)
+                                                            : [...(Array.isArray(prev.mainFunction) ? prev.mainFunction : []), opt];
+                                                        return { ...prev, mainFunction: arr };
+                                                    });
+                                                }}
+                                            />
+                                            <span className="text-xs font-bold text-green-700">{opt}</span>
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
                         </div>

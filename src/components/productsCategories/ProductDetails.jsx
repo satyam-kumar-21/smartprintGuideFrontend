@@ -160,8 +160,21 @@ const ProductDetails = () => {
                             {product.brand && (
                                 <span className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow">{product.brand}</span>
                             )}
-                            {product.category && (
-                                <span className="inline-block bg-blue-50 text-blue-500 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100">{typeof product.category === 'object' ? product.category.name : product.category}</span>
+                            {/* Category name removed as requested */}
+                            {Array.isArray(product.technology) && product.technology.length > 0 && (
+                                <span className="inline-block bg-slate-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100">{product.technology.join(', ')}</span>
+                            )}
+                            {Array.isArray(product.usageCategory) && product.usageCategory.length > 0 && (
+                                <span className="inline-block bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100">{product.usageCategory.join(', ')}</span>
+                            )}
+                            {Array.isArray(product.allInOneType) && product.allInOneType.length > 0 && (
+                                <span className="inline-block bg-purple-50 text-purple-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-purple-100">{product.allInOneType.join(', ')}</span>
+                            )}
+                            {product.wireless && (
+                                <span className="inline-block bg-green-50 text-green-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-green-100">Wireless: {product.wireless}</span>
+                            )}
+                            {Array.isArray(product.mainFunction) && product.mainFunction.length > 0 && (
+                                <span className="inline-block bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-emerald-100">{product.mainFunction.join(', ')}</span>
                             )}
                             {product.countInStock > 0 ? (
                                 <span className="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">In Stock</span>
