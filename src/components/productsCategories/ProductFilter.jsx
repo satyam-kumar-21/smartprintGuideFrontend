@@ -50,8 +50,9 @@ export default function ProductFilter({ filters, onChange }) {
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-3xl shadow-2xl p-8 mb-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 border border-blue-200">
           <div className="bg-white rounded-xl shadow-md p-5 flex flex-col items-start border border-blue-100">
-            <label className="block text-sm font-bold text-blue-700 mb-2">Brand</label>
+            <label htmlFor="filter-brand" className="block text-sm font-bold text-blue-700 mb-2">Brand</label>
             <select
+              id="filter-brand"
               className="w-full border border-blue-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
               value={localFilters.brand}
               onChange={e => handleSelect("brand", e.target.value)}
@@ -115,8 +116,9 @@ export default function ProductFilter({ filters, onChange }) {
             </div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-5 flex flex-col items-start border border-green-100">
-            <label className="block text-sm font-bold text-green-700 mb-2">Wireless</label>
+            <label htmlFor="filter-wireless" className="block text-sm font-bold text-green-700 mb-2">Wireless</label>
             <select
+              id="filter-wireless"
               className="w-full border border-green-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
               value={localFilters.wireless}
               onChange={e => handleSelect("wireless", e.target.value)}
@@ -144,8 +146,9 @@ export default function ProductFilter({ filters, onChange }) {
             </div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-5 flex flex-col items-start border border-blue-100">
-            <label className="block text-sm font-bold text-blue-700 mb-2">Sort By Price</label>
+            <label htmlFor="filter-sort" className="block text-sm font-bold text-blue-700 mb-2">Sort By Price</label>
             <select
+              id="filter-sort"
               className="w-full border border-blue-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
               value={localFilters.sort}
               onChange={e => handleSelect("sort", e.target.value)}

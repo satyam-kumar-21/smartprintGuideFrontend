@@ -129,11 +129,12 @@ const CategoryProductList = ({ categoryName, heading, enableFlowLayout = false }
             )}
             onFilterChange={handleFilterChange}
             enableFlowLayout={enableFlowLayout}
+            loading={loading && formattedProducts.length === 0}
           />
         </div>
 
         {/* Loading State for initial load only */}
-        {loading && page === 1 && (
+        {loading && page === 1 && formattedProducts.length > 0 && (
           <div className="py-10 text-center">
             <div className="inline-block px-6 py-3 rounded-full bg-blue-100 text-blue-700 font-semibold animate-pulse shadow-md">
               Loading Products...

@@ -117,7 +117,7 @@ const Footer = () => {
 
       {/* Bottom with Logo and Company Info */}
       <div className="mt-16 border-t border-blue-500 pt-8 text-center text-blue-200 text-sm relative z-10 flex flex-col items-center gap-2">
-        <img src="/spglogo.png" alt="smartPrintGuide Logo" className="h-12 w-auto mb-2 bg-white  border-blue-500 rounded-full" style={{ maxWidth: '120px' }} />
+        <img src="/spglogo.png" alt="smartPrintGuide Logo" width="130" height="48" className="h-12 w-auto mb-2 bg-white  border-blue-500 rounded-full" style={{ maxWidth: '130px' }} />
         <div className="font-bold text-blue-100">smartPrintGuide</div>
         <div className="text-blue-100 mb-4">All rights reserved.</div>
         {/* Legal/Disclaimer Content */}

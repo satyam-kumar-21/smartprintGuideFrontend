@@ -1,79 +1,78 @@
-import HomePrinter from './components/productsCategories/HomePrinter';
-import HomePrinterSection from './components/productsCategories/HomePrinterSection';
-import OfficePrinter from './components/productsCategories/OfficePrinter';
-import OfficePrinterSection from './components/productsCategories/OfficePrinterSection';
+import React, { Suspense } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeMain from './components/home/HomeMain';
-import ProfilePage from './components/profile/ProfilePage';
-import UnderConstruction from './components/common/UnderConstruction';
-import AboutMain from './components/about/AboutMain';
-import PrivacyPolicy from './components/privacyPolicy/PrivacyPolicy';
-import TermsAndConditions from './components/TermsAndConditions';
-import GuideDetails from "./components/ResourceCenterGuideDetails";
-
-// Admin Imports
-import AdminLogin from './components/admin/Auth/AdminLogin';
-import AdminLayout from './components/admin/Layout/AdminLayout';
-import AdminDashboard from './components/admin/Pages/AdminDashboard';
-import AdminCategories from './components/admin/Pages/AdminCategories';
-import AdminProducts from './components/admin/Pages/AdminProducts';
-import AdminOrders from './components/admin/Pages/AdminOrders';
-import AdminCustomers from './components/admin/Pages/AdminCustomers';
-import AdminChat from './components/admin/Pages/AdminChat';
-import AdminAnalytics from './components/admin/Pages/AdminAnalytics';
-import AdminSettings from './components/admin/Pages/AdminSettings';
-
-// Product Category Imports
-import AllInOne from './components/productsCategories/all_InOne/AllInOne';
-import LargeFormat from './components/productsCategories/largeFormat/LargeFormat';
-import InkjetPrinters from './components/productsCategories/inkjetPrinters/InkjetPrinters';
-import LedPrinters from './components/productsCategories/ledPrinters/LedPrinters';
-import InkToner from './components/productsCategories/inkToner/InkToner';
-import CustomerService from './components/customerService/CustomerService1';
-import HelpCenter from './components/customerService/HelpCenter';
-import LaserPrinters from './components/productsCategories/laserPrinters/LaserPrinters';
 import ScrollToTop from './components/ScrollToTop';
-import Cart from './components/Cart';
-import Checkout from './components/Checkout';
-import ProductDetails from './components/productsCategories/ProductDetails';
-import Search from './pages/Search';
-import OrderDetails from './components/order/OrderDetails';
-import TrackOrder from './components/order/TrackOrder';
-import React from 'react';
-import ReturnsAndExchanges from './components/order/ReturnsAndExchanges';
-import FAQMain from './components/faq/FAQMain';
-import CustomerMain from './components/customerService/CustomerMain';
+import UnderConstruction from './components/common/UnderConstruction';
 
-import RefundReturnPolicy from './components/privacyPolicy/RefundReturnPolicy';
-import ReturnExchangePolicy from './components/privacyPolicy/ReturnExchangePolicy';
-import ShippingPolicy from './components/privacyPolicy/ShippingPolicy';
-import CookiePolicy from './components/privacyPolicy/CookiePolicy';
-import CCPAPrivacyPolicy from './components/privacyPolicy/CCPAPrivacyPolicy';
-import AccessibilityStatement from './components/privacyPolicy/AccessibilityStatement';
-import Disclaimer from './components/privacyPolicy/Disclaimer';
-import ConsumerRights from './components/privacyPolicy/ConsumerRights';
-import DoNotSellOrShare from './components/privacyPolicy/DoNotSellOrShare';
-import OrderHistory from './components/profile/OrderHistory';
+// Lazy load all non-critical routes
+const HomePrinterSection = React.lazy(() => import('./components/productsCategories/HomePrinterSection'));
+const OfficePrinterSection = React.lazy(() => import('./components/productsCategories/OfficePrinterSection'));
+const ProfilePage = React.lazy(() => import('./components/profile/ProfilePage'));
+const AboutMain = React.lazy(() => import('./components/about/AboutMain'));
+const PrivacyPolicy = React.lazy(() => import('./components/privacyPolicy/PrivacyPolicy'));
+const TermsAndConditions = React.lazy(() => import('./components/TermsAndConditions'));
+const GuideDetails = React.lazy(() => import("./components/ResourceCenterGuideDetails"));
 
-// Blog Imports
-import BlogsMain from './components/blogs/BlogsMain';
-import ChoosingPrinterGuide from './components/blogs/posts/ChoosingPrinterGuide';
-import PrinterBuyingGuide from './components/guides/PrinterBuyingGuide';
-import GuidesResources from './components/guides/GuidesResources';
-import PrinterMaintenanceGuide from './components/blogs/posts/PrinterMaintenanceGuide';
-import SavePrintingCostsGuide from './components/blogs/posts/SavePrintingCostsGuide';
-import PrintingMistakesGuide from './components/blogs/posts/PrintingMistakesGuide';
-import SmallBusinessPrintingGuide from './components/blogs/posts/SmallBusinessPrintingGuide';
+// Admin Imports (lazy)
+const AdminLogin = React.lazy(() => import('./components/admin/Auth/AdminLogin'));
+const AdminLayout = React.lazy(() => import('./components/admin/Layout/AdminLayout'));
+const AdminDashboard = React.lazy(() => import('./components/admin/Pages/AdminDashboard'));
+const AdminCategories = React.lazy(() => import('./components/admin/Pages/AdminCategories'));
+const AdminProducts = React.lazy(() => import('./components/admin/Pages/AdminProducts'));
+const AdminOrders = React.lazy(() => import('./components/admin/Pages/AdminOrders'));
+const AdminCustomers = React.lazy(() => import('./components/admin/Pages/AdminCustomers'));
+const AdminChat = React.lazy(() => import('./components/admin/Pages/AdminChat'));
+const AdminAnalytics = React.lazy(() => import('./components/admin/Pages/AdminAnalytics'));
+const AdminSettings = React.lazy(() => import('./components/admin/Pages/AdminSettings'));
 
-// Guide Details Components
-import ResourceCenterGuideDetailsWiFi6 from "./components/ResourceCenterGuideDetailsWiFi6";
-import ResourceCenterGuideDetailsMPS from "./components/ResourceCenterGuideDetailsMPS";
-import ResourceCenterGuideDetailsSecurity from "./components/ResourceCenterGuideDetailsSecurity";
-import ResourceCenterGuideDetailsSustainability from "./components/ResourceCenterGuideDetailsSustainability";
-import ResourceCenterGuideDetailsPopularTopics from "./components/ResourceCenterGuideDetailsPopularTopics";
+// Product Category Imports (lazy)
+const AllInOne = React.lazy(() => import('./components/productsCategories/all_InOne/AllInOne'));
+const LargeFormat = React.lazy(() => import('./components/productsCategories/largeFormat/LargeFormat'));
+const InkjetPrinters = React.lazy(() => import('./components/productsCategories/inkjetPrinters/InkjetPrinters'));
+const LedPrinters = React.lazy(() => import('./components/productsCategories/ledPrinters/LedPrinters'));
+const InkToner = React.lazy(() => import('./components/productsCategories/inkToner/InkToner'));
+const CustomerService = React.lazy(() => import('./components/customerService/CustomerService1'));
+const HelpCenter = React.lazy(() => import('./components/customerService/HelpCenter'));
+const LaserPrinters = React.lazy(() => import('./components/productsCategories/laserPrinters/LaserPrinters'));
+const Cart = React.lazy(() => import('./components/Cart'));
+const Checkout = React.lazy(() => import('./components/Checkout'));
+const ProductDetails = React.lazy(() => import('./components/productsCategories/ProductDetails'));
+const Search = React.lazy(() => import('./pages/Search'));
+const OrderDetails = React.lazy(() => import('./components/order/OrderDetails'));
+const TrackOrder = React.lazy(() => import('./components/order/TrackOrder'));
+const ReturnsAndExchanges = React.lazy(() => import('./components/order/ReturnsAndExchanges'));
+const FAQMain = React.lazy(() => import('./components/faq/FAQMain'));
+const CustomerMain = React.lazy(() => import('./components/customerService/CustomerMain'));
+
+const RefundReturnPolicy = React.lazy(() => import('./components/privacyPolicy/RefundReturnPolicy'));
+const ReturnExchangePolicy = React.lazy(() => import('./components/privacyPolicy/ReturnExchangePolicy'));
+const ShippingPolicy = React.lazy(() => import('./components/privacyPolicy/ShippingPolicy'));
+const CookiePolicy = React.lazy(() => import('./components/privacyPolicy/CookiePolicy'));
+const AccessibilityStatement = React.lazy(() => import('./components/privacyPolicy/AccessibilityStatement'));
+const Disclaimer = React.lazy(() => import('./components/privacyPolicy/Disclaimer'));
+const ConsumerRights = React.lazy(() => import('./components/privacyPolicy/ConsumerRights'));
+const DoNotSellOrShare = React.lazy(() => import('./components/privacyPolicy/DoNotSellOrShare'));
+const OrderHistory = React.lazy(() => import('./components/profile/OrderHistory'));
+
+// Blog Imports (lazy)
+const BlogsMain = React.lazy(() => import('./components/blogs/BlogsMain'));
+const ChoosingPrinterGuide = React.lazy(() => import('./components/blogs/posts/ChoosingPrinterGuide'));
+const PrinterBuyingGuide = React.lazy(() => import('./components/guides/PrinterBuyingGuide'));
+const GuidesResources = React.lazy(() => import('./components/guides/GuidesResources'));
+const PrinterMaintenanceGuide = React.lazy(() => import('./components/blogs/posts/PrinterMaintenanceGuide'));
+const SavePrintingCostsGuide = React.lazy(() => import('./components/blogs/posts/SavePrintingCostsGuide'));
+const PrintingMistakesGuide = React.lazy(() => import('./components/blogs/posts/PrintingMistakesGuide'));
+const SmallBusinessPrintingGuide = React.lazy(() => import('./components/blogs/posts/SmallBusinessPrintingGuide'));
+
+// Guide Details Components (lazy)
+const ResourceCenterGuideDetailsWiFi6 = React.lazy(() => import("./components/ResourceCenterGuideDetailsWiFi6"));
+const ResourceCenterGuideDetailsMPS = React.lazy(() => import("./components/ResourceCenterGuideDetailsMPS"));
+const ResourceCenterGuideDetailsSecurity = React.lazy(() => import("./components/ResourceCenterGuideDetailsSecurity"));
+const ResourceCenterGuideDetailsSustainability = React.lazy(() => import("./components/ResourceCenterGuideDetailsSustainability"));
+const ResourceCenterGuideDetailsPopularTopics = React.lazy(() => import("./components/ResourceCenterGuideDetailsPopularTopics"));
 
 function App() {
     const location = useLocation();
@@ -85,6 +84,7 @@ function App() {
             <ScrollToTop />
 
             <main className={`flex-grow ${isAdminRoute ? 'h-screen overflow-hidden' : ''}`}>
+              <Suspense fallback={<div className="flex justify-center items-center py-20 min-h-[50vh]"><div className="w-14 h-14 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div></div>}>
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<HomeMain />} />
@@ -176,6 +176,7 @@ function App() {
                     {/* Catch-all */}
                     <Route path="*" element={<UnderConstruction />} />
                 </Routes>
+              </Suspense>
             </main>
 
             {!isAdminRoute && <Footer />}

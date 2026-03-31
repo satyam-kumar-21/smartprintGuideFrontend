@@ -1,6 +1,7 @@
 import React from "react";
-import heroImage from "../../assets/homeHero.png";
 import { Link } from "react-router-dom";
+
+const heroImage = "/assets/homeHero.webp";
 
 const Hero = () => {
   return (
@@ -14,7 +15,7 @@ const Hero = () => {
         <div className="flex flex-col-reverse md:flex-row items-center gap-12">
 
           {/* LEFT CONTENT */}
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-1 text-center md:text-left" style={{minHeight: '280px'}}>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-800 leading-tight drop-shadow-lg">
               Your Trusted <span className="text-blue-600">Smart Print Guide</span>
@@ -52,6 +53,9 @@ const Hero = () => {
                 src={heroImage}
                 alt="Printers smartPrintGuide"
                 className="w-full max-w-md object-contain"
+                fetchPriority="high"
+                width={588}
+                height={425}
               />
 
               {/* Floating Badge */}

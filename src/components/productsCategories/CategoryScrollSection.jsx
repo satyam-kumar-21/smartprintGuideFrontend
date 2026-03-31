@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listCategories } from "../../redux/actions/categoryActions";
 
-const CategoryScrollSection = () => {
+const CategoryScrollSection = React.memo(() => {
   const dispatch = useDispatch();
   const categoryList = useSelector((state) => state.categoryList);
   const { loading, error, categories } = categoryList;
@@ -12,7 +12,7 @@ const CategoryScrollSection = () => {
     dispatch(listCategories());
   }, [dispatch]);
 
-  if (loading) {
+  if (loading && (!categories || categories.length === 0)) {
     return (
       <div className="flex justify-center py-20">
         <div className="w-14 h-14 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -80,6 +80,7 @@ const CategoryScrollSection = () => {
       </div>
     </section>
   );
-};
+});
 
+CategoryScrollSection.displayName = 'CategoryScrollSection';
 export default CategoryScrollSection;

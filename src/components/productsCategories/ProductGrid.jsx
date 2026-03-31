@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/actions/cartActions";
 import ProductSkeleton from "./ProductSkeleton";
+import { optimizeImageUrl } from "../../lib/utils";
 
 const ProductGrid = ({
   heading = "Products",
@@ -19,7 +20,7 @@ const ProductGrid = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = useSelector((state) => state.userLogin);
   // Handler for ProductFilter changes: just call parent
   const handleFilterChange = (updatedFilters) => {
     if (onFilterChange) onFilterChange(updatedFilters);
@@ -93,19 +94,22 @@ const ProductGrid = ({
                     {/* Image */}
                     <Link
                       to={product.link || `/product/${product.slug}`}
-                      className="relative bg-gradient-to-br from-blue-50 to-white p-1 sm:p-4 flex items-center justify-center"
+                      className="relative bg-gradient-to-br from-blue-50 to-white p-1 sm:p-4 flex items-center justify-center aspect-[5/3]"
                     >
                       <img
-                        src={
+                        src={optimizeImageUrl(
                           product.image ||
                           (product.images && product.images.length > 0
                             ? product.images[0].startsWith("http")
                               ? product.images[0]
                               : `${import.meta.env.VITE_API_URL?.replace("/api", "") || ""}${product.images[0]}`
                             : "/printer.png")
-                        }
+                        )}
                         alt={product.title}
                         className="h-44 object-contain transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                        width={291}
+                        height={176}
                         onError={(e) => (e.target.src = "/printer.png")}
                       />
                       {!inStock && (

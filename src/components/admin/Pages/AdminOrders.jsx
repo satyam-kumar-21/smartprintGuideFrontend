@@ -210,9 +210,15 @@ const AdminOrders = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="space-y-2">
-                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-slate-100'}`}>
-                                                        {order.status || 'Processing'}
-                                                    </span>
+                                                    {!order.isPaid ? (
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                                                            Payment Failed
+                                                        </span>
+                                                    ) : (
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColors[order.status] || 'bg-slate-100'}`}>
+                                                            {order.status || 'Processing'}
+                                                        </span>
+                                                    )}
                                                     <div className="text-xs text-slate-500 flex items-center gap-1">
                                                         <Truck size={12} />
                                                         <span className="font-medium truncate max-w-[120px]">{order.tracking?.currentLocation || 'Warehouse'}</span>

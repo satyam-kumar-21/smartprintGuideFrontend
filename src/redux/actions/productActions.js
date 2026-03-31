@@ -37,9 +37,11 @@ export const listProducts = (
     allInOneType = [],
     wireless = '',
     mainFunction = []
-) => async (dispatch) => {
+) => async (dispatch, getState) => {
     try {
-        dispatch({ type: PRODUCT_LIST_REQUEST });
+        const cacheKey = `${category}|${sort}|${brand}|${technology}|${usageCategory}|${allInOneType}|${wireless}|${mainFunction}`;
+
+        dispatch({ type: PRODUCT_LIST_REQUEST, meta: { cacheKey, page: pageNumber } });
 
         const params = {
             search,
@@ -62,6 +64,7 @@ export const listProducts = (
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
             payload: data,
+            meta: { cacheKey },
         });
     } catch (error) {
         dispatch({

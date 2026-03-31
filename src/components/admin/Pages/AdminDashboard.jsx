@@ -138,9 +138,15 @@ const AdminDashboard = () => {
                                             </td>
                                             <td className="px-6 py-4 font-bold text-slate-900">${order.totalPrice.toFixed(2)}</td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[order.status] || 'bg-slate-50 text-slate-700 border-slate-100'}`}>
-                                                    {order.status}
-                                                </span>
+                                                {!order.isPaid ? (
+                                                    <span className="px-2.5 py-1 rounded-full text-xs font-bold border bg-red-50 text-red-700 border-red-100">
+                                                        Payment Failed
+                                                    </span>
+                                                ) : (
+                                                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[order.status] || 'bg-slate-50 text-slate-700 border-slate-100'}`}>
+                                                        {order.status}
+                                                    </span>
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 text-right text-slate-500">{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                                         </tr>

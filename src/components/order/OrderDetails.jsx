@@ -66,14 +66,16 @@ const OrderDetails = () => {
 
     if (!order) return null;
 
+    const paymentFailed = !order.isPaid;
+
     const statusSteps = [
-        { label: order.isPaid ? 'Confirmed' : 'Payment Failed', status: 'Processing', icon: Clock },
+        { label: paymentFailed ? 'Payment Failed' : 'Confirmed', status: 'Processing', icon: Clock },
         { label: 'In Transit', status: 'Shipped', icon: Truck },
         { label: 'Out for Delivery', status: 'Out for Delivery', icon: Package },
         { label: 'Synchronized', status: 'Delivered', icon: CheckCircle2 },
     ];
 
-    const currentStepIndex = statusSteps.findIndex(step => step.status === order.status);
+    const currentStepIndex = paymentFailed ? 0 : statusSteps.findIndex(step => step.status === order.status);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 py-12 pb-24">
@@ -112,33 +114,41 @@ const OrderDetails = () => {
                             <div className="relative">
                                 {/* Connector Line */}
                                 <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-blue-100 md:left-4 md:right-4 md:top-[19px] md:bottom-auto md:w-auto md:h-0.5 pointer-events-none"></div>
-                                <div 
+                                {!paymentFailed && <div 
                                     className="absolute left-[19px] top-4 w-0.5 bg-blue-600 transition-all duration-1000 md:left-4 md:top-[19px] md:h-0.5 md:w-0" 
                                     style={{ 
                                         width: window.innerWidth > 768 ? `calc(${(currentStepIndex / (statusSteps.length - 1)) * 100}% - 8px)` : '2px',
                                         height: window.innerWidth > 768 ? '2px' : `calc(${(currentStepIndex / (statusSteps.length - 1)) * 100}% - 8px)`
                                     }}
-                                ></div>
+                                ></div>}
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative z-10">
                                     {statusSteps.map((step, index) => {
                                         const StepIcon = step.icon;
                                         const isCompleted = index <= currentStepIndex;
                                         const isCurrent = index === currentStepIndex;
+                                        const isFailedStep = paymentFailed && index === 0;
                                         return (
                                             <div key={index} className="flex md:flex-col items-center gap-4 md:gap-3">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm ${
-                                                    isCompleted 
+                                                    isFailedStep
+                                                    ? 'bg-red-600 text-white border-4 border-red-100 scale-110'
+                                                    : isCompleted 
                                                     ? 'bg-blue-600 text-white border-4 border-blue-100 scale-110' 
                                                     : 'bg-white border-2 border-blue-100 text-blue-300'
                                                 }`}>
                                                     <StepIcon size={18} />
                                                 </div>
                                                 <div className="text-left md:text-center">
-                                                    <p className={`text-[10px] font-black uppercase tracking-widest ${isCompleted ? 'text-blue-800' : 'text-blue-300'}`}>
+                                                    <p className={`text-[10px] font-black uppercase tracking-widest ${
+                                                        isFailedStep ? 'text-red-600' : isCompleted ? 'text-blue-800' : 'text-blue-300'
+                                                    }`}>
                                                         {step.label}
                                                     </p>
-                                                    {isCurrent && (
+                                                    {isCurrent && !paymentFailed && (
                                                         <span className="text-[8px] font-black bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-tighter">Active</span>
+                                                    )}
+                                                    {isFailedStep && (
+                                                        <span className="text-[8px] font-black bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase tracking-tighter">Failed</span>
                                                     )}
                                                 </div>
                                             </div>

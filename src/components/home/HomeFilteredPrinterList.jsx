@@ -19,7 +19,7 @@ const HomeFilteredPrinterList = () => {
     : [];
 
   return (
-    <ProductGrid heading="Home Printers (All-in-One, Under $150)" products={filtered} />
+    <ProductGrid heading="Home Printers (All-in-One, Under $150)" products={filtered} loading={loading && filtered.length === 0} />
   );
 };
 

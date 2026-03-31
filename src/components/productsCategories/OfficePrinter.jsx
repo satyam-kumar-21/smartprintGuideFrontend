@@ -61,7 +61,6 @@ const OfficePrinter = () => {
   const loadMoreHandler = async () => {
     if (page < pages) {
       setLoadingMore(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // artificial delay
       setPage(page + 1);
       setLoadingMore(false);
     }
@@ -74,6 +73,7 @@ const OfficePrinter = () => {
           heading="Office Printers"
           products={safeProducts}
           onFilterChange={handleFilterChange}
+          loading={loading && safeProducts.length === 0}
         />
         {/* Loading State */}
         {loading && page >= 1 && (

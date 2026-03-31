@@ -54,6 +54,8 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                         <img 
                             src="/spglogo.png" 
                             alt="SmartEprinting" 
+                            width="180"
+                            height="66"
                             className="h-12 w-auto object-contain max-w-[180px]"
                         />
                     </div>

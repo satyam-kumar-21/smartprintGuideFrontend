@@ -36,7 +36,7 @@ const AdminCategories = () => {
     const [itemToDelete, setItemToDelete] = useState(null);
 
     useEffect(() => {
-        dispatch(listCategories());
+        dispatch(listCategories(true));
 
         if (successCreate) {
             dispatch({ type: CATEGORY_CREATE_RESET });
@@ -52,7 +52,7 @@ const AdminCategories = () => {
         }
 
         if (successDelete) {
-            dispatch(listCategories());
+            dispatch(listCategories(true));
         }
     }, [dispatch, successCreate, successUpdate, successDelete]);
 

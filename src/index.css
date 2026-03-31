@@ -1,12 +1,30 @@
-/* Import fonts first */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Fonts loaded async via index.html preload */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Font fallback with adjusted metrics to prevent CLS when Poppins loads */
+@font-face {
+  font-family: 'Poppins Fallback';
+  src: local('Arial');
+  ascent-override: 93%;
+  descent-override: 25%;
+  line-gap-override: 9%;
+  size-adjust: 107%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 10%;
+  size-adjust: 107%;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Poppins Fallback', sans-serif;
 }
 
 .clearfix::after {

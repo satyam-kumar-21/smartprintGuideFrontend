@@ -7,15 +7,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
- <title>Smart Print Guide – Find the Best Printers for Home & Office</title>
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <!-- Preload LCP hero image -->
+  <link rel="preload" as="image" type="image/webp" href="/assets/homeHero.webp" fetchpriority="high">
+  <!-- Fonts: async with optional display to prevent CLS -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=optional"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=optional"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=optional"
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=optional" rel="stylesheet">
+  </noscript>
+
+  <!-- Primary Meta -->
+  <meta name="description"
+    content="Smart Print Guide helps you find the best printers, ink, toner, and supplies for home and office. Compare top brands like HP, Epson, Canon, and Brother with expert reviews and deals.">
+  <meta name="keywords"
+    content="printers, ink, toner, printer supplies, inkjet printers, laser printers, all-in-one printers, HP printers, Epson printers, Canon printers, Brother printers, home printer, office printer, best printer 2026, printer buying guide, Smart Print Guide">
+  <meta name="author" content="Smart Print Guide">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://smartprintguide.com/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://smartprintguide.com/">
+  <meta property="og:title" content="Smart Print Guide – Find the Best Printers for Home & Office">
+  <meta property="og:description"
+    content="Compare top printers, ink, toner & supplies from HP, Epson, Canon & Brother. Expert reviews, deals, and buying guides to help you choose the right printer.">
+  <meta property="og:image" content="https://smartprintguide.com/spglogo.png">
+  <meta property="og:image:width" content="823">
+  <meta property="og:image:height" content="303">
+  <meta property="og:image:alt" content="Smart Print Guide Logo">
+  <meta property="og:site_name" content="Smart Print Guide">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Print Guide – Find the Best Printers for Home & Office">
+  <meta name="twitter:description"
+    content="Compare top printers, ink, toner & supplies from HP, Epson, Canon & Brother. Expert reviews, deals, and buying guides.">
+  <meta name="twitter:image" content="https://smartprintguide.com/spglogo.png">
+  <meta name="twitter:image:alt" content="Smart Print Guide Logo">
+
+  <!-- Additional SEO -->
+  <meta name="theme-color" content="#1e40af">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Smart Print Guide">
+  <link rel="apple-touch-icon" href="/spglogo.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Smart Print Guide",
+    "url": "https://smartprintguide.com",
+    "description": "Find the best printers, ink, toner, and supplies for home and office.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://smartprintguide.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Smart Print Guide",
+    "url": "https://smartprintguide.com",
+    "logo": "https://smartprintguide.com/spglogo.png",
+    "sameAs": []
+  }
+  </script>
+
+  <title>Smart Print Guide – Find the Best Printers for Home & Office</title>
 
 </head>
 
 <body>
   <div id="root"></div>
-  <script src="https://checkout.clover.com/sdk.js"></script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

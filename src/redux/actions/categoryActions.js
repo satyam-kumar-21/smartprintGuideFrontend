@@ -14,8 +14,14 @@ import {
     CATEGORY_DELETE_FAIL,
 } from '../constants/categoryConstants';
 
-export const listCategories = () => async (dispatch) => {
+export const listCategories = (force = false) => async (dispatch, getState) => {
     try {
+        const { categoryList } = getState();
+        // Skip fetch if categories are already loaded and not forced
+        if (!force && categoryList.categories && categoryList.categories.length > 0) {
+            return;
+        }
+
         dispatch({ type: CATEGORY_LIST_REQUEST });
 
         const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/categories`);

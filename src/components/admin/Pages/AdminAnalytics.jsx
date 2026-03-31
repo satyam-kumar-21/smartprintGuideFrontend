@@ -348,13 +348,14 @@ const AdminAnalytics = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 text-xs font-bold rounded-full ${
+                                                !order.isPaid ? 'bg-red-100 text-red-800' :
                                                 order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
                                                 order.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
                                                 order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
                                                 order.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
                                                 'bg-gray-100 text-gray-800'
                                             }`}>
-                                                {order.status}
+                                                {!order.isPaid ? 'Payment Failed' : order.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-slate-500 text-sm">

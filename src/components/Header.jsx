@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from '../redux/actions/userActions';
 import AuthModal from "./AuthModel";
+import { optimizeImageUrl } from "../lib/utils";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -99,6 +100,8 @@ const Header = () => {
               <img
                 src="/spglogo.png"
                 alt="SmartPrintGuide Logo"
+                width="200"
+                height="74"
                 className="h-16 w-auto sm:h-20 md:h-24 object-contain drop-shadow-md transition-transform duration-300 hover:scale-105"
                 style={{ maxWidth: "200px" }}
               />
@@ -206,7 +209,7 @@ const Header = () => {
                         setSuggestions([]);
                       }}
                     >
-                      <img src={product.image || (product.images && product.images[0]) || "/printer.png"} alt={product.title} className="w-10 h-10 object-contain rounded" />
+                      <img src={optimizeImageUrl(product.image || (product.images && product.images[0]) || "/printer.png", { width: 80 })} alt={product.title} className="w-10 h-10 object-contain rounded" loading="lazy" />
                       <div className="flex-1">
                         <div className="font-semibold text-blue-900 text-sm line-clamp-1">{product.title}</div>
                         <div className="text-xs text-gray-500 line-clamp-1">{product.brand}</div>
@@ -232,6 +235,7 @@ const Header = () => {
               <Link
                 to="/cart"
                 className="relative text-blue-700 hover:scale-110 transition-transform"
+                aria-label="Shopping cart"
               >
                 <ShoppingCart size={24} />
                 {userInfo && cartCount > 0 && (
@@ -287,6 +291,7 @@ const Header = () => {
               <button
                 onClick={() => setMobileOpen(true)}
                 className="md:hidden text-blue-800"
+                aria-label="Open menu"
               >
                 <Menu size={28} />
               </button>

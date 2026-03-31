@@ -22,20 +22,29 @@ import {
     PRODUCT_CREATE_REVIEW_RESET,
 } from '../constants/productConstants';
 
-export const productListReducer = (state = { products: [] }, action) => {
+export const productListReducer = (state = { products: [], _cache: {} }, action) => {
     switch (action.type) {
-        case PRODUCT_LIST_REQUEST:
-            return { loading: true, products: state.products || [] };
-        case PRODUCT_LIST_SUCCESS:
+        case PRODUCT_LIST_REQUEST: {
+            const key = action.meta?.cacheKey;
+            const cached = key && action.meta?.page === 1 ? state._cache[key] : null;
+            if (cached) {
+                return { ...state, loading: false, products: cached.products, page: cached.page, pages: cached.pages, total: cached.total, _currentKey: key };
+            }
+            return { ...state, loading: true, products: action.meta?.page === 1 ? [] : (state.products || []), _currentKey: key };
+        }
+        case PRODUCT_LIST_SUCCESS: {
+            const newProducts = action.payload.page === 1 ? action.payload.products : [...state.products, ...action.payload.products];
+            const key = action.meta?.cacheKey;
+            const entry = { products: newProducts, page: action.payload.page, pages: action.payload.pages, total: action.payload.total };
             return {
+                ...state,
                 loading: false,
-                products: action.payload.page === 1 ? action.payload.products : [...state.products, ...action.payload.products],
-                page: action.payload.page,
-                pages: action.payload.pages,
-                total: action.payload.total
+                ...entry,
+                _cache: key ? { ...state._cache, [key]: entry } : state._cache,
             };
+        }
         case PRODUCT_LIST_FAIL:
-            return { loading: false, error: action.payload, products: [] };
+            return { ...state, loading: false, error: action.payload, products: [] };
         default:
             return state;
     }

@@ -28,11 +28,17 @@ const Checkout = () => {
     const [selectedRate, setSelectedRate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [clover, setClover] = useState(null);
+    const [paymentError, setPaymentError] = useState('');
 
     useEffect(() => {
         if (!userInfo || cartItems.length === 0) {
             navigate('/cart');
-        } else if (step === 2 && window.Clover) {
+            return;
+        }
+        if (step !== 2) return;
+
+        // Dynamically load Clover SDK only when needed
+        const initClover = () => {
              setTimeout(() => {
                 const numberEl = document.querySelector('#card-number');
                 const dateEl = document.querySelector('#card-date');
@@ -77,6 +83,16 @@ const Checkout = () => {
                      setClover(cloverInstance);
                 }
              }, 100);
+        };
+
+        if (window.Clover) {
+            initClover();
+        } else {
+            const script = document.createElement('script');
+            script.src = 'https://checkout.clover.com/sdk.js';
+            script.async = true;
+            script.onload = initClover;
+            document.body.appendChild(script);
         }
     }, [userInfo, cartItems, navigate, step]);
 
@@ -151,14 +167,14 @@ const Checkout = () => {
             setLoading(true);
 
             if (!clover) {
-                alert('Clover not initialized');
+                setPaymentError('Payment system not initialized. Please refresh and try again.');
                 setLoading(false);
                 return;
             }
 
             const result = await clover.createToken();
             if (result.errors) {
-                 alert('Payment Error: ' + Object.values(result.errors).join(', '));
+                 setPaymentError('Card error: ' + Object.values(result.errors).join(', '));
                  setLoading(false);
                  return;
             }
@@ -203,7 +219,8 @@ const Checkout = () => {
 
         } catch (error) {
             console.error(error);
-            alert(error.response?.data?.message || 'Clover payment failed');
+            const msg = error.response?.data?.message || 'Payment failed. Please check your card details and try again.';
+            setPaymentError(msg);
         } finally {
             setLoading(false);
         }
@@ -436,8 +453,14 @@ const Checkout = () => {
                                     </div>
                                 </div>
 
+                                {paymentError && (
+                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium">
+                                        {paymentError}
+                                    </div>
+                                )}
+
                                 <button
-                                    onClick={initPayment}
+                                    onClick={() => { setPaymentError(''); initPayment(); }}
                                     disabled={loading}
                                     className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-2xl font-extrabold uppercase text-base tracking-widest hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
