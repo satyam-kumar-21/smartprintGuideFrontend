@@ -17,26 +17,26 @@ const Hero = () => {
           {/* LEFT CONTENT */}
           <div className="flex-1 text-center md:text-left" style={{minHeight: '280px'}}>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-800 leading-tight drop-shadow-lg">
+            <h1 className="text-4xl sm:text-5xl md:text-5xl font-extrabold text-blue-800 leading-tight drop-shadow-lg">
               Your Trusted <span className="text-blue-600">Smart Print Guide</span>
             </h1>
 
 
-            <p className="mt-6 text-gray-700 text-lg sm:text-xl md:text-2xl max-w-xl">
+            <p className="mt-6 text-gray-700 text-base sm:text-lg md:text-xl max-w-lg md:max-w-md">
               Discover reliable printers, ink, toner, and expert printing
               solutions for home and office. We simplify printing with
               trusted recommendations and secure shopping.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
               <Link to="/product-category/all-in-one-printers" className="w-full sm:w-auto">
-                <button className="bg-blue-600 text-white font-semibold px-8 py-4 rounded-2xl shadow-xl hover:scale-105 hover:bg-blue-700 transition duration-300">
+                <button className="bg-blue-600 text-white font-semibold px-6 py-3 md:px-8 md:py-4 rounded-2xl shadow-xl hover:scale-105 hover:bg-blue-700 transition duration-300">
                   Explore Products
                 </button>
               </Link>
 
               <Link to="/about" className="w-full sm:w-auto">
-                <button className="bg-white text-blue-700 font-semibold px-8 py-4 rounded-2xl shadow-xl hover:scale-105 border border-blue-200 transition duration-300">
+                <button className="bg-white text-blue-700 font-semibold px-6 py-3 md:px-8 md:py-4 rounded-2xl shadow-xl hover:scale-105 border border-blue-200 transition duration-300">
                   Know More About Us
                 </button>
               </Link>

@@ -108,7 +108,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-10 font-medium text-base md:text-lg lg:text-xl relative">
+            <nav className="hidden md:flex items-center gap-6 md:gap-8 lg:gap-10 font-medium text-base md:text-base lg:text-lg xl:text-xl relative">
               {navLinks.map((item, index) =>
                 item.dropdown ? (
                   <div

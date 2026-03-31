@@ -47,8 +47,8 @@ const ProductGrid = ({
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Heading + Filters */}
-        <div className="flex flex-col gap-8 mb-14">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-blue-800 drop-shadow-lg">
+        <div className="flex flex-col gap-6 md:gap-8 mb-10 md:mb-14">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-blue-800 drop-shadow-lg">
             {heading}
           </h2>
           {/* ProductFilter integration */}
@@ -59,7 +59,7 @@ const ProductGrid = ({
           className={
             enableFlowLayout
               ? "block -mx-3 clearfix"
-              : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-10"
+              : "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10"
           }
         >
           {loading ? (

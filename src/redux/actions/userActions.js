@@ -1,4 +1,6 @@
+
 import axios from 'axios';
+import { fetchCartFromBackend, clearCart } from './cartActions';
 import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -28,6 +30,7 @@ import {
     USER_UPDATE_PROFILE_FAIL,
 } from '../constants/userConstants';
 
+// FIX: Wrap login action in a function declaration
 export const login = (email, password, isAdminLogin = false) => async (dispatch) => {
     try {
         dispatch({ type: USER_LOGIN_REQUEST });
@@ -50,6 +53,9 @@ export const login = (email, password, isAdminLogin = false) => async (dispatch)
         });
 
         localStorage.setItem('userInfo', JSON.stringify(data));
+
+        // Fetch cart from backend after login
+        await dispatch(fetchCartFromBackend());
     } catch (error) {
         dispatch({
             type: USER_LOGIN_FAIL,
@@ -61,12 +67,12 @@ export const login = (email, password, isAdminLogin = false) => async (dispatch)
     }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = () => async (dispatch) => {
     localStorage.removeItem('userInfo');
     localStorage.removeItem('cartItems');
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: USER_DETAILS_RESET });
-    dispatch({ type: 'CART_CLEAR_ITEMS' });
+    await dispatch(clearCart());
 };
 
 export const register = (firstName, lastName, email, password) => async (dispatch) => {
