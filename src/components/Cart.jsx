@@ -159,8 +159,13 @@ const Cart = () => {
                                     >
                                         Proceed to Secure Checkout
                                     </button>
-                                    <div className="flex items-center justify-center gap-6 py-4 px-4 bg-blue-50 rounded-2xl border border-blue-100">
-                                        <img src={import.meta.env.VITE_RAZORPAY_LOGO_URL} alt="Razorpay" className="h-4 opacity-50" />
+                                    <div className="flex flex-col items-center gap-3 py-4 px-4 bg-blue-50 rounded-2xl border border-blue-100">
+                                        <div className="flex items-center gap-4">
+                                            <svg viewBox="0 0 38 24" className="h-6 w-auto opacity-60" role="img" aria-label="Visa"><rect width="38" height="24" rx="3" fill="#fff" stroke="#e6e6e6"/><path d="M15.6 16.2h-2.4l1.5-9.4h2.4l-1.5 9.4zm9.8-9.2c-.5-.2-1.2-.4-2.1-.4-2.3 0-4 1.2-4 2.9 0 1.3 1.2 2 2 2.4.9.4 1.2.7 1.2 1.1 0 .6-.7.9-1.4.9-1 0-1.5-.1-2.3-.5l-.3-.2-.3 2c.6.3 1.6.5 2.7.5 2.5 0 4.1-1.2 4.1-3 0-1-.6-1.8-2-2.4-.8-.4-1.3-.7-1.3-1.1 0-.4.4-.8 1.3-.8.7 0 1.3.1 1.7.3l.2.1.4-1.8zm6.1 0h-1.8c-.6 0-1 .2-1.2.7l-3.5 8.5h2.5l.5-1.4h3c.1.3.3 1.4.3 1.4h2.2L31.5 7zm-2.9 6c.2-.5 1-2.5 1-2.5l.3-.8.2.7s.5 2.3.6 2.6h-2.1zM13.2 7l-2.2 6.4-.2-1.3c-.4-1.4-1.7-3-3.2-3.7l2.1 8h2.5l3.8-9.4h-2.8z" fill="#1a1f71"/><path d="M8.6 7H4.9l0 .2c3 .8 5 2.7 5.8 4.9l-.8-4.3c-.1-.5-.6-.7-1.2-.8z" fill="#f9a533"/></svg>
+                                            <svg viewBox="0 0 38 24" className="h-6 w-auto opacity-60" role="img" aria-label="Mastercard"><rect width="38" height="24" rx="3" fill="#fff" stroke="#e6e6e6"/><circle cx="15" cy="12" r="7" fill="#eb001b"/><circle cx="23" cy="12" r="7" fill="#f79e1b"/><path d="M19 7.3a7 7 0 010 9.4 7 7 0 000-9.4z" fill="#ff5f00"/></svg>
+                                            <svg viewBox="0 0 38 24" className="h-6 w-auto opacity-60" role="img" aria-label="American Express"><rect width="38" height="24" rx="3" fill="#2557D6"/><text x="19" y="15.5" textAnchor="middle" fill="#fff" fontSize="7" fontWeight="bold" fontFamily="Arial,sans-serif">AMEX</text></svg>
+                                            <svg viewBox="0 0 38 24" className="h-6 w-auto opacity-60" role="img" aria-label="PayPal"><rect width="38" height="24" rx="3" fill="#fff" stroke="#e6e6e6"/><text x="19" y="15" textAnchor="middle" fill="#003087" fontSize="7.5" fontWeight="bold" fontFamily="Arial,sans-serif">Pay</text><text x="19" y="15" textAnchor="middle" fill="#009cde" fontSize="7.5" fontWeight="bold" fontFamily="Arial,sans-serif" dx="8">Pal</text></svg>
+                                        </div>
                                         <span className="text-[9px] font-extrabold text-blue-500 uppercase tracking-[0.2em]">Verified Secure Terminal</span>
                                     </div>
                                 </div>
